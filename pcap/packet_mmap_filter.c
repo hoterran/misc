@@ -9,6 +9,12 @@
 #include <net/ethernet.h> /* the L2 protocols */
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+#include <linux/filter.h>
+#include <sys/ioctl.h>
+#include <string.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define PER_PACKET_SIZE 2048
 
@@ -44,7 +50,6 @@ void CallBackPacket(uint len, uint caplen, char *data)
     strncpy(dst, addr, 15);
     dst[15] = '\0';
 
-
     printf("Recv A Packet %u %u %s %s.\n", len , caplen, src, dst);
 }
 
@@ -74,6 +79,42 @@ int main()
         perror("setsockopt");
         goto failed_2;
     }
+
+    /* filter
+        tcpdump -dd 'tcp port 3306'
+    */
+
+    struct sock_filter BPF_code[] = {
+        { 0x28, 0, 0, 0x0000000c },
+        { 0x15, 0, 6, 0x000086dd },
+        { 0x30, 0, 0, 0x00000014 },
+        { 0x15, 0, 15, 0x00000006 },
+        { 0x28, 0, 0, 0x00000036 },
+        { 0x15, 12, 0, 0x00000cea },
+        { 0x28, 0, 0, 0x00000038 },
+        { 0x15, 10, 11, 0x00000cea },
+        { 0x15, 0, 10, 0x00000800 },
+        { 0x30, 0, 0, 0x00000017 },
+        { 0x15, 0, 8, 0x00000006 },
+        { 0x28, 0, 0, 0x00000014 },
+        { 0x45, 6, 0, 0x00001fff },
+        { 0xb1, 0, 0, 0x0000000e },
+        { 0x48, 0, 0, 0x0000000e },
+        { 0x15, 2, 0, 0x00000cea },
+        { 0x48, 0, 0, 0x00000010 },
+        { 0x15, 0, 1, 0x00000cea },
+        { 0x6, 0, 0, 0x0000ffff },
+        { 0x6, 0, 0, 0x00000000 }
+    };
+    struct sock_fprog Filter; 
+    Filter.len = 20;
+    Filter.filter = BPF_code;
+
+     if(setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &Filter, sizeof(Filter))<0){
+         perror("setsockopt");
+         close(fd);
+         exit(1);
+       }
 
     buff = (char *)mmap(0, BUFFER_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
     if(buff == MAP_FAILED)

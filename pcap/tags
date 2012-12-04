@@ -4,55 +4,68 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+BPF_MAJOR_VERSION	user_bfilter.c	12;"	d	file:
+BindDevice	packet_mmap_1.c	/^bool BindDevice(int sock, const char* dev)$/;"	f
+CallBackPacket	packet_mmap_2.c	/^void CallBackPacket(char *data)$/;"	f
 ERR	pcap_bond.c	22;"	d	file:
 ETHER_ADDR_LEN	pcap_bond.c	27;"	d	file:
 ETHER_HDRLEN	pcap_z2.c	15;"	d	file:
+ExpressionToFilter	packet_mmap_1.c	/^bool ExpressionToFilter(const char* exp, struct sock_fprog* f)$/;"	f
+FreeFilter	packet_mmap_1.c	/^void FreeFilter(struct sock_fprog* f)$/;"	f
 HOSTNAME_LEN	pcap_bond.c	28;"	d	file:
 IP_DF	e.c	26;"	d	file:
-IP_DF	pcap_bond.c	50;"	d	file:
+IP_DF	pcap_bond.c	61;"	d	file:
 IP_DF	pcap_z2.c	44;"	d	file:
 IP_HL	e.c	34;"	d	file:
-IP_HL	pcap_bond.c	58;"	d	file:
+IP_HL	pcap_bond.c	69;"	d	file:
 IP_HL	pcap_z2.c	39;"	d	file:
 IP_MF	e.c	27;"	d	file:
-IP_MF	pcap_bond.c	51;"	d	file:
+IP_MF	pcap_bond.c	62;"	d	file:
 IP_MF	pcap_z2.c	45;"	d	file:
 IP_OFFMASK	e.c	28;"	d	file:
-IP_OFFMASK	pcap_bond.c	52;"	d	file:
+IP_OFFMASK	pcap_bond.c	63;"	d	file:
 IP_OFFMASK	pcap_z2.c	46;"	d	file:
 IP_RF	e.c	25;"	d	file:
-IP_RF	pcap_bond.c	49;"	d	file:
+IP_RF	pcap_bond.c	60;"	d	file:
 IP_V	e.c	35;"	d	file:
-IP_V	pcap_bond.c	59;"	d	file:
+IP_V	pcap_bond.c	70;"	d	file:
 IP_V	pcap_z2.c	38;"	d	file:
 OK	pcap_bond.c	21;"	d	file:
 OUTPUT_INTERVAL	pcap_bond.c	33;"	d	file:
+P	packet_mmap_1.c	19;"	d	file:
 PEND	pcap_bond.c	23;"	d	file:
+PER_PACKET_SIZE	packet_mmap_1.c	119;"	d	file:
+PER_PACKET_SIZE	packet_mmap_2.c	9;"	d	file:
 PKT_TYPE_TCP	pcap_bond.c	30;"	d	file:
 PKT_TYPE_UDP	pcap_bond.c	31;"	d	file:
+PrintPacket	packet_mmap_1.c	/^void PrintPacket(const char* ip)$/;"	f
 SIZE_ETHERNET	e.c	10;"	d	file:
 SIZE_ETHERNET	pcap_bond.c	26;"	d	file:
 SIZE_IP	pcap_bond.c	25;"	d	file:
+SLL_ADDRLEN	pcap_bond.c	36;"	d	file:
+SLL_HDR_LEN	pcap_bond.c	35;"	d	file:
+SetPromisc	packet_mmap_1.c	/^bool SetPromisc(int sock, const char* dev)$/;"	f
 TH_ACK	e.c	50;"	d	file:
-TH_ACK	pcap_bond.c	75;"	d	file:
+TH_ACK	pcap_bond.c	86;"	d	file:
 TH_CWR	e.c	53;"	d	file:
-TH_CWR	pcap_bond.c	78;"	d	file:
+TH_CWR	pcap_bond.c	89;"	d	file:
 TH_ECE	e.c	52;"	d	file:
-TH_ECE	pcap_bond.c	77;"	d	file:
+TH_ECE	pcap_bond.c	88;"	d	file:
 TH_FIN	e.c	46;"	d	file:
-TH_FIN	pcap_bond.c	71;"	d	file:
+TH_FIN	pcap_bond.c	82;"	d	file:
 TH_FLAGS	e.c	54;"	d	file:
-TH_FLAGS	pcap_bond.c	79;"	d	file:
+TH_FLAGS	pcap_bond.c	90;"	d	file:
 TH_OFF	e.c	44;"	d	file:
-TH_OFF	pcap_bond.c	69;"	d	file:
+TH_OFF	pcap_bond.c	80;"	d	file:
 TH_PUSH	e.c	49;"	d	file:
-TH_PUSH	pcap_bond.c	74;"	d	file:
+TH_PUSH	pcap_bond.c	85;"	d	file:
 TH_RST	e.c	48;"	d	file:
-TH_RST	pcap_bond.c	73;"	d	file:
+TH_RST	pcap_bond.c	84;"	d	file:
 TH_SYN	e.c	47;"	d	file:
-TH_SYN	pcap_bond.c	72;"	d	file:
+TH_SYN	pcap_bond.c	83;"	d	file:
 TH_URG	e.c	51;"	d	file:
-TH_URG	pcap_bond.c	76;"	d	file:
+TH_URG	pcap_bond.c	87;"	d	file:
+callback	pcap_dispatch.c	/^void callback(u_char *user, const struct pcap_pkthdr *h, const u_char *s) {$/;"	f
 ether_dhost	e.c	/^        u_char ether_dhost[ETHER_ADDR_LEN]; \/* Destination host address *\/$/;"	m	struct:sniff_ethernet	file:
 ether_dhost	pcap_bond.c	/^	u_char ether_dhost[ETHER_ADDR_LEN]; \/* Destination host address *\/$/;"	m	struct:sniff_ethernet	file:
 ether_shost	e.c	/^        u_char ether_shost[ETHER_ADDR_LEN]; \/* Source host address *\/$/;"	m	struct:sniff_ethernet	file:
@@ -96,19 +109,28 @@ ip_vhl	pcap_z2.c	/^	u_int8_t	ip_vhl;		\/* header length, version *\/$/;"	m	struc
 iphdr	e.c	/^const struct sniff_ip *iphdr; \/* The IP header *\/$/;"	v	typeref:struct:sniff_ip
 iphdr	pcap_bond.c	/^const struct sniff_ip *iphdr; \/* The IP header *\/$/;"	v	typeref:struct:sniff_ip
 main	a.c	/^int main()$/;"	f
-main	b.c	/^int main(int argc, char** argv)$/;"	f
+main	b.c	/^int main(int argc, char* argv[]) {$/;"	f
 main	c.c	/^int main(int argc, char** argv)$/;"	f
 main	d.c	/^int main()$/;"	f
 main	e.c	/^int main(int argc, char** argv)$/;"	f
 main	f.c	/^int main(int argc, char** argv)$/;"	f
+main	h.c	/^int main() {$/;"	f
+main	packet_mmap_1.c	/^int main()$/;"	f
+main	packet_mmap_2.c	/^int main()$/;"	f
 main	pcap_bond.c	/^int main(int argc, char** argv)$/;"	f
+main	pcap_dispatch.c	/^ int main(int argc, char *argv[])$/;"	f
+main	pcap_next_test.c	/^ int main(int argc, char *argv[])$/;"	f
 main	pcap_z2.c	/^int main(int argc, char** argv)$/;"	f
+main	pf_packet_1.c	/^int main(int argc, char **argv) {$/;"	f
+main	user_bfilter.c	/^int main(int argc, char** argv)$/;"	f
+myFilter	user_bfilter.c	/^struct bpf_program myFilter;$/;"	v	typeref:struct:bpf_program
 my_callback	b.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,$/;"	f
 my_callback	c.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,$/;"	f
 my_callback	e.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,$/;"	f
 my_callback	f.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,$/;"	f
 my_callback	pcap_bond.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* h,$/;"	f
 my_callback	pcap_z2.c	/^void my_callback(u_char *args,const struct pcap_pkthdr* pkthdr,const u_char*$/;"	f
+my_callback	user_bfilter.c	/^void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,$/;"	f
 my_ip	pcap_z2.c	/^struct my_ip {$/;"	s	file:
 payload	e.c	/^const char *payload; \/* Packet payload *\/$/;"	v
 payload	pcap_bond.c	/^const char *payload; \/* Packet payload *\/$/;"	v
@@ -116,6 +138,13 @@ size_iphdr	e.c	/^u_int size_iphdr;$/;"	v
 size_iphdr	pcap_bond.c	/^u_int size_iphdr;$/;"	v
 size_tcphdr	e.c	/^u_int size_tcphdr;$/;"	v
 size_tcphdr	pcap_bond.c	/^u_int size_tcphdr;$/;"	v
+sll_addr	pcap_bond.c	/^        u_int8_t        sll_addr[SLL_ADDRLEN];  \/* link-layer address *\/$/;"	m	struct:sll_header	file:
+sll_halen	pcap_bond.c	/^        u_int16_t       sll_halen;      \/* link-layer address length *\/$/;"	m	struct:sll_header	file:
+sll_hatype	pcap_bond.c	/^        u_int16_t       sll_hatype;     \/* link-layer address type *\/$/;"	m	struct:sll_header	file:
+sll_header	pcap_bond.c	/^struct sll_header {                                                                                                           $/;"	s	file:
+sll_pkttype	pcap_bond.c	/^        u_int16_t       sll_pkttype;    \/* packet type *\/$/;"	m	struct:sll_header	file:
+sll_protocol	pcap_bond.c	/^        u_int16_t       sll_protocol;   \/* protocol *\/$/;"	m	struct:sll_header	file:
+sllhdr	pcap_bond.c	/^const struct sll_header *sllhdr; \/* The ethernet header *\/$/;"	v	typeref:struct:sll_header
 sniff_ethernet	e.c	/^struct sniff_ethernet {$/;"	s	file:
 sniff_ethernet	pcap_bond.c	/^struct sniff_ethernet {$/;"	s	file:
 sniff_ip	e.c	/^struct sniff_ip {$/;"	s	file:
@@ -124,6 +153,7 @@ sniff_tcp	e.c	/^struct sniff_tcp {$/;"	s	file:
 sniff_tcp	pcap_bond.c	/^struct sniff_tcp {$/;"	s	file:
 tcphdr	e.c	/^const struct sniff_tcp *tcphdr; \/* The TCP header *\/$/;"	v	typeref:struct:sniff_tcp
 tcphdr	pcap_bond.c	/^const struct sniff_tcp *tcphdr; \/* The TCP header *\/$/;"	v	typeref:struct:sniff_tcp
+test	packet_mmap_1.c	/^void test(const char* exp, const char* dev)$/;"	f
 th_ack	e.c	/^        uint32_t th_ack;        \/* acknowledgement number *\/$/;"	m	struct:sniff_tcp	file:
 th_ack	pcap_bond.c	/^	uint32_t th_ack;	\/* acknowledgement number *\/$/;"	m	struct:sniff_tcp	file:
 th_dport	e.c	/^        uint16_t th_dport;      \/* destination port *\/$/;"	m	struct:sniff_tcp	file:
@@ -142,3 +172,4 @@ th_urp	e.c	/^        u_short th_urp;         \/* urgent pointer *\/$/;"	m	struct
 th_urp	pcap_bond.c	/^	u_short th_urp;		\/* urgent pointer *\/$/;"	m	struct:sniff_tcp	file:
 th_win	e.c	/^        u_short th_win;         \/* window *\/$/;"	m	struct:sniff_tcp	file:
 th_win	pcap_bond.c	/^	u_short th_win;		\/* window *\/$/;"	m	struct:sniff_tcp	file:
+user_filter	user_bfilter.c	/^int user_filter(const char *exp) {$/;"	f
