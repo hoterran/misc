@@ -5,6 +5,12 @@ http://code.google.com/p/iptux/
 # program language
 ## lua - 30/100
 ## python - 1/100
+## erlang - 1/100
+### emulator
+### otp
+#### stdlib
+##### behaviour 80/100
+##### inet 20/100
 
 # web server
 ## nginx - 0/100
