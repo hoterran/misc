@@ -36,3 +36,9 @@ http://code.google.com/p/iptux/
 # compiler
 ## tcc
 
+# kernel
+## net
+## file system
+## schedule
+
+
