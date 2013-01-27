@@ -1,0 +1,17 @@
+./scan.h
+./symtab.c
+./tm.c
+./globals.h
+./cgen.c
+./util.h
+./symtab.h
+./parse.h
+./analyze.h
+./cgen.h
+./scan.c
+./analyze.c
+./parse.c
+./code.c
+./main.c
+./util.c
+./code.h
