@@ -1,6 +1,6 @@
-# Linux version code in Compiler Construction - Principle and Practice by Kenneth C.Louden
+# Linux version code in Compiler Construction - Principle and Practice by Kenneth C.Louden 
 
-	i fixed some code and Makefile.
+i fixed some code and Makefile.
 
 # compile
 
