@@ -1,0 +1,12 @@
+
+%%
+
+"color" 	{ printf("color"); }
+"fuck"  	{ printf("fuck u"); }
+"clever" 	{ printf("smart"); }
+.		{ printf("%s", yytext); }
+%%
+
+int yywrap() {
+	return 0;
+}
