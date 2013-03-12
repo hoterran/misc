@@ -52,25 +52,7 @@ void
 completion(int rc, const struct Stat *stat,
                              const void *data)
 {
-    printf("completion\n");
-}
-
-struct Stat s;
-
-void
-watcher_wexists(zhandle_t *zh, int type, int state,
-                              const char *path, void *watcherCtx)
-{
-    if (state == ZOO_CONNECTED_STATE) {
-        if (type == ZOO_DELETED_EVENT) {
-            printf(" delete \n");
-        } else if (type == ZOO_CREATED_EVENT) {
-            printf(" create \n");
-        }
-    }
-
-    int ret = zoo_wexists(zh, "/server", watcher_wexists, 
-        "watch_wexists", &s);
+    printf("completion %d \n", rc);
 }
 
 int
@@ -88,20 +70,7 @@ main(int argc, const char *argv[])
         exit(EXIT_FAILURE);
     }
 
-
-    /*
-    1.
-    int ret = zoo_exists(zkhandle, "/server", 0, &s);
-
-    2.
-    int ret = zoo_exists(zkhandle, "/server", 10, &s);
-
-    3.
-
-    */
-    
-    int ret = zoo_wexists(zkhandle, "/server", watcher_wexists, 
-        "watch_wexists", &s);
+    int ret = zoo_aexists(zkhandle, "/server", 1, completion, "aaa");
     
     if (ret) { fprintf(stderr, "Error %d for %s\n", ret, "aexists");
     }

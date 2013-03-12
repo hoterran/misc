@@ -66,11 +66,11 @@ void
 QueryServerd_watcher_awexists(zhandle_t *zh, int type, int state,
                               const char *path, void *watcherCtx)
 {
+    QueryServerd_awexists(zh);
+
     if (state == ZOO_CONNECTED_STATE) {
         if (type == ZOO_DELETED_EVENT) {
-            printf("QueryServer gone away, restart now...\n");
-            // re-exists and set watch on /QueryServer again.
-            QueryServerd_awexists(zh);
+            printf("server gone away, restart now...\n");
             pid_t pid = fork();
             if (pid < 0) {
                 fprintf(stderr, "Error when doing fork.\n");
@@ -83,19 +83,17 @@ QueryServerd_watcher_awexists(zhandle_t *zh, int type, int state,
             }
             sleep(1); /* sleep 1 second for purpose. */
         } else if (type == ZOO_CREATED_EVENT) {
-            printf("QueryServer started...\n");
+            printf("server started...\n");
         }
     }
 
-    // re-exists and set watch on /QueryServer again.
-    QueryServerd_awexists(zh);
 }
 
 static void
 QueryServerd_awexists(zhandle_t *zh)
 {
     int ret =
-        zoo_awexists(zh, "/QueryServer",
+        zoo_awexists(zh, "/server",
                      QueryServerd_watcher_awexists,
                      "QueryServerd_awexists.",
                      QueryServerd_stat_completion,

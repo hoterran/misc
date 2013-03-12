@@ -11,13 +11,8 @@ void
 watcher_global(zhandle_t * zh, int type, int state,
                             const char *path, void *watcherCtx)
 {
-    if (type == ZOO_SESSION_EVENT) {
-        if (state == ZOO_CONNECTED_STATE) {
-            printf("Connected to zookeeper service successfully!\n");
-        } else if (state == ZOO_EXPIRED_SESSION_STATE) { 
-            printf("Zookeeper session expired!\n");
-        }
-    }
+    printf("%s-%d-%d\n", path, type, state);
+
 }
 
 static void
@@ -72,6 +67,30 @@ watcher_wexists(zhandle_t *zh, int type, int state,
     int ret = zoo_wexists(zh, "/server", watcher_wexists, 
         "watch_wexists", &s);
 }
+void
+get_watcher(zhandle_t *zh, int type, int state,
+                              const char *path, void *watcherCtx)
+{
+    if (type == ZOO_CHANGED_EVENT) {
+        if (state == ZOO_CONNECTED_STATE) {
+            zhandle_t *zk =  (zhandle_t*) watcherCtx;
+
+            printf("%s %d %d\n", path, state, type);
+
+            char buff[100];
+            int len = sizeof(buff);
+            struct Stat s;
+            int ret;
+
+            ret = zoo_wget(zk, "/data1", get_watcher, zk, buff, &len, &s);
+
+            char *str = strndup(buff, len);
+            if (!ret) { 
+                printf("zoo_wget %s\n", str); 
+            }
+        }
+    }
+}
 
 int
 main(int argc, const char *argv[])
@@ -80,35 +99,62 @@ main(int argc, const char *argv[])
     int timeout = 30000;
 
     zoo_set_debug_level(ZOO_LOG_LEVEL_WARN);
-    zhandle_t *zkhandle = zookeeper_init(host,
+    zhandle_t *zk = zookeeper_init(host,
          watcher_global, timeout, 0, "watcher_global", 0);
 
-    if (zkhandle == NULL) {
+    if (zk == NULL) {
         fprintf(stderr, "Error when connecting to zookeeper servers...\n");
         exit(EXIT_FAILURE);
     }
 
+    char buff[100];
+    int len = sizeof(buff);
+    struct Stat s;
 
-    /*
-    1.
-    int ret = zoo_exists(zkhandle, "/server", 0, &s);
+    int ret;
+    char *data = "test";
+    int dataLen = strlen(data);
 
-    2.
-    int ret = zoo_exists(zkhandle, "/server", 10, &s);
-
-    3.
-
-    */
+    ret = zoo_exists(zk, "/data1", 0, &s);
     
-    int ret = zoo_wexists(zkhandle, "/server", watcher_wexists, 
-        "watch_wexists", &s);
-    
-    if (ret) { fprintf(stderr, "Error %d for %s\n", ret, "aexists");
+    if (!ret) {
+        /* yes */
+        printf("exists %d %d\n", s.version, s.dataLength); 
+        ret = zoo_delete(zk, "/data1", s.version);
+
+        if (ret) { 
+            printf("zoo_delete failure %d\n", ret);
+        }
     }
 
-    getchar(); //hold 
+    ret = zoo_create(zk, "/data1", data, dataLen, &ZOO_OPEN_ACL_UNSAFE, 0, buff, len - 1);
 
-    zookeeper_close(zkhandle);
+    if (!ret) {
+        printf("zoo_create {%s} \n", buff); 
+    } else {
+        printf("zoo_create failure {%d} \n", ret); 
+    }
+
+    // call watch_global
+    ret = zoo_get(zk, "/data1", 1, buff, &len, &s);
+
+    getchar();
+
+    char *str = strndup(buff, len);
+    if (!ret) { 
+        printf("zoo_get %s\n", str); 
+    }
+
+    ret = zoo_wget(zk, "/data1", get_watcher, zk, buff, &len, &s);
+
+    str = strndup(buff, len);
+    if (!ret) { 
+        printf("zoo_wget %s\n", str); 
+    }
+
+    getchar();
+
+    zookeeper_close(zk);
 
     return 0;
 }
