@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/types.h>
 
 #include "ae.h"
 
@@ -17,10 +18,10 @@ void sock_write(aeEventLoop *ae, int fd, void *privdata, int mask) {
 
     char buf[100];
 
-    snprintf(buf, sizeof(buf), "%d read:%s write:%s\n", pthread_self(), (char*)privdata, "haha");
+    snprintf(buf, sizeof(buf), "read:%s write:%s\n", (char*)privdata, "haha");
 
     send(fd, buf, strlen(buf), 0);
-    fprintf(stdout, "%s\n", buf);
+    printf("%u %s\n", pthread_self(), buf);
     aeDeleteFileEvent(ae, fd, AE_WRITABLE);
     free(privdata);
     aeCreateFileEvent(ae, fd, AE_READABLE, sock_read, NULL);
@@ -84,7 +85,7 @@ void sock_accept(aeEventLoop *ae, int fd, void *privdata, int mask)
 
     ret = write(efd[i], &s, sizeof(s));
 
-    fprintf(stdout, "accept socket: %d, send to %d, %d \n", (int)s, efd[i], ret);
+    fprintf(stdout, "main thread accept %d, send to thread[%d]\n", (int)s, efd[i]);
     printf("%s", strerror(errno));
 }
 
@@ -95,7 +96,7 @@ void thread_accept(aeEventLoop *ae, int efd, void *privdata, int mask)
 
     ret = read(efd, &fd, sizeof(fd));
 
-    printf("%d recv %d\n", pthread_self(), (int)fd);
+    printf("thread[%d] recv %d\n", efd,  (int)fd);
 
     aeCreateFileEvent(ae, (int)fd, AE_READABLE, sock_read, NULL);
 }
@@ -104,7 +105,7 @@ void* thread(void *fd) {
    
     int efd = *(int*)fd;
 
-    printf("%d - %d\n", pthread_self(), efd);
+    //printf("thread %u - %d\n", pthread_self(), efd);
 
     aeEventLoop *ae = aeCreateEventLoop();
 
@@ -131,7 +132,7 @@ main (int argc, char **argv)
     for (i = 0; i < PTHREAD_NUM; i++) {
         efd[i] = eventfd(0, 0);
         ret = pthread_create(&pid, NULL, thread, &efd[i]);
-        printf("thread and efd %d - %ld \n", efd[i], pid);
+        printf("thread and efd %d - %u \n", efd[i], pid);
     }
 
     aeCreateFileEvent(ae, fd, AE_READABLE, sock_accept, &efd);
