@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+#coding: utf-8
+from socket import *
+import select
+import sys,os
+import Queue
+
+hostport = ('', 9999)
+
+def main():
+	s = socket(AF_INET, SOCK_STREAM)
+	s.bind(hostport)
+	s.listen(5)
+
+	inputs = [s]
+	outputs = []
+	mes_que = {}
+
+	while True:
+		infds, outfds, errfds = select.select(inputs, outputs, inputs)
+
+		for sock in infds:
+			if sock is s:
+				#new connect
+				new, addr = s.accept()
+				print 'new connect %s' % str(addr)
+				new.setblocking(0)
+				inputs.append(new)
+
+				mes_que[new] = Queue.Queue()
+			else:
+				#data
+				buf = sock.recv(1024)
+				if buf:
+					print 'recv %s' % buf
+					mes_que[sock].put(buf)
+
+					if sock not in outputs:
+						outputs.append(sock)
+				else:
+				#close
+					print 'close %d' % int(sock)
+					if sock in outputs:
+						outputs.remove(sock)
+					inputs.remove(sock)
+					sock.close()
+
+					del mes_que[sock]
+
+		for sock in outfds:
+			try:
+				next_msg = mes_que[sock].get_nowait()
+			except Queue.Empty:
+				outputs.remove(sock)
+			else:
+				print 'send %s' % next_msg
+				sock.send(next_msg)
+
+if __name__ == "__main__":
+	main()
+
