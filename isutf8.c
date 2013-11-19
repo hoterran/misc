@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
  
-bool is_ascii_or_utf8(const char* str, int length)
+bool IsUTF8String(const char* str, int length)
 {
     int i = 0;
     int nBytes = 0;         //UTF8可用1-6个字节编码, ASCII用一个字节
@@ -37,22 +37,14 @@ bool is_ascii_or_utf8(const char* str, int length)
         ++i;
     }
     if (bAllAscii)
-        return true;
+        return false;
     return nBytes == 0;
 }
  
-int main(int argc, char* argv[])
+int main()
 {
-
-    printf("%d\n", is_ascii_or_utf8("cc", strlen("cc")));
-    printf("%d\n", is_ascii_or_utf8("曹操", strlen("曹操")));
-
-    FILE *f = fopen(argv[1], "r");
-    char s[3000];
-
-    while (NULL != fgets(s, (int)sizeof(s), f)) {
-        printf("%d\n", is_ascii_or_utf8(s, strlen(s)));
-    }
+    printf("%d\n", IsUTF8String("cc", strlen("cc")));
+    printf("%d\n", IsUTF8String("曹操", strlen("曹操")));
  
     return 0;
 }

@@ -24,9 +24,9 @@ bool clear_non_ascii_or_utf8(char* str, int length)
                     chr <<= 1;
                     nBytes++;
                 }
-                if (nBytes < 2 || nBytes > 6) {
+                if (nBytes < 2 || nBytes > 4) {
                     // non 110x 
-                    str[i] = '-'; //第一个字节最少为110x xxxx
+                    str[i] = '_'; //第一个字节最少为110x xxxx
                     i++;
                     nBytes = 0;
                     continue;
@@ -42,11 +42,11 @@ bool clear_non_ascii_or_utf8(char* str, int length)
                 // non 10xx
                 for(; utf8Start < i; utf8Start++) {
                     if ((str[utf8Start] & 0x80) != 0)
-                        str[utf8Start] = '-';
+                        str[utf8Start] = '_';
                 }
                 utf8Start = 0;
-                if ((str[utf8Start] & 0x80) != 0)
-                    str[utf8Start] = '-';
+                if ((str[i] & 0x80) != 0)
+                    str[i] = '_';
                 i++;
                 nBytes = 0;
                 continue;
@@ -62,7 +62,7 @@ bool clear_non_ascii_or_utf8(char* str, int length)
         // non complete end
         for(; utf8Start < i; utf8Start++) {
             if ((str[utf8Start] & 0x80) != 0)
-                str[utf8Start] = '-';
+                str[utf8Start] = '_';
         }
         utf8Start = 0;
         nBytes = 0;
