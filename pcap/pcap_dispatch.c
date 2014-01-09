@@ -3,7 +3,7 @@
 
 
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char *s) {
-    printf("hahaha~n");
+    printf("hahaha~n %ld", h->ts.tv_sec);
 }
 
  int main(int argc, char *argv[])
@@ -25,7 +25,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char *s) {
         return(2);
     }
     /* Find the properties for the device */
-    if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
+    if (pcap_lookupnet("wlan0", &net, &mask, errbuf) == -1) {
         fprintf(stderr, "Couldn't get netmask for device %s: %s\n", dev, errbuf);
         net = 0;
         mask = 0;

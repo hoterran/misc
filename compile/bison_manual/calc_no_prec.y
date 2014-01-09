@@ -9,10 +9,6 @@ void yyerror(char *);
 %}
 
 %token NUM
-%left '-' '+'
-%left '*' '/'
-%left NEG
-%right '^'
 
 %%
 input:
@@ -26,12 +22,11 @@ line:
 
 exp:
 	NUM				{ $$ = $1; }
-	| exp '+' exp	{ $$ = $1 + $3; }
-	| exp '-' exp   { $$ = $1 - $3; }
-	| exp '*' exp   { $$ = $1 * $3; }
-	| exp '/' exp   { $$ = $1 / $3; }
+	| exp '+' exp	{ $$ = $1 + $3; printf("here1\n")}
+	| exp '-' exp   { $$ = $1 - $3; printf("here2\n")}
+	| exp '*' exp   { $$ = $1 * $3; printf("here3\n")}
+	| exp '/' exp   { $$ = $1 / $3; printf("here4\n")}
 	| exp '^' exp   { $$ = pow($1, $3);}
-	| '-' exp %prec NEG		{ $$ = -$2;}
 	| '(' exp ')'	{ $$ = $2;}
 %%
 

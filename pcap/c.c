@@ -10,7 +10,7 @@
 void my_callback(u_char* useless, const struct pcap_pkthdr* pkthdr,
 const u_char* packet) {
 	static int count = 1;
-	fprintf(stdout, "%d-%s-%s-%d-%d\n", count, packet, useless, pkthdr->caplen, pkthdr->len);
+	fprintf(stdout, "%d-%s-%s-%d-%d-%ld\n", count, packet, useless, pkthdr->caplen, pkthdr->len, pkthdr->ts.tv_sec);
 	fflush(stdout);
 	count++;
 }
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 	fflush(stdout);
 	pcap_lookupnet(dev, &netp, &maskp, errbuf);
 
-	descr = pcap_open_live(dev, 200, 0, -1, errbuf);
+	descr = pcap_open_live("any", 200, 0, -1, errbuf);
 
 	pcap_compile(descr, &fp, argv[1], 0, netp);
 

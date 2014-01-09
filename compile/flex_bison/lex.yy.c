@@ -340,9 +340,6 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
-#define yywrap(n) 1
-#define YY_SKIP_YYWRAP
-
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
@@ -456,12 +453,12 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "fb2-1.l"
-#line 4 "fb2-1.l"
+#line 1 "fb1-1.l"
+#line 2 "fb1-1.l"
 	int chars = 0;
 	int words = 0;
 	int lines = 0;
-#line 465 "lex.yy.c"
+#line 462 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -648,9 +645,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 9 "fb2-1.l"
+#line 7 "fb1-1.l"
 
-#line 654 "lex.yy.c"
+
+#line 652 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -735,26 +733,26 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 10 "fb2-1.l"
-{words++; chars += strlen(yytext);}
+#line 9 "fb1-1.l"
+{ words++; chars+= strlen(yytext); printf("%s", yytext);};
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 11 "fb2-1.l"
-{lines++;}
+#line 10 "fb1-1.l"
+{ chars++; lines++; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 12 "fb2-1.l"
-{chars++;}
+#line 11 "fb1-1.l"
+{ chars++; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 13 "fb2-1.l"
+#line 13 "fb1-1.l"
 ECHO;
 	YY_BREAK
-#line 758 "lex.yy.c"
+#line 756 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1752,14 +1750,15 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 13 "fb2-1.l"
+#line 13 "fb1-1.l"
 
 
 
-main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	yyin = fopen(argv[1], "r");
 	yylex();
-	printf("%8d%8d%8d\n", lines, words, chars);
-	return 0;
+	printf("%8d-%8d-%8d\n", lines, words, chars);
 }
+
 

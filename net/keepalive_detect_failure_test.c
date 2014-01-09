@@ -91,16 +91,13 @@ int main(int argc, char *argv[1])
 
     while(1) {
         read_fd_set = active_fd_set;
-        exception_fd_set = active_fd_set;
 
-	ret =  select (FD_SETSIZE, &read_fd_set, NULL, &exception_fd_set, NULL);
+        ret =  select (FD_SETSIZE, &read_fd_set, NULL, NULL, NULL);
 
         if (ret < 0) {
             perror("select");
             exit(EXIT_FAILURE);
         }
-
-	printf("select %d\n", ret);
 
         for (i = 0; i < FD_SETSIZE; ++i) {
             if (FD_ISSET(i, &read_fd_set)) {
@@ -108,18 +105,13 @@ int main(int argc, char *argv[1])
                 if (i == s) {
                     int clientFd = accept(s, NULL, NULL);
                     FD_SET(clientFd, &active_fd_set);
-		    printf(" accept %d\n", clientFd);
+                    printf(" accept %d\n", clientFd);
                 } else {
                     if (readClient(i) <= 0) {
                         close(i);
                         FD_CLR(i, &active_fd_set);
                     }
                 }
-            }
-            if (FD_ISSET(i, &exception_fd_set)) {
-                printf(" exception %d, %s", i, strerror(i));
-                close(i);
-                FD_CLR(i, &active_fd_set);
             }
         }
     }

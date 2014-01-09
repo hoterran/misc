@@ -1,26 +1,9 @@
 #include <vector>
 #include <iostream>
 #include <list>
+#include "p.hpp"
 
 using namespace std;
-
-void printlist(list<string> i) {
-    list<string>::iterator iter = i.begin();
-    list<string>::iterator iter_end = i.end();
-
-    for (; iter != iter_end; ++iter) {
-        cout << *iter << "\n"; 
-    }
-}
-
-void print(vector<string> ivec) {
-    vector<string>::iterator iter = ivec.begin();
-    vector<string>::iterator iter_end = ivec.end();
-
-    for (; iter != iter_end; ++iter) {
-        cout << *iter << "\n"; 
-    }
-}
 
 int main()
 {
@@ -41,27 +24,27 @@ int main()
         ivec2.push_back("xx"); 
         cout << ivec2.size() << "-" << ivec2.capacity() << endl;
     }
-    print(ivec2);
+    PRINT_ELEMENTS(ivec2);
 
     // copy 
     vector<string> ivec3(ivec2.begin(), ivec2.end());
-    print(ivec3);
+    PRINT_ELEMENTS(ivec3);
 
     // list
     vector <string> svec;
     svec.insert(svec.begin(), "abc");
     svec.insert(svec.begin(), "def");
-    print(svec);
+    PRINT_ELEMENTS(svec);
 
     list <string> slist;
     slist.insert(slist.begin(), "cde");
     slist.insert(slist.begin(), "oiu");
     slist.insert(slist.end(), "mnh");
-    printlist(slist);
+    PRINT_ELEMENTS(slist);
     slist.pop_back();
     slist.pop_front();
     cout <<"--" << "\n";
-    printlist(slist);
+    PRINT_ELEMENTS(slist);
     cout <<"--" << "\n";
 
     vector<string> vec3;
@@ -73,11 +56,25 @@ int main()
     string s[4] = {"abc", "def", "jjh", "oii"};
     vec3.insert(vec3.end(), s, s + 4);   
 
-    print(vec3);
+    PRINT_ELEMENTS(vec3);
 
     // copy
 
     vector<string> vec4 = vec3; //deep copy
     vec3.pop_back();
     cout << vec4.size() << endl;
+
+    // size_type
+    typedef vector<string>::size_type vec_sz;
+    vec_sz m = svec.size();
+    svec.push_back("a");
+    cout << "-" << m << "-" << svec.size() << endl;
+
+    // copy
+    vector<string> v2;
+    v2.resize(svec.size()); // must , avoid segmentfault
+    copy(svec.begin(), svec.end(), v2.begin());
+    PRINT_ELEMENTS(v2, "copy "ck_inserter);
+
+    
 }

@@ -43,16 +43,15 @@ bool is_ascii_or_utf8(const char* str, int length)
  
 int main(int argc, char* argv[])
 {
+    FILE *f = fopen(argv[1], "r");
+    char s[100] = {};
+    fread(s, 1, 100, f);
+    int l = strlen(s);
+    int i;
 
     printf("%d\n", is_ascii_or_utf8("cc", strlen("cc")));
     printf("%d\n", is_ascii_or_utf8("曹操", strlen("曹操")));
-
-    FILE *f = fopen(argv[1], "r");
-    char s[3000];
-
-    while (NULL != fgets(s, (int)sizeof(s), f)) {
-        printf("%d\n", is_ascii_or_utf8(s, strlen(s)));
-    }
+    printf("%d\n", is_ascii_or_utf8(s, strlen(s)));
  
     return 0;
 }
