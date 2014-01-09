@@ -1,0 +1,27 @@
+#! stap -p4
+
+# this tests whether integers, pointers, and enums can be 
+# logged (PR 1258)
+
+
+# first: enums and ints
+
+%( kernel_v < "2.6.27" %?
+probe kernel.function("find_pid") 
+{
+%( kernel_v >= "2.6.17" %?
+  log ("find_pid (" . sprint($nr) . ")")
+%:
+  log ("find_pid (" . sprint($type) . ","
+                    . sprint($nr) . ")")
+%)
+}
+%)
+
+# second: opaque pointers and enums
+
+probe kernel.function("detach_pid") 
+{
+  log ("detach_pid (" . sprintf("0x%x", $task) . ","
+              	      . sprint($type) . ")")
+}

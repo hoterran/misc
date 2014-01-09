@@ -1,0 +1,4 @@
+#! stap -p2
+
+# end probes don't support target symbols
+probe process("/bin/cat").end { print($syscall) }

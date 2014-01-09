@@ -1,0 +1,34 @@
+#! stap -p4
+
+global foo, bar
+global i
+
+probe begin
+{
+	print("starting up\n")
+	i = 0
+}
+
+probe timer.jiffies(100)
+{
+	printf("ping %d\n", i)
+	foo <<< ((100 * i) + 50)
+	bar <<< (50 * i * i)
+	if (i++ > 15)
+		exit()
+}
+
+probe end
+{
+	print("shutting down\n")
+	printf("count %d, avg %d\n", @count(foo), @avg(foo))
+	print(@hist_log(foo))
+	print(@hist_linear(bar, 1000, 10000, 1000))
+	println(@hist_log(foo))
+	println(@hist_linear(bar, 1000, 10000, 1000))
+	print(sprint(@hist_log(foo)))
+	print(sprint(@hist_linear(bar, 1000, 10000, 1000)))
+	print(sprintln(@hist_log(foo)))
+	print(sprintln(@hist_linear(bar, 1000, 10000, 1000)))
+}
+

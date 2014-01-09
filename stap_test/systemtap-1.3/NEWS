@@ -1,0 +1,1033 @@
+* What's new in version 1.3
+
+- The uprobes kernel module now has about half the overhead when probing
+  NOPs, which is particularly relevant for sdt.h markers.
+
+- New stap option -G VAR=VALUE allows overriding global variables
+  by passing the settings to staprun as module options.
+
+- The tapset alias 'syscall.compat_pselect7a' was misnamed.  It should
+  have been 'syscall.compat_pselect7' (without the trailing 'a').
+  Starting in release 1.4, the old name will be deprecated.
+
+- A new procfs parameter .umask(UMASK) which provides modification of
+  file permissions using the proper umask value.  Default file
+  permissions for a read probe are 0400, 0200 for a write probe, and
+  0600 for a file with a read and write probe.
+
+- It is now possible in some situations to use print_ubacktrace() to
+  get a user space stack trace from a kernel probe point. e.g. for
+  user backtraces when there is a pagefault:
+  $ stap -d /bin/sort --ldd -e 'probe vm.pagefault {
+      if (pid() == target()) {
+         printf("pagefault @0x%x\n", address); print_ubacktrace();
+      } }' -c /bin/sort
+  [...]
+  pagefault @0x7fea0595fa70
+   0x000000384f07f958 : __GI_strcmp+0x12b8/0x1440 [libc-2.12.so]
+   0x000000384f02824e : __gconv_lookup_cache+0xee/0x5a0 [libc-2.12.so]
+   0x000000384f021092 : __gconv_find_transform+0x92/0x2cf [libc-2.12.so]
+   0x000000384f094896 : __wcsmbs_load_conv+0x106/0x2b0 [libc-2.12.so]
+   0x000000384f08bd90 : mbrtowc+0x1b0/0x1c0 [libc-2.12.so]
+   0x0000000000404199 : ismbblank+0x39/0x90 [sort]
+   0x0000000000404a4f : inittables_mb+0xef/0x290 [sort]
+   0x0000000000406934 : main+0x174/0x2510 [sort]
+   0x000000384f01ec5d : __libc_start_main+0xfd/0x1d0 [libc-2.12.so]
+   0x0000000000402509 : _start+0x29/0x2c [sort]
+  [...]
+
+- New tapset functions to get a string representation of a stack trace:
+  sprint_[u]backtrace() and sprint_[u]stack().
+
+- New tapset function to get the module (shared library) name for a
+  user space address umodname:string(long). The module name will now
+  also be in the output of usymdata() and in backtrace addresses even
+  when they were not given with -d at the command line.
+
+- Kernel backtraces are now much faster (replaced a linear search
+  with a binary search).
+
+- A new integrated compile-server client is now available as part of stap.
+
+  o 'stap --use-server ...' is equivalent to 'stap-client ...'
+  o 'stap --list-servers' is equivalent to 'stap-find-servers'
+  o 'stap --list-servers=online' is equivalent to 'stap-find-servers --all'
+  o stap-client and its related tools will soon be deprecated.
+  o the nss-devel and avahi-devel packages are required for building stap with
+    the integrated client (checked during configuration).
+  o nss and avahi are required to run the integrated client.
+
+- A new operator @entry is available for automatically saving an expression
+  at entry time for use in a .return probe.
+   probe foo.return { println(get_cycles() - @entry(get_cycles())) }
+
+- Probe $target variables and @cast() can now use a suffix to print complex
+  data types as strings.  Use a single '$' for a shallow view, or '$$' for a
+  deeper view that includes nested types.  For example, with fs_struct:
+   $fs$ : "{.users=%i, .lock={...}, .umask=%i,
+            .in_exec=%i, .root={...}, .pwd={...}}"
+   $fs$$ : "{.users=%i, .lock={.raw_lock={.lock=%u}}, .umask=%i, .in_exec=%i,
+             .root={.mnt=%p, .dentry=%p}, .pwd={.mnt=%p, .dentry=%p}}"
+
+- The <sys/sdt.h> user-space markers no longer default to an implicit
+  MARKER_NAME_ENABLED() semaphore check for each marker.  To check for
+  enabled markers use a .d declaration file, then:
+     if (MARKER_NAME_ENABLED()) MARKER_NAME()
+
+- Hyphenated <sys/sdt.h> marker names such as process(...).mark("foo-bar")
+  are now accepted in scripts.  They are mapped to the double-underscore
+  form ("foo__bar").
+
+- More robust <sys/sdt.h> user-space markers support is included.  For
+  some platforms (x86*, ppc*), this can let systemtap probe the markers
+  without debuginfo.  This implementation also supports preserving
+  the "provider" name associated with a marker:
+    probe process("foo").provider("bar").mark("baz") to match
+    STAP_PROBE<n>(bar, baz <...>)
+  (Compile with -DSTAP_SDT_V1 to revert to the previous implementation.
+  Systemtap supports pre-existing or new binaries using them.)
+
+- Embedded-C may be used within expressions as values, when in guru mode:
+     num = %{ LINUX_VERSION_CODE %}               // int64_t
+     name = %{ /* string */ THIS_MODULE->name %}  // const char*
+     printf ("%s %x\n", name, num)
+  The usual /* pure */, /* unprivileged */, and /* guru */ markers may be used 
+  as with embedded-C functions.
+
+- By default the systemtap-runtime RPM builds now include a shared
+  library, staplog.so, that allows crash to extract systemtap data from
+  a vmcore image.
+
+- Iterating with "foreach" can now explicitly save the value for the loop.
+     foreach(v = [i,j] in array)
+       printf("array[%d,%s] = %d\n", i, j, v /* array[i,j] */)
+
+- The new "--ldd" option automatically adds any additional shared
+  libraries needed by probed or -d-listed userspace binaries to the -d
+  list, to enable symbolic backtracing through them.  Similarly, the
+  new "--all-modules" option automatically adds any currently loaded
+  kernel modules (listed in /proc/modules) to the -d list.
+
+- A new family of set_kernel_* functions make it easier for gurus to write
+  new values at arbitrary memory addresses.
+
+- Probe wildcards can now use '**' to cross the '.' separator.
+     $ stap -l 'sys**open'
+     syscall.mq_open
+     syscall.open
+
+- Backward compatibility flags (--compatible=VERSION, and matching
+  script preprocessing predicate %( systemtap_v CMP "version" %)
+  and a deprecation policy are being introduced, in case future
+  tapset/language changes break valid scripts.
+
+* What's new in version 1.2
+
+- Prototype support for "perf events", where the kernel supports the
+  2.6.33 in-kernel API.  Probe points may refer to low-level 
+  perf_event_attr type/config numbers, or to a number of aliases
+  defined in the new perf.stp tapset:
+     probe perf.sw.cpu_clock, perf.type(0).config(4) { }
+
+- Type-casting can now use multiple headers to resolve codependencies.
+     @cast(task, "task_struct",
+           "kernel<linux/sched.h><linux/fs_struct.h>")->fs->umask
+
+- Tapset-related man pages have been renamed.  'man -k 3stap' should show
+  the installed list, which due to prefixing should no longer collide over
+  ordinary system functions.
+
+- User space marker arguments no longer use volatile if the version of gcc,
+  which must be at least 4.5.0, supports richer DWARF debuginfo.  Use cflags
+  -DSTAP_SDT_VOLATILE=volatile or -DSTAP_SDT_VOLATILE= when building
+  the sys/sdt.h application to override this one way or another.
+
+- A new construct for error handling is available.  It is similar to c++
+  exception catching, using try and catch as new keywords.  Within a handler
+  or function, the following is valid and may be nested:
+     try { /* arbitrary statements */ }
+     catch (er) { /* e.g. println("caught error ", er) */ }
+
+- A new command line flag '-W' forces systemtap to abort translation of
+  a script if any warnings are produced.  It is similar to gcc's -Werror.
+  (If '-w' is also supplied to suppress warnings, it wins.)
+
+- A new predicate @defined is available for testing whether a
+  particular $variable/expression is resolvable at translate time:
+  probe foo { if (@defined($bar)) log ("$bar is available here") }
+
+- Adjacent string literals are glued together, making this
+  construct valid:
+     probe process("/usr" @1 "/bin").function("*") { ... }
+
+- In order to limit potential impact from future security problems, 
+  the stap-server process does not permit its being launched as root.
+
+- On recent kernels, for some architectures/configurations, hardware
+  breakpoint probes are supported.  The probe point syntax is:
+
+     probe kernel.data(ADDRESS).write
+     probe kernel.data(ADDRESS).length(LEN).write
+     probe kernel.data("SYMBOL_NAME").write
+
+* What's new in version 1.1
+
+- New tracepoint based tapset for memory subsystem.
+
+- The loading of signed modules by staprun is no longer allowed for
+  ordinary, unprivileged users.  This means that only root, members of
+  the group 'stapdev' and members of the group 'stapusr' can load
+  systemtap modules using staprun, stap or stap-client.  The minimum
+  privilege required to run arbitrary --unprivileged scripts is now
+  'stapusr' membership.
+
+- The stap-server initscript is available. This initscript allows you
+  to start systemtap compile servers as a system service and to manage
+  these servers as a group or individually. The stap-server initscript
+  is installed by the systemtap-server rpm.  The build directory for
+  the uprobes module (/usr/share/systemtap/runtime/uprobes) is made
+  writable by the 'stap-server' group. All of the files generated when
+  building the uprobes module, including the digital signature, are
+  also writable by members of stap-server.
+
+  See initscript/README.stap-server for details.
+
+- Some of the compile server client, server and certificate management
+  tools have been moved from $bindir to $libexecdir/systemtap.
+  You should use the new stap-server script or the stap-server initscript
+  for server management where possible. The stap-server script provides the same
+  functionality as the stap-server initscript except that the servers are
+  run by the invoking user by default as opposed to servers started by the
+  stap-server initscript which are run by the user stap-server
+  by default. See stap-server(8) for more information.
+
+  You may continue to use these tools by adding $libexecdir/systemtap to
+  your path. You would need to do this, for example, if you are not root,
+  you want to start a compile server and you are not running systemtap from a
+  private installation. In this case you still need to use stap-start-server.
+
+- Any diagnostic output line that starts with "ERROR", as in
+  error("foo"), will promote a "Pass 5: run failed", and the return
+  code is 1.
+
+- Systemtap now warns about global variables being referenced from other
+  script files.  This aims to protect against unintended local-vs-global 
+  namespace collisions such as:
+
+     % cat some_tapset.stp
+     probe baz.one = bar { foo = $foo; bar = $bar }
+     % cat end_user_script.stp
+     global foo # intended to be private variable
+     probe timer.s(1) { foo ++ }
+     probe baz.* { println(foo, pp()) }
+     % stap end_user_script.stp
+     WARNING: cross-file global variable reference to foo from some_tapset.stp
+
+- Preprocessor conditional for kernel configuration testing:
+  %( CONFIG_foo == "y" %? ... %) 
+
+- ftrace(msg:string) tapset function to send strings to the system-wide
+  ftrace ring-buffer (if any).
+
+- Better support for richer DWARF debuginfo output from GCC 4.5
+  (variable tracking assignments). Kernel modules are now always resolved
+  against all their dependencies to find any info referring to missing
+  symbols. DW_AT_const_value is now supported when no DW_AT_location
+  is available.
+
+* What's new in verson 1.0
+
+- process().mark() probes now use an enabling semaphore to reduce the
+  computation overhead of dormant probes.
+
+- The function spec for dwarf probes now supports C++ scopes, so you can
+  limit the probes to specific namespaces or classes.  Multiple scopes
+  can be specified, and they will be matched progressively outward.
+      probe process("foo").function("std::vector<*>::*") { }
+      probe process("foo").function("::global_function") { }
+
+- It is now possible to cross-compile systemtap scripts for foreign
+  architectures, using the new '-a ARCH' and '-B OPT=VALUE' flags.
+  For example, put arm-linux-gcc etc. into your $PATH, and point
+  systemtap at the target kernel build tree with:
+     stap -a arm -B CROSS_COMPILE=arm-linux- -r /build/tree  [...]
+  The -B option is passed to kbuild make.  -r identifies the already
+  configured/built kernel tree and -a its architecture (kbuild ARCH=...).
+  Systemtap will infer -p4.
+
+- Cross compilation using the systemtap client and server
+  - stap-start-server now accepts the -r, -R, -I, -B and -a options in
+    order to start a cross compiling server. The server will correctly
+    advertise itself with respect to the kernel release and architecture
+    that it compiles for.
+  - When specified on stap-client, the -r and -a options will be
+    considered when searching for a suitable server.
+
+- When using the systemtap client and server udp port 5353 must be open
+  in your firewall in order for the client to find servers using
+  avahi-browse.  Also the systemtap server will choose a random port in
+  the range 1024-63999 for accepting ssl connections.
+
+- Support for unprivileged users:
+  ***********************************************************************
+  * WARNING!!!!!!!!!!                                                   *
+  * This feature is EXPERIMENTAL at this time and should be used with   *
+  * care. This feature allows systemtap kernel modules to be loaded by  *
+  * unprivileged users. The user interface and restrictions will change *
+  * as this feature evolves.                                            *
+  ***********************************************************************
+  - Systemtap modules generated from scripts which use a restricted
+    subset of the features available may be loaded by staprun for
+    unprivileged users. Previously, staprun would load modules only for
+    root or for members of the groups stapdev and stapusr.
+  - Using the --unprivileged option on stap enables translation-time
+    checking for use by unprivileged users (see restrictions below).
+  - All modules deemed suitable for use by unprivileged users will be
+    signed by the systemtap server when --unprivileged is specified on
+    stap-client. See module signing in release 0.9.8 and stap-server in
+    release 0.9 below.
+  - Modules signed by trusted signers (servers) and verified by staprun
+    will be loaded by staprun regardless of the user's privilege level.
+  - The system administrator asserts the trustworthiness of a signer
+    (server) by running stap-authorize-signing-cert <cert-file> as root,
+    where the <cert-file> can be found in
+    ~<user>/.systemtap/ssl/server/stap.cert for servers started by
+    ordinary users and in $sysconfdir/systemtap/ssl/server/stap.cert for
+    servers started by root.
+  - Restrictions are intentionally strict at this time and may be
+    relaxed in the future:
+     - probe points are restricted to:
+         begin, begin(n), end, end(n), error, error(n), never,
+         timer.{jiffies,s,sec,ms,msec,us,usec,ns,nsec}(n)*, timer.hz(n),
+         process.* (for processes owned by the user).
+     - use of embedded C code is not allowed.
+     - use of tapset functions is restricted.
+       - some tapset functions may not be used at all. A message will be
+         generated at module compilation time.
+       - some actions by allowed tapset functions may only be performed
+         in the context of the user's own process. A runtime fault will
+         occur in these situations, for example, direct memory access.
+       - The is_myproc() tapset function has been provided so that
+         tapset writers for unprivileged users can check that the
+         context is of the users own process before attempting these
+         actions.
+     - accessing the kernel memory space is not allowed.
+     - The following command line options may not be used by stap-client
+       -g, -I, -D, -R, -B
+     - The following environment variables are ignored by stap-client:
+       SYSTEMTAP_RUNTIME, SYSTEMTAP_TAPSET, SYSTEMTAP_DEBUGINFO_PATH
+  - nss and nss-tools are required to use this feature.
+
+- Support output file switching by SIGUSR2. Users can command running
+  stapio to switch output file by sending SIGUSR2.
+
+- Memory consumption for scripts involving many uprobes has been
+  dramatically reduced.
+
+- The preprocessor now supports || and && in the conditions.
+  e.g. %( arch == "x86_64" || arch == "ia64" %: ... %)
+
+- The systemtap notion of "architecture" now matches the kernel's, rather
+  than that of "uname -m".  This means that 32-bit i386 family are all
+  known as "i386" rather than "i386" or "i686"; "ppc64" as "powerpc";
+  "s390x" as "s390", and so on.  This is consistent between the new
+  "-a ARCH" flag and the script-level %( arch ... %) conditional.
+
+- It is now possible to define multiple probe aliases with the same name.
+  A probe will expand to all matching aliases.
+    probe foo = bar { }
+    probe foo = baz { }
+    probe foo { } # expands twice, once to bar and once to baz
+
+- A new experimental transport mechanism, using ftrace's ring_buffer,
+  has been added.  This may become the default transport mechanism in
+  future versions of systemtap.  To test this new transport mechanism,
+  define 'STP_USE_RING_BUFFER'.
+
+- Support for recognizing DW_OP_{stack,implicit}_value DWARF expressions
+  as emitted by GCC 4.5.
+
+* What's new in version 0.9.9
+
+- Systemwide kernel .function.return (kretprobe) maxactive defaults may
+  be overridden with the -DKRETACTIVE=nnn parameter.
+
+- Translation pass 2 is significantly faster by avoiding unnecessary
+  searching through a kernel build/module directory tree.
+
+- When compiled against elfutils 0.142 systemtap now handles the new
+  DW_OP_call_frame_CFA generated by by GCC.
+
+- uprobes and ustack() are more robust when used on applications that
+  depend on prelinked/separate debuginfo shared libraries.
+
+- User space PROBE marks are not always found with or without separate
+  debuginfo. The .probes section itself is now always put in the main
+  elf file and marked as allocated. When building pic code the section
+  is marked writable. The selinux memory check problems seen with
+  programs using STAP_PROBES is fixed.
+
+- statement() probes can now override "address not at start of statement"
+  errors in guru mode. They also provide alternative addresses to use
+  in non-guru mode.
+
+- The stapgraph application can generate graphs of data and events
+  emitted by systemtap scripts in real time.  Run "stapgraph
+  testsuite/systemtap.examples/general/grapher.stp" for an example of
+  graphing the system load average and keyboard events.
+  
+- Dwarf probes now show parameters and local variables in the verbose
+  listing mode (-L).
+
+- Symbol aliases are now resolved to their canonical dwarf names.  For
+  example, probing "malloc" in libc resolves to "__libc_malloc".
+
+- The syntax for dereferencing $target variables and @cast() gained new
+  capabilities:
+  - Array indexes can now be arbitrary numeric expressions.
+  - Array subscripts are now supported on pointer types.
+  - An '&' operator before a @cast or $target returns the address of the
+    final component, especially useful for nested structures.
+
+- For reading all probe variables, kernel.mark now supports $$vars and
+  $$parms, and process.syscall now supports $$vars.
+
+- The SNMP tapset provides probes and functions for many network
+  statistics.  See stapprobes.snmp(3stap) for more details.
+
+- The dentry tapset provides functions to map kernel VFS directory entries
+  to file or full path names: d_path(), d_name() and reverse_path_walk().
+
+- SystemTap now has userspace markers in its own binaries, and the stap
+  tapset provides the available probepoints and local variables.
+
+- Miscellaneous new tapset functions:
+  - pgrp() returns the process group ID of the current process
+  - str_replace() performs string replacement
+
+* What's new in version 0.9.8
+
+- Miscellaneous new tapset functions:
+  - sid() returns the session ID of the current process
+  - stringat() indexes a single character from a string.
+
+- Using %M in print formats for hex dumps can now print entire buffers,
+  instead of just small numbers.
+
+- Dwarfless syscalls: The nd_syscalls tapset is now available to probe
+  system calls without requiring kernel debugging information.  All of
+  the same probepoints in the normal syscalls tapset are available with
+  an "nd_" prefix, e.g. syscall.open becomes nd_syscall.open.  Most
+  syscall arguments are also available by name in nd_syscalls.
+
+- Module signing: If the appropriate nss libraries are available on your
+  system, stap-server will sign each compiled module using a self-generated
+  certificate.  This is the first step toward extending authority to
+  load certain modules to unprivileged users. For now, if the system
+  administrator adds a certificate to a database of trusted signers
+  (stap-authorize-signing-cert), modules signed using that certificate
+  will be verified by staprun against tampering.  Otherwise, you should
+  notice no difference in the operation of stap or staprun.
+
+* What's new in version 0.9.7
+
+- @cast can now determine its type information using an explicit header
+  specification.  For example:
+    @cast(tv, "timeval", "<sys/time.h>")->tv_sec
+    @cast(task, "task_struct", "kernel<linux/sched.h>")->tgid
+
+- The overlapping process.* tapsets are now separated.  Those probe points
+  documented in stapprobes(3stap) remain the same.  Those that were formerly
+  in stapprobes.process(3stap) have been renamed to kprocess, to reflect
+  their kernel perspective on processes.
+
+- The --skip-badvars option now also suppresses run-time error
+  messages that would otherwise result from erroneous memory accesses.
+  Such accesses can originate from $context expressions fueled by
+  erroneous debug data, or by kernel_{long,string,...}() tapset calls.
+
+- New probes kprobe.function(FUNCTION) and kprobe.function(FUNCTION).return
+  for dwarfless probing. These postpone function address resolution to
+  run-time and use the kprobe symbol-resolution mechanism.
+  Probing of absolute statements can be done using the
+  kprobe.statement(ADDRESS).absolute construct.
+
+- EXPERIMENTAL support for user process unwinding. A new collection of
+  tapset functions have been added to handle user space backtraces from
+  probe points that support them (currently process and timer probes -
+  for timer probes test whether or not in user space first with the
+  already existing user_mode() function). The new tapset functions are:
+    uaddr - User space address of current running task.
+    usymname - Return the symbol of an address in the current task.
+    usymdata - Return the symbol and module offset of an address.
+    print_ustack - Print out stack for the current task from string.
+    print_ubacktrace - Print stack back trace for current task.
+    ubacktrace - Hex backtrace of current task stack.
+  Please read http://sourceware.org/ml/systemtap/2009-q2/msg00364.html
+  on the current restrictions and possible changes in the future and
+  give feedback if you want to influence future developments.
+
+* What's new in version 0.9.5
+
+- New probes process().insn and process().insn.block that allows
+  inspection of the process after each instruction or block of
+  instructions executed. So to count the total number of instructions
+  a process executes during a run do something like:
+    $ stap -e 'global steps; probe process("/bin/ls").insn {steps++}
+               probe end {printf("Total instructions: %d\n", steps);}' \
+           -c /bin/ls
+  This feature can slow down execution of a process somewhat.
+
+- Systemtap probes and function man pages extracted from the tapsets
+  are now available under 3stap. To show the page for probe vm.pagefault
+  or the stap function pexecname do:
+    $ man 3stap vm.pagefault
+    $ man 3stap pexecname
+
+- Kernel tracepoints are now supported for probing predefined kernel
+  events without any debuginfo.  Tracepoints incur less overhead than
+  kprobes, and context parameters are available with full type
+  information.  Any kernel 2.6.28 and later should have defined
+  tracepoints.  Try the following to see what's available:
+    $ stap -L 'kernel.trace("*")'
+
+- Typecasting with @cast now supports modules search paths, which is
+  useful in case there are multiple places where the type definition
+  may be found.  For example:
+    @cast(sdev, "scsi_device", "kernel:scsi_mod")->sdev_state
+
+- On-file flight recorder is supported. It allows stap to record huge
+  trace log on the disk and to run in background.
+  Passing -F option with -o option runs stap in background mode. In this
+  mode, staprun is detached from console, and stap itself shows staprun's
+  pid and exits.
+  Specifying the max size and the max number of log files are also available
+  by passing -S option. This option has one or two arguments seperated by
+  a comma. The first argument is the max size of a log file in MB. If the
+  size of a log file exceeds it, stap switches to the next log file
+  automatically. The second is how many files are kept on the disk. If the
+  number of log files exceeds it, the oldest log file is removed
+  automatically. The second argument can be omitted.
+
+  For example, this will record output on log files each of them is smaller
+  than 1024MB and keep last 3 logs, in background.
+    % stap -F -o /tmp/staplog -S 1024,3 script.stp
+
+- In guru mode (-g), the kernel probing blacklist is disabled, leaving 
+  only a subset - the kernel's own internal kprobe blacklist - to attempt
+  to filter out areas unsafe to probe.  The differences may be enough to
+  probe more interrupt handlers.
+
+- Variables unavailable in current context may be skipped by setting a 
+  session level flag with command line option --skip-badvars now available.
+  This replaces any dwarf $variable expressions that could not be resolved
+  with literal numeric zeros, along with a warning message.
+
+- Both kernel markers and kernel tracepoint support argument listing
+  through stap -L 'kernel.mark("*")' or stap -L 'kernel.trace("*")'
+
+- Users can use -DINTERRUPTIBLE=0 to prevent interrupt reentrancy in
+  their script, at the cost of a bit more overhead to toggle the
+  interrupt mask.
+
+- Added reentrancy debugging. If stap is run with the arguments
+  "-t -DDEBUG_REENTRANCY", additional warnings will be printed for
+  every reentrancy event, including the probe points of the
+  resident and interloper probes.
+
+- Default to --disable-pie for configure.
+  Use --enable-pie to turn it back on.
+
+- Improved sdt.h compatibility and test suite for static dtrace
+  compatible user space markers.
+
+- Some architectures now use syscall wrappers (HAVE_SYSCALL_WRAPPERS).
+  The syscall tapset has been enhanced to take care of the syscall
+  wrappers in this release.
+
+- Security fix for CVE-2009-0784: stapusr module-path checking race.
+
+* What's new in version 0.9
+
+- Typecasting is now supported using the @cast operator.  A script can
+  define a pointer type for a "long" value, and then access type members
+  using the same syntax as with $target variables.  For example, this will
+  retrieve the parent pid from a kernel task_struct:
+    @cast(pointer, "task_struct", "kernel")->parent->pid
+
+- process().mark() probes are now possible to trace static user space
+  markers put in programs with the STAP_PROBE macro using the new
+  sys/sdt.h include file. This also provides dtrace compatible markers
+  through DTRACE_PROBE and an associated python 'dtrace' script that
+  can be used in builds based on dtrace that need dtrace -h or -G
+  functionality.
+
+- For those that really want to run stap from the build tree there is
+  now the 'run-stap' script in the top-level build directory that sets
+  up the SYSTEMTAP_TAPSET, SYSTEMTAP_RUNTIME, SYSTEMTAP_STAPRUN, and
+  SYSTEMTAP_STAPIO environment variables (installing systemtap, in a
+  local prefix, is still recommended for common use).
+
+- Systemtap now comes with a new Beginners Guide that walks the user
+  through their first steps setting up stap, understanding how it all
+  works, introduces some useful scripts and describes some common
+  pitfalls.  It isn't created by default since it needs a Publican
+  setup, but full build instructions can be found in the wiki:
+  http://sourceware.org/systemtap/wiki/PublicanQuikHowto
+  An online version can be found at:
+  http://sourceware.org/systemtap/SystemTap_Beginners_Guide.pdf
+
+- Standard tapsets included with Systemtap were modified to include
+  extractable documentation information based on the kernel-doc
+  infrastructure. When configured --enabled-docs a HTML and PDF
+  version of the Tapset Reference Manual is produced explaining probes
+  defined in each tapset.
+
+- The systemtap client and compile server are now available.
+  These allow you to compile a systemtap module on a host other than
+  the one which it will be run, providing the client and server
+  are compatible. Other than using a server for passes 1 through
+  4, the client behaves like the 'stap' front end itself. This
+  means, among other things, that the client will automatically
+  load the resulting module on the local host unless -p[1234]
+  was specified.  See stap-server(8) for more details.
+  The client/server now use SSL for network connection security and
+  for signing.
+
+  The systemtap client and server are prototypes only. Interfaces, options
+  and usage may change at any time.
+
+- function("func").label("label") probes are now supported to allow matching
+  the label of a function.
+
+- Systemtap initscript is available. This initscript allows you to run
+  systemtap scripts as system services (in flight recorder mode) and
+  control those scripts individually.
+  See README.systemtap for details.
+
+- The stap "-r DIR" option may be used to identify a hand-made kernel
+  build directory.  The tool determines the appropriate release string
+  automatically from the directory.
+
+- Serious problems associated with user-space probing in shared libraries
+  were corrected, making it now possible to experiment with probe shared
+  libraries.  Assuming dwarf debugging information is installed, use this
+  twist on the normal syntax:
+
+    probe process("/lib64/libc-2.8.so").function("....") { ... }
+
+  This would probe all threads that call into that library.  Running
+  "stap -c CMD" or "stap -x PID" naturally restricts this to the target
+  command+descendants only.  $$vars etc. may be used.
+
+- For scripts that sometimes terminate with excessive "skipped" probes,
+  rerunning the script with "-t" (timing) will print more details about
+  the skippage reasons.
+
+- Symbol tables and unwind (backtracing) data support were formerly
+  compiled in for all probed modules as identified by the script
+  (kernel; module("name"); process("file")) plus those listed by the
+  stap "-d BINARY" option.  Now, this data is included only if the systemtap
+  script uses tapset functions like probefunc() or backtrace() that require
+  such information.  This shrinks the probe modules considerably for the rest.
+
+- Per-pass verbosity control is available with the new "--vp {N}+" option.
+  "stap --vp 040" adds 4 units of -v verbosity only to pass 2.  This is useful
+  for diagnosing errors from one pass without excessive verbosity from others.
+
+- Most probe handlers now run with interrupts enabled, for improved
+  system responsiveness and less probing overhead.  This may result
+  in more skipped probes, for example if a reentrant probe handler
+  is attempted from within an interrupt handler.  It may also make the
+  systemtap overload detection facility more likely to be triggered, as
+  interrupt handlers' run time would be included in the self-assessed
+  overhead of running probe handlers.
+
+* What's new in version 0.8
+
+- Cache limiting is now available.  If the compiled module cache size is
+  over a limit specified in the $SYSTEMTAP_DIR/cache/cache_mb_limit file,
+  some old cache entries will be unlinked.  See man stap(1) for more.
+
+- Error and warning messages are now followed by source context displaying
+  the erroneous line/s and a handy '^' in the following line pointing to the
+  appropriate column.
+
+- A bug reporting tool "stap-report" is now available which will quickly
+  retrieve much of the information requested here: 
+  http://sourceware.org/systemtap/wiki/HowToReportBugs
+
+- The translator can resolve members of anonymous structs / unions:
+    given            struct { int foo; struct { int bar; }; } *p;
+    this now works:  $p->bar
+
+- The stap "-F" flag activates "flight recorder" mode, which consists of
+  translating the given script as usual, but implicitly launching it into
+  the background with staprun's existing "-L" (launch) option.  A user
+  can later reattach to the module with "staprun -A MODULENAME".
+
+- Additional context variables are available on user-space syscall probes.
+  - $argN ($arg1, $arg2, ... $arg6) in process(PATH_OR_PID).syscall
+    gives you the argument of the system call.
+  - $return in process(PATH_OR_PID).syscall.return gives you the return
+    value of the system call.
+
+- Target process mode (stap -c CMD or -x PID) now implicitly restricts all
+  "process.*" probes to the given child process.  (It does not affect
+  kernel.* or other probe types.)  The CMD string is normally run directly,
+  rather than via a /bin/sh -c subshell, since then utrace/uprobe probes
+  receive a fairly "clean" event stream.  If metacharacters like
+  redirection operators were present in CMD, then "sh -c CMD" is still
+  used, and utrace/uprobe probes will receive events from the shell.
+
+     % stap -e 'probe process.syscall, process.end {
+                   printf("%s %d %s\n", execname(), pid(), pp())}'\
+            -c ls
+     ls 2323 process.syscall 
+     ls 2323 process.syscall 
+     ls 2323 process.end
+
+- Probe listing mode is improved: "-L" lists available script-level variables
+
+     % stap -L 'syscall.*open*'
+     syscall.mq_open name:string name_uaddr:long filename:string mode:long u_attr_uaddr:long oflag:long argstr:string
+     syscall.open name:string filename:string flags:long mode:long argstr:string
+     syscall.openat name:string filename:string flags:long mode:long argstr:string
+
+- All user-space-related probes support $PATH-resolved executable
+  names, so
+
+     probe process("ls").syscall {}
+     probe process("./a.out").syscall {}
+
+  work now, instead of just
+
+     probe process("/bin/ls").syscall {}
+     probe process("/my/directory/a.out").syscall {}
+
+- Prototype symbolic user-space probing support:
+
+     # stap -e 'probe process("ls").function("*").call {
+                   log (probefunc()." ".$$parms)
+                }' \
+            -c 'ls -l'
+
+  This requires:
+  - debugging information for the named program
+  - a version of utrace in the kernel that is compatible with the "uprobes"
+    kernel module prototype.  This includes RHEL5 and older Fedora, but not
+    yet current lkml-track utrace; a "pass 4a"-time build failure means
+    your system cannot use this yet.
+
+- Global variables which are written to but never read are now
+  automatically displayed when the session does a shutdown.  For example:
+
+      global running_tasks
+      probe timer.profile {running_tasks[pid(),tid()] = execname()}
+      probe timer.ms(8000) {exit()}
+
+- A formatted string representation of the variables, parameters, or local
+  variables at a probe point is now supported via the special $$vars,
+  $$parms, and $$locals context variables, which expand to a string
+  containing a list "var1=0xdead var2=0xbeef var3=?".  (Here, var3 exists
+  but is for some reason unavailable.)  In return probes only, $$return
+  expands to an empty string for a void function, or "return=0xf00".
+
+
+* What's new in version 0.7
+
+- .statement("func@file:*") and .statement("func@file:M-N") probes are now
+  supported to allow matching a range of lines in a function.  This allows
+  tracing the execution of a function.
+
+- Scripts relying on probe point wildcards like "syscall.*" that expand
+  to distinct kprobes are processed significantly faster than before.
+
+- The vector of script command line arguments is available in a
+  tapset-provided global array argv[].  It is indexed 1 ... argc,
+  another global.  This can substitute for of preprocessor
+  directives @NNN that fail at parse time if there are not
+  enough arguments.
+
+      printf("argv: %s %s %s", argv[1], argv[2], argv[3])
+
+- .statement("func@file+line") probes are now supported to allow a
+  match relative to the entry of the function incremented by line
+  number.  This allows using the same systemtap script if the rest
+  of the file.c source only changes slightly.
+
+- A probe listing mode is available.
+  % stap -l vm.*
+  vm.brk
+  vm.mmap
+  vm.munmap
+  vm.oom_kill
+  vm.pagefault
+  vm.write_shared
+
+- More user-space probe types are added:
+
+  probe process(PID).begin { }
+  probe process("PATH").begin { }
+  probe process(PID).thread.begin { }
+  probe process("PATH").thread.begin { }
+  probe process(PID).end { }
+  probe process("PATH").end { }
+  probe process(PID).thread.end { }
+  probe process("PATH").thread.end { }
+  probe process(PID).syscall { }
+  probe process("PATH").syscall { }
+  probe process(PID).syscall.return { }
+  probe process("PATH").syscall.return { }
+
+- Globals now accept ; terminators
+
+  global odds, evens;
+  global little[10], big[5];
+
+* What's new in version 0.6
+
+- A copy of the systemtap tutorial and language reference guide
+  are now included.
+
+- There is a new format specifier, %m, for the printf family of
+  functions.  It functions like %s, except that it does not stop when
+  a nul ('\0') byte is encountered.  The number of bytes output is
+  determined by the precision specifier.  The default precision is 1.
+  For example:
+
+      printf ("%m", "My String") // prints one character: M
+      printf ("%.5", myString)   // prints 5 bytes beginning at the start
+      	     	     		 // of myString
+
+- The %b format specifier for the printf family of functions has been enhanced
+  as follows:
+
+  1) When the width and precision are both unspecified, the default is %8.8b.
+  2) When only one of the width or precision is specified, the other defaults
+     to the same value.  For example, %4b == %.4b == %4.4b
+  3) Nul ('\0') bytes are used for field width padding.  For example,
+
+     printf ("%b", 0x1111deadbeef2222) // prints all eight bytes
+     printf ("%4.2b", 0xdeadbeef)      // prints  \0\0\xbe\xef
+
+- Dynamic width and precision are now supported for all printf family format
+  specifiers.  For example:
+
+     four = 4
+     two = 2
+     printf ("%*.*b", four, two, 0xdeadbbeef) // prints  \0\0\xbe\xef
+     printf ("%*d", four, two)                // prints  <space><space><space>2
+
+- Preprocessor conditional expressions can now include wildcard style
+  matches on kernel versions.
+  %( kernel_vr != "*xen" %? foo %: bar %)
+
+- Prototype support for user-space probing is showing some progress.
+  No symbolic notations are supported yet (so no probing by function names,
+  file names, process names, and no access to $context variables), but at
+  least it's something:
+
+    probe process(PID).statement(ADDRESS).absolute { }
+
+  This will set a uprobe on the given process-id and given virtual address.
+  The proble handler runs in kernel-space as usual, and can generally use
+  existing tapset functions.
+
+- Crash utility can retrieve systemtap's relay buffer from a kernel dump
+  image by using staplog which is a crash extension module. To use this
+  feature, type commands as below from crash(8)'s command line:
+
+    crash> extend staplog.so
+    crash> help systemtaplog
+
+  Then, you can see more precise help message.
+
+- You can share a relay buffer amoung several scripts and merge outputs from
+  several scripts by using "-DRELAY_HOST" and "-DRELAY_GUEST" options.
+  For example:
+
+    # run a host script
+    % stap -ve 'probe begin{}' -o merged.out -DRELAY_HOST &
+    # wait until starting the host.
+    % stap -ve 'probe begin{print("hello ");exit()}' -DRELAY_GUEST
+    % stap -ve 'probe begin{print("world\n");exit()}' -DRELAY_GUEST
+
+  Then, you'll see "hello world" in merged.out.
+
+- You can add a conditional statement for each probe point or aliase, which
+  is evaluated when the probe point is hit. If the condition is false, the
+  whole probe body(including aliases) is skipped. For example:
+
+    global switch = 0;
+    probe syscall.* if (switch) { ... }
+    probe procfs.write {switch = strtol($value,10)} /* enable/disable ctrl */
+
+- Systemtap will warn you if your script contains unused variables or
+  functions.  This is helpful in case of misspelled variables.  If it
+  doth protest too much, turn it off with "stap -w ...".
+
+- You can add error-handling probes to a script, which are run if a
+  script was stopped due to errors.  In such a case, "end" probes are
+  not run, but "error" ones are.
+
+    probe error { println ("oops, errors encountered; here's a report anyway")
+                  foreach (coin in mint) { println (coin) } }
+
+- In a related twist, one may list probe points in order of preference,
+  and mark any of them as "sufficient" beyond just "optional".  Probe
+  point sequence expansion stops if a sufficient-marked probe point has a hit.
+  This is useful for probes on functions that may be in a module (CONFIG_FOO=m)
+  or may have been compiled into the kernel (CONFIG_FOO=y), but we don't know
+  which.  Instead of
+
+    probe module("sd").function("sd_init_command") ? ,
+          kernel.function("sd_init_command") ? { ... }
+
+  which might match neither, now one can write this:
+
+    probe module("sd").function("sd_init_command") ! , /* <-- note excl. mark */
+          kernel.function("sd_init_command")  { ... }
+
+- New security model.  To install a systemtap kernel module, a user
+  must be one of the following: the root user; a member of the
+  'stapdev' group; or a member of the 'stapusr' group.  Members of the
+  stapusr group can only use modules located in the
+  /lib/modules/VERSION/systemtap directory (where VERSION is the
+  output of "uname -r").
+
+- .statement("...@file:line") probes now apply heuristics to allow an
+  approximate match for the line number.  This works similarly to gdb,
+  where a breakpoint placed on an empty source line is automatically
+  moved to the next statement.  A silly bug that made many $target
+  variables inaccessible to .statement() probes was also fixed.
+
+- LKET has been retired.  Please let us know on <systemtap@sourceware.org>
+  if you have been a user of the tapset/tools, so we can help you find
+  another way.
+
+- New families of printing functions println() and printd() have been added.
+  println() is like print() but adds a newline at the end;
+  printd() is like a sequence of print()s, with a specified field delimiter.
+
+* What's new since version 0.5.14?
+
+- The way in which command line arguments for scripts are substituted has
+  changed.  Previously, $1 etc. would interpret the corresponding command
+  line argument as an numeric literal, and @1 as a string literal.  Now,
+  the command line arguments are pasted uninterpreted wherever $1 etc.
+  appears at the beginning of a token.  @1 is similar, but is quoted as
+  a string.  This change does not modify old scripts, but has the effect
+  of permitting substitution of arbitrary token sequences.
+
+  # This worked before, and still does:
+  % stap -e 'probe timer.s($1) {}'        5
+  # Now this also works:
+  % stap -e 'probe syscall.$1 {log(@1)}'  open
+  # This won't crash, just signal a recursion error:
+  % stap -e '$1'                          '$1'
+  # As before, $1... is recognized only at the beginning of a token
+  % stap -e 'probe begin {foo$1=5}'
+
+* What's new since version 0.5.13?
+
+- The way in which systemtap resolves function/inline probes has changed:
+   .function(...) - now refers to all functions, inlined or not
+   .inline(...)   - is deprecated, use instead:
+   .function(...).inline - filters function() to only inlined instances
+   .function(...).call - filters function() to only non-inlined instances
+   .function(...).return - as before, but now pairs best with .function().call
+   .statement() is unchanged.
+
+* What's new since version 0.5.12?
+
+- When running in -p4 (compile-only) mode, the compiled .ko file name
+  is printed on standard output.
+
+- An array element with a null value such as zero or an empty string
+  is now preserved, and will show up in a "foreach" loop or "in" test.
+  To delete such an element, the scripts needs to use an explicit
+  "delete array[idx]" statement rather than something like "array[idx]=0".
+
+- The new "-P" option controls whether prologue searching heuristics
+  will be activated for function probes.  This was needed to get correct
+  debugging information (dwarf location list) data for $target variables.
+  Modern compilers (gcc 4.1+) tend not to need this heuristic, so it is
+  no longer default.  A new configure flag (--enable-prologues) restores
+  it as a default setting, and is appropriate for older compilers (gcc 3.*).
+
+- Each systemtap module prints a one-line message to the kernel informational
+  log when it starts.  This line identifies the translator version, base
+  address of the probe module, a broken-down memory consumption estimate, and
+  the total number of probes.  This is meant as a debugging / auditing aid.
+
+- Begin/end probes are run with interrupts enabled (but with
+  preemption disabled).  This will allow begin/end probes to be
+  longer, to support generating longer reports.
+
+- The numeric forms of kernel.statement() and kernel.function() probe points
+  are now interpreted as relocatable values - treated as relative to the
+  _stext symbol in that kernel binary.  Since some modern kernel images
+  are relocated to a different virtual address at startup, such addresses
+  may shift up or down when actually inserted into a running kernel.
+
+     kernel.statement(0xdeadbeef): validated, interpreted relative to _stext,
+                                   may map to 0xceadbeef at run time.
+
+  In order to specify unrelocated addresses, use the new ".absolute"
+  probe point suffix for such numeric addresses.  These are only
+  allowed in guru mode, and provide access to no $target variables.
+  They don't use debugging information at all, actually.
+
+     kernel.statement(0xfeedface).absolute: raw, unvalidated, guru mode only
+
+* What's new since version 0.5.10?
+
+- Offline processing of debugging information, enabling general
+  cross-compilation of probe scripts to remote hosts, without
+  requiring identical module/memory layout.  This slows down
+  compilation/translation somewhat.
+
+- Kernel symbol table data is loaded by staprun at startup time
+  rather than compiled into the module.
+
+- Support the "limit" keyword for foreach iterations:
+    foreach ([x,y] in ary limit 5) { ... }
+  This implicitly exits after the fifth iteration.  It also enables
+  more efficient key/value sorting.
+
+- Support the "maxactive" keyword for return probes:
+    probe kernel.function("sdfsdf").maxactive(848) { ... }
+  This allows up to 848 concurrently outstanding entries to
+  the sdfsdf function before one returns.  The default maxactive
+  number is smaller, and can result in missed return probes.
+
+- Support accessing of saved function arguments from within
+  return probes.  These values are saved by a synthesized
+  function-entry probe.
+
+- Add substantial version/architecture checking in compiled probes to
+  assert correct installation of debugging information and correct
+  execution on a compatible kernel.
+
+- Add probe-time checking for sufficient free stack space when probe
+  handlers are invoked, as a safety improvement.
+
+- Add an optional numeric parameter for begin/end probe specifications,
+  to order their execution.
+     probe begin(10) { } /* comes after */ probe begin(-10) {}
+
+- Add an optional array size declaration, which is handy for very small
+  or very large ones.
+     global little[5], big[20000]
+
+- Include some example scripts along with the documentation.
+
+- Change the start-time allocation of probe memory to avoid causing OOM
+  situations, and to abort cleanly if free kernel memory is short.
+
+- Automatically use the kernel DWARF unwinder, if present, for stack
+  tracebacks.
+
+- Many minor bug fixes, performance, tapset, and error message
+  improvements.

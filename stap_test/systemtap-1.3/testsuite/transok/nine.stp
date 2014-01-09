@@ -1,0 +1,16 @@
+#! /bin/sh
+
+stap -p3 -g $@ - <<'END'
+
+%{
+void just_some_declaration () {}
+%}
+
+function bar(foo) %{ just_some_declaration(); THIS->__retvalue = THIS->foo + 5; %}
+
+probe begin
+{
+  bar (5) + 0
+}
+
+END

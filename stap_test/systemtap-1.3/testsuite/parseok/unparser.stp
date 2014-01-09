@@ -1,0 +1,25 @@
+#! /bin/sh
+
+set -e
+
+for dir in ${SRCDIR}/testsuite/parseok \
+${SRCDIR}/testsuite/semok \
+${SRCDIR}/testsuite/semko \
+${SRCDIR}/testsuite/transok \
+${SRCDIR}/testsuite/transko \
+${SRCDIR}/testsuite/buildok \
+${SRCDIR}/testsuite/buildko
+do
+   for file in $dir/*.stp
+   do
+      if head -1 $file | grep -q stap
+      then
+	  if head -1 $file | fgrep -q -- g  # guru mode
+	  then guru=-g
+	  else guru=
+	  fi
+	  echo $file $guru
+          stap $guru -p1 $file | stap $guru -p1 - > /dev/null
+      fi
+   done
+done

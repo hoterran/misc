@@ -1,0 +1,8 @@
+#! stap -wp2
+
+function f () { }
+function g (arg) { }
+
+probe begin {
+  (true=1) ? f() : g(1);
+}

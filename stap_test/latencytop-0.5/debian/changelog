@@ -1,0 +1,41 @@
+latencytop (0.5) unstable; urgency=low
+
+  * New upstream version (
+
+ -- Giacomo Catenazzi <cate@debian.org>  Sun, 26 Jul 2009 13:06:24 +0200
+
+latencytop (0.4) unstable; urgency=low
+
+  * New upstream version (added block trace)
+  * add options and keybinding to manpage (Closes: #476769)
+
+ -- Giacomo Catenazzi <cate@debian.org>  Thu, 16 May 2008 08:23:03 +0200
+
+latencytop (0.3-4) unstable; urgency=low
+
+  * Ooops, finally merge all changes of previous versions.
+  * Merging again some patches from git, so kernel support is enabled
+    automatically at program start (Closes: #475548)
+  * Don't clean up screen after writing errors (Closes: #469418)
+
+ -- Giacomo Catenazzi <cate@debian.org>  Tue, 15 Apr 2008 08:08:15 +0200
+
+latencytop (0.3-3) unstable; urgency=low
+
+  * Fix building
+
+ -- Giacomo Catenazzi <cate@debian.org>  Mon, 14 Apr 2008 09:05:34 +0200
+
+latencytop (0.3-2) unstable; urgency=low
+
+  * Put latencytop.trans in /usr/share/misc/
+  * Pull some patch from git.
+
+ -- Giacomo Catenazzi <cate@debian.org>  Thu, 14 Feb 2008 19:12:26 +0100
+
+latencytop (0.3-1) unstable; urgency=low
+
+  * Initial release (Closes: #462184)
+
+ -- Giacomo Catenazzi <cate@debian.org>  Tue, 12 Feb 2008 22:51:39 +0100
+

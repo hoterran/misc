@@ -1,0 +1,36 @@
+package tutorial;
+
+message Person {
+  required string name = 1;
+  required int32 id = 2;
+  optional string email = 3;
+
+  enum PhoneType {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+
+  message PhoneNumber {
+    required string number = 1;
+    optional PhoneType type = 2 [default = HOME];
+  }
+
+  repeated PhoneNumber phone = 4;
+}
+
+message AddressBook {
+  repeated Person person = 1;
+}
+
+message SelfDescribingMessage {
+	// Set of .proto files which define the type.
+	required FileDescriptorSet proto_files = 1;
+	 
+	// Name of the message type.  Must be defined by one of the files in proto_files.
+	required string type_name = 2;
+		  
+	// The message data.
+	required bytes message_data = 3;
+}
+

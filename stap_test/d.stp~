@@ -1,0 +1,5 @@
+probe timer.ms(1000)
+{ 
+	print ("hello world\n")
+	exit()
+}

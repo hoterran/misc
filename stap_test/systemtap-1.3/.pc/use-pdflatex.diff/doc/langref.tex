@@ -1,0 +1,2648 @@
+% SystemTap Language Reference
+\documentclass[twoside,english]{article}
+\usepackage{geometry}
+\geometry{verbose,letterpaper,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{array}
+\usepackage{varioref}
+\usepackage{float}
+\usepackage{makeidx}
+\usepackage{verbatim}
+\usepackage{url}
+\makeindex
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+%\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{3pt plus 2pt minus 1pt}
+\setlength{\parskip}{5pt}
+
+%
+% this makes list spacing much better.
+%
+\newenvironment{my_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}{\end{itemize}
+}
+
+\newenvironment{vindent}
+{\begin{list}{}{\setlength{\listparindent}{6pt}}
+\item[]}
+{\end{list}}
+
+\usepackage{babel}
+\makeatother
+\begin{document}
+
+\title{SystemTap Language Reference}
+
+\maketitle
+\newpage{}
+This document was derived from other documents contributed to the SystemTap project by employees of Red Hat, IBM and Intel.\newline
+
+Copyright \copyright\space  2007-2010 Red Hat Inc.\newline
+Copyright \copyright\space  2007-2009 IBM Corp.\newline
+Copyright \copyright\space  2007 Intel Corporation.\newline
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.\newline
+
+The GNU Free Documentation License is available from
+\url{http://www.gnu.org/licenses/fdl.html} or by writing to
+the Free Software Foundation, Inc., 51 Franklin Street,
+Fifth Floor, Boston, MA 02110-1301, USA.
+\newpage{}
+\tableofcontents{}
+% \listoftables
+\newpage{}
+
+\section{SystemTap overview\label{sec:SystemTap-Overview}}
+
+\subsection{About this guide}
+
+This guide is a comprehensive reference of SystemTap's language constructs
+and syntax. The contents borrow heavily from existing SystemTap documentation
+found in manual pages and the tutorial. The presentation of information here
+provides the reader with a single place to find language syntax and recommended
+usage. In order to successfully use this guide, you should be familiar with
+the general theory and operation of SystemTap. If you are new to SystemTap,
+you will find the tutorial to be an excellent place to start learning. For
+detailed information about tapsets, see the manual pages provided with the
+distribution. For information about the entire collection of SystemTap reference
+material, see Section~\ref{sec:For-Further-Reference}
+
+\subsection{Reasons to use SystemTap}
+
+SystemTap provides infrastructure to simplify the gathering of information
+about a running Linux kernel so that it may be further analyzed. This analysis
+assists in identifying the underlying cause of a performance or functional
+problem. SystemTap was designed to eliminate the need for a developer to
+go through the tedious instrument, recompile, install, and reboot sequence
+normally required to collect this kind of data. To do this, it provides a
+simple command-line interface and scripting language for writing
+instrumenation for both kernel and user space.
+With SystemTap, developers, system administrators, and users can easily write
+scripts that gather and manipulate system data that is otherwise unavailable
+from standard Linux tools. Users of SystemTap will find it to be a significant
+improvement over older methods.
+
+\subsection{Event-action language}
+\index{language}
+SystemTap's language is strictly typed, declaration free, procedural, and
+inspired by dtrace and awk. Source code points or events in the kernel are
+associated with handlers, which are subroutines that are executed synchronously.
+These probes are conceptually similar to \char`\"{}breakpoint command lists\char`\"{}
+in the GDB debugger.
+
+There are two main outermost constructs: probes and functions. Within these,
+statements and expressions use C-like operator syntax and precedence.
+
+\subsection{Sample SystemTap scripts}
+\index{example scripts}
+Following are some example scripts that illustrate the basic operation of
+SystemTap. For more examples, see the examples/small\_demos/ directory in
+the source directory, the SystemTap wiki at \url{http://sourceware.org/systemtap/wiki/HomePage},
+or the SystemTap War Stories at \url{http://sourceware.org/systemtap/wiki/WarStories} page.
+
+\subsubsection{Basic SystemTap syntax and control structures}
+
+The following code examples demonstrate SystemTap syntax and control structures.
+
+\begin{vindent}
+\begin{verbatim}
+global odds, evens
+
+probe begin {
+    # "no" and "ne" are local integers
+    for (i = 0; i < 10; i++) {
+        if (i % 2) odds [no++] = i
+            else evens [ne++] = i
+    }
+
+    delete odds[2]
+    delete evens[3]
+    exit()
+}
+
+probe end {
+    foreach (x+ in odds)
+        printf ("odds[%d] = %d", x, odds[x])
+
+    foreach (x in evens-)
+        printf ("evens[%d] = %d", x, evens[x])
+}
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+odds[0] = 1
+odds[1] = 3
+odds[3] = 7
+odds[4] = 9
+evens[4] = 8
+evens[2] = 4
+evens[1] = 2
+evens[0] = 0
+\end{verbatim}
+\end{vindent}
+Note that all variable types are inferred, and that all locals and
+globals are initialized.  Integers are set to 0 and strings are set to
+the empty string.
+
+\subsubsection{Primes between 0 and 49}
+
+\begin{vindent}
+\begin{verbatim}
+function isprime (x) {
+    if (x < 2) return 0
+    for (i = 2; i < x; i++) {
+        if (x % i == 0) return 0
+        if (i * i > x) break
+    }
+    return 1
+}
+
+probe begin {
+    for (i = 0; i < 50; i++)
+        if (isprime (i)) printf("%d\n", i)
+    exit()
+}
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+2
+3
+5
+7
+11
+13
+17
+19
+23
+29
+31
+37
+41
+43
+47
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Recursive functions}
+\index{recursion}
+\begin{vindent}
+\begin{verbatim}
+function fibonacci(i) {
+    if (i < 1) error ("bad number")
+    if (i == 1) return 1
+    if (i == 2) return 2
+    return fibonacci (i-1) + fibonacci (i-2)
+}
+
+probe begin {
+    printf ("11th fibonacci number: %d", fibonacci (11))
+    exit ()
+}
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+11th fibonacci number: 118
+\end{verbatim}
+\end{vindent}
+Any larger number input to the function may exceed the MAXACTION or MAXNESTING
+limits, which will be caught at run time and result in an error. For more
+about limits see Section~\ref{sub:SystemTap-safety}.
+\newpage{}
+\subsection{The stap command}
+\index{stap}
+The stap program is the front-end to the SystemTap tool. It accepts probing
+instructions written in its scripting language, translates those instructions
+into C code, compiles this C code, and loads the resulting kernel module
+into a running Linux kernel to perform the requested system trace or probe
+functions. You can supply the script in a named file, from standard input,
+or from the command line. The SystemTap script runs until one of the following
+conditions occurs:
+
+\begin{itemize}
+\item The user interrupts the script with a CTRL-C.
+\item The script executes the exit() function.
+\item The script encounters a sufficient number of soft errors.
+\item The monitored command started with the stap program's
+\texttt{\textbf{-c}} option exits.
+\end{itemize}
+
+The stap command does the following:
+
+\begin{itemize}
+\item Translates the script
+\item Generates and compiles a kernel module
+\item Inserts the module; output to stap's stdout
+\item CTRL-C unloads the module and terminates stap
+\end{itemize}
+
+For a full list of options to the stap command, see the stap(1) manual page.
+
+\subsection{Safety and security\label{sub:SystemTap-safety}}
+\index{limits}
+SystemTap is an administrative tool. It exposes kernel internal data structures
+and potentially private user information. It requires root privileges to
+actually run the kernel objects it builds using the \textbf{sudo} command,
+applied to the \textbf{staprun} program.
+
+staprun is a part of the SystemTap package, dedicated to module loading and
+unloading and kernel-to-user data transfer. Since staprun does not perform
+any additional security checks on the kernel objects it is given, do not
+give elevated privileges via sudo to untrusted users.
+
+The translator asserts certain safety constraints. \index{constraints}It
+ensures that no handler routine can run for too long, allocate memory, perform
+unsafe operations, or unintentionally interfere with the kernel. Use of script
+global variables is locked to protect against manipulation by concurrent
+probe handlers. Use of \emph{guru mode} constructs such as embedded C (see
+Section~\ref{sub:Embedded-C}) can violate these constraints, leading to
+a kernel crash or data corruption.
+
+The resource use limits are set by macros in the generated C code. These
+may be overridden with the -D flag. The following list describes a selection
+of these macros:
+
+\textbf{MAXNESTING} -- The maximum number of recursive function call levels. The default is 10.
+
+\textbf{MAXSTRINGLEN} -- The maximum length of strings. The default is 256 bytes
+for 32 bit machines and 512 bytes for all other machines.
+
+\textbf{MAXTRYLOCK} -- The maximum number of iterations to wait for locks on global variables before
+declaring possible deadlock and skipping the probe. The default is 1000.
+
+\textbf{MAXACTION} -- The maximum number of statements to execute during any single probe hit. The default is 1000.
+
+\textbf{MAXMAPENTRIES} -- The maximum number of rows in an array if the array size is not specified
+explicitly when declared. The default is 2048.
+
+\textbf{MAXERRORS} -- The maximum number of soft errors before an exit is triggered. The default is 0.
+
+\textbf{MAXSKIPPED} -- The maximum number of skipped reentrant probes before an exit is triggered. The default is 100.
+
+\textbf{MINSTACKSPACE} -- The minimum number of free kernel stack bytes required in order to run a
+probe handler. This number should be large enough for the probe handler's
+own needs, plus a safety margin.  The default is 1024.
+
+If something goes wrong with stap or staprun after a probe has started running,
+you may safely kill both user processes, and remove the active probe kernel
+module with the rmmod command. Any pending trace messages may be lost.
+
+\section{Types of SystemTap scripts\label{sec:Types-of-SystemTap}}
+
+\subsection{Probe scripts}
+
+Probe scripts are analogous to programs; these scripts identify probe points
+and associated handlers.
+
+\subsection{Tapset scripts}
+
+Tapset scripts are libraries of probe aliases and auxiliary functions.
+
+The /usr/share/systemtap/tapset directory contains tapset scripts. While
+these scripts look like regular SystemTap scripts, they cannot be run directly.
+
+\section{Components of a SystemTap script}
+
+The main construct in the scripting language identifies probes. Probes associate
+abstract events with a statement block, or probe handler, that is to be executed
+when any of those events occur.
+
+The following example shows how to trace entry and exit from a function using
+two probes.
+
+\begin{vindent}
+\begin{verbatim}
+probe kernel.function("sys_mkdir").call { log ("enter") }
+probe kernel.function("sys_mkdir").return { log ("exit") }
+\end{verbatim}
+\end{vindent}
+
+To list the probe-able functions in the kernel, use the listing option
+(\texttt{\textbf{-l}}).  For example:
+
+\begin{vindent}
+\begin{verbatim}
+$ stap -l 'kernel.function("*")' | sort
+\end{verbatim}
+\end{vindent}
+
+\subsection{Probe definitions}
+
+The general syntax is as follows.
+
+\begin{vindent}
+\begin{verbatim}
+probe PROBEPOINT [, PROBEPOINT] { [STMT ...] }
+\end{verbatim}
+\end{vindent}
+Events are specified in a special syntax called \emph{probe points}. There
+are several varieties of probe points defined by the translator, and tapset
+scripts may define others using aliases. The provided probe points are listed
+in the \tt{stapprobes(3)}, \tt{tapset::*(3stap)}, and \tt{probe::*(3stap)} man pages.
+
+The probe handler is interpreted relative to the context of each event. For
+events associated with kernel code, this context may include variables defined
+in the source code at that location. These \emph{target variables}\index{target variables}
+are presented to the script as variables whose names are prefixed with a
+dollar sign (\$). They may be accessed only if the compiler used to compile
+the kernel preserved them, despite optimization. This is the same constraint
+imposed by a debugger when working with optimized code. Other events may
+have very little context.
+
+
+\subsection{Probe aliases\label{sub:Probe-aliases}}
+\index{probe aliases}
+The general syntax is as follows.
+
+\begin{vindent}
+\begin{verbatim}
+probe <alias> = <probepoint> { <prologue_stmts> }
+probe <alias> += <probepoint> { <epilogue_stmts> }
+\end{verbatim}
+\end{vindent}
+
+New probe points may be defined using \emph{aliases}. A probe point alias
+looks similar to probe definitions, but instead of activating a probe at
+the given point, it defines a new probe point name as an alias to an existing
+one. New probe aliases may refer to one or more existing probe aliases.
+Multiple aliases may share the same underlying probe points.
+The following is an example.
+
+\begin{vindent}
+\begin{verbatim}
+probe socket.sendmsg = kernel.function ("sock_sendmsg") { ... }
+probe socket.do_write = kernel.function ("do_sock_write") { ... }
+probe socket.send = socket.sendmsg, socket.do_write { ... }
+\end{verbatim}
+\end{vindent}
+
+There are two types of aliases, the prologue style and the epilogue style
+which are identified by the equal sign (\texttt{\textbf{=}}) and \char`\"{}\texttt{\textbf{+=}}\char`\"{}
+respectively.
+
+A probe that uses a probe point alias will create an actual probe, with
+the handler of the alias \emph{pre-pended}.
+
+This pre-pending behavior serves several purposes. It allows the alias definition
+to pre-process the context of the probe before passing control to the handler
+specified by the user. This has several possible uses, demonstrated as follows.
+
+\begin{vindent}
+\begin{verbatim}
+# Skip probe unless given condition is met:
+if ($flag1 != $flag2) next
+
+# Supply values describing probes:
+name = "foo"
+
+# Extract the target variable to a plain local variable:
+var = $var
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Prologue-style aliases (=)}
+\index{prologue-style aliases}
+\index{=}
+For a prologue style alias, the statement block that follows an alias definition
+is implicitly added as a prologue to any probe that refers to the alias.
+The following is an example.
+
+\begin{vindent}
+\begin{verbatim}
+# Defines a new probe point syscall.read, which expands to
+# kernel.function("sys_read"), with the given statement as
+# a prologue.
+#
+probe syscall.read = kernel.function("sys_read") {
+    fildes = $fd
+}
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Epilogue-style aliases (+=)}
+\index{epilogue-style aliases}
+\index{+=}
+The statement block that follows an alias definition is implicitly added
+as an epilogue to any probe that refers to the alias.  It is not useful
+to define new variable there (since no subsequent code will see it), but
+rather the code can take action based upon variables set by the
+prologue or by the user code.  The following is an example:
+
+\begin{vindent}
+\begin{verbatim}
+# Defines a new probe point with the given statement as an
+# epilogue.
+#
+probe syscall.read += kernel.function("sys_read") {
+    if (traceme) println ("tracing me")
+}
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Probe alias usage}
+
+A probe alias is used the same way as any built-in probe type, by
+naming it:
+
+\begin{vindent}
+\begin{verbatim}
+probe syscall.read {
+    printf("reading fd=%d\n", fildes)
+}
+\end{verbatim}
+\end{vindent}
+
+\subsection{Variables\label{sub:Variables}}
+\index{variables}
+Identifiers for variables and functions are alphanumeric sequences, and may
+include the underscore (\_) and the dollar sign (\$) characters. They may
+not start with a plain digit. Each variable is by default local to the probe
+or function statement block where it is mentioned, and therefore its scope
+and lifetime is limited to a particular probe or function invocation. Scalar
+variables are implicitly typed as either string or integer. Associative arrays
+also have a string or integer value, and a tuple of strings or integers serves
+as a key. Arrays must be declared as global. Local arrays\index{local arrays}
+are not allowed.
+
+The translator performs \emph{type inference} on all identifiers, including
+array indexes and function parameters. Inconsistent type-related use of identifiers
+results in an error.
+
+Variables may be declared global. Global variables are shared among all probes
+and remain instantiated as long as the SystemTap session. There is one namespace
+for all global variables, regardless of the script file in which they are
+found. Because of possible concurrency limits, such as multiple probe handlers,
+each global variable used by a probe is automatically read- or write-locked
+while the handler is running. A global declaration may be written at the
+outermost level anywhere in a script file, not just within a block of code.
+Global variables which are written but never read will be displayed
+automatically at session shutdown.  The following declaration marks
+\texttt{var1} and \texttt{var2} as global.
+The translator will infer a value type for each, and if the variable is used
+as an array, its key types.
+
+\begin{vindent}
+\begin{verbatim}
+global var1[=<value>], var2[=<value>]
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Unused variables}
+\index{unused variables}
+
+The SystemTap translator removes unused variables. Global variable
+that are never written or read are discarded.  Every local variables
+where the variable is only written but never read are also
+discarded. This optimization prunes unused variables defined
+in the probe aliases, but never used in the probe handler.
+If desired, this optimization can disabled with the \texttt{-u} option.
+
+\subsection{Auxiliary functions\label{sub:Auxiliary-functions}}
+\index{auxiliary functions}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+function <name>[:<type>] ( <arg1>[:<type>], ... ) { <stmts> }
+\end{verbatim}
+\end{vindent}
+SystemTap scripts may define subroutines to factor out common work. Functions
+may take any number of scalar arguments, and must return a single scalar
+value. Scalars in this context are integers or strings. For more information
+on scalars, see Section~\ref{sub:Variables} and Section~\ref{sub:Data-types}\texttt{.}
+The following is an example function declaration.
+
+\begin{vindent}
+\begin{verbatim}
+function thisfn (arg1, arg2) {
+    return arg1 + arg2
+}
+\end{verbatim}
+\end{vindent}
+
+Note the general absence of type declarations, which are inferred by the
+translator. If desired, a function definition may include explicit type declarations
+for its return value, its arguments, or both. This is helpful for embedded-C
+functions. In the following example, the type inference engine need only
+infer the type of arg2, a string.
+
+\begin{vindent}
+\begin{verbatim}
+function thatfn:string(arg1:long, arg2) {
+    return sprintf("%d%s", arg1, arg2)
+}
+\end{verbatim}
+\end{vindent}
+
+Functions may call others or themselves recursively, up to a fixed nesting
+limit. See Section~\ref{sub:SystemTap-safety}.
+
+
+\subsection{Embedded C\label{sub:Embedded-C}}
+\index{embedded C}
+SystemTap supports a \emph{guru\index{guru mode} mode} where script safety
+features such as code and data memory reference protection are removed. Guru
+mode is set by passing the \textbf{-g} option to the stap command. When in guru
+mode, the translator accepts C code enclosed between {}``\%\{''
+and {}``\%\}'' markers in the script file. The embedded C code is transcribed
+verbatim, without analysis, in sequence, into generated C code. At the outermost
+level of a script, guru mode may be useful to add \#include instructions,
+or any auxiliary definitions for use by other embedded code.
+
+
+\subsection{Embedded C functions}
+
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+function <name>:<type> ( <arg1>:<type>, ... ) %{ <C_stmts> %}
+\end{verbatim}
+\end{vindent}
+Embedded C code is permitted in a function body.
+In that case, the script language
+body is replaced entirely by a piece of C code enclosed between 
+{}``\%\{'' and {}``\%\}'' markers.
+The enclosed code may do anything reasonable and safe as allowed
+by the parser.
+
+There are a number of undocumented but complex safety constraints on concurrency,
+resource consumption and runtime limits that are applied to code written
+in the SystemTap language. These constraints are not applied to embedded
+C code, so use embedded C code with extreme caution. Be especially
+careful when dereferencing pointers. Use the kread() macro to dereference
+any pointers that could potentially be invalid or dangerous. If you are unsure,
+err on the side of caution and use kread(). The kread() macro is one of the
+safety mechanisms used in code generated by embedded C. It protects against
+pointer accesses that could crash the system.
+
+For example, to access the pointer chain \texttt{name = skb->dev->name} in
+embedded C, use the following code.
+
+\begin{vindent}
+\begin{verbatim}
+struct net_device *dev;
+char *name;
+dev = kread(&(skb->dev));
+name = kread(&(dev->name));
+\end{verbatim}
+\end{vindent}
+
+The memory locations reserved for input and output values are provided to
+a function using a macro named \texttt{THIS}\index{THIS}. The following
+are examples.
+
+\begin{vindent}
+\begin{verbatim}
+function add_one (val:long) %{
+    THIS->__retvalue = THIS->val + 1;
+%}
+function add_one_str:string (val:string) %{
+    strlcpy (THIS->__retvalue, THIS->val, MAXSTRINGLEN);
+    strlcat (THIS->__retvalue, "one", MAXSTRINGLEN);
+%}
+\end{verbatim}
+\end{vindent}
+
+The function argument and return value types should be stated;
+the translator does not analyze the embedded C code within the function.
+You should examine
+C code generated for ordinary script language functions to write compatible
+embedded-C. Note that all SystemTap functions and probes run with interrupts
+disabled, thus you cannot call functions that might sleep within the embedded
+C.
+
+\section{Probe points\label{sec:Probe-Points}}
+\index{probe points}
+\subsection{General syntax}
+\index{probe syntax}
+The general probe point syntax is a dotted-symbol sequence. This divides
+the event namespace into parts, analogous to the style of the Domain Name
+System. Each component identifier is parameterized by a string or number
+literal, with a syntax analogous to a function call.
+
+The following are all syntactically valid probe points.
+
+\begin{vindent}
+\begin{verbatim}
+kernel.function("foo")
+kernel.function("foo").return
+module{"ext3"}.function("ext3_*")
+kernel.function("no_such_function") ?
+syscall.*
+end
+timer.ms(5000)
+\end{verbatim}
+\end{vindent}
+
+Probes may be broadly classified into \emph{synchronous}\index{synchronous}
+or \emph{asynchronous}.\index{asynchronous} A synchronous event occurs when
+any processor executes an instruction matched by the specification. This
+gives these probes a reference point (instruction address) from which more
+contextual data may be available. Other families of probe points refer to
+asynchronous events such as timers, where no fixed reference point is related.
+Each probe point specification may match multiple locations, such as by using
+wildcards or aliases, and all are probed. A probe declaration may contain
+several specifications separated by commas, which are all probed.
+
+\subsubsection{Prefixes}
+\index{prefixes}
+Prefixes specify the probe target, such as \textbf{kernel}, \textbf{module},
+\textbf{timer}, and so on.
+
+\subsubsection{Suffixes}
+\index{suffixes}
+Suffixes further qualify the point to probe, such as \textbf{.return} for the
+exit point of a probed function. The absence of a suffix implies the function
+entry point.
+
+\subsubsection{Wildcarded file names, function names}
+\index{wildcards}
+A component may include an asterisk ({*}) character, which expands to other
+matching probe points. An example follows.
+
+\begin{vindent}
+\begin{verbatim}
+kernel.syscall.*
+kernel.function("sys_*)
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Optional probe points\label{sub:Optional-probe-points}}
+\index{?}
+A probe point may be followed by a question mark (?) character, to indicate
+that it is optional, and that no error should result if it fails to expand.
+This effect passes down through all levels of alias or wildcard expansion.
+
+The following is the general syntax.
+
+\begin{vindent}
+\begin{verbatim}
+kernel.function("no_such_function") ?
+\end{verbatim}
+\end{vindent}
+
+\subsection{Built-in probe point types (DWARF probes)}
+\index{built-in probes}
+\index{dwarf probes}
+\label{dwarfprobes}
+This family of probe points uses symbolic debugging information for the target
+kernel or module, as may be found in executables that have not
+been stripped, or in the separate \textbf{debuginfo} packages. They allow
+logical placement of probes into the execution path of the target
+by specifying a set of points in the source or object code. When a matching
+statement executes on any processor, the probe handler is run in that context.
+
+Points in a kernel are identified by module, source file, line number, function
+name or some combination of these.
+
+Here is a list of probe point specifications currently supported:
+
+\begin{vindent}
+\begin{verbatim}
+kernel.function(PATTERN)
+kernel.function(PATTERN).call
+kernel.function(PATTERN).return
+kernel.function(PATTERN).return.maxactive(VALUE)
+kernel.function(PATTERN).inline
+kernel.function(PATTERN).label(LPATTERN)
+module(MPATTERN).function(PATTERN)
+module(MPATTERN).function(PATTERN).call
+module(MPATTERN).function(PATTERN).return.maxactive(VALUE)
+module(MPATTERN).function(PATTERN).inline
+kernel.statement(PATTERN)
+kernel.statement(ADDRESS).absolute
+module(MPATTERN).statement(PATTERN)
+\end{verbatim}
+\end{vindent}
+
+The \textbf{.function} variant places a probe near the beginning of the named
+function, so that parameters are available as context variables.
+
+The \textbf{.return} variant places a probe at the moment of return from the named
+function, so the return value is available as the \$return context variable.
+The entry parameters are also available, though the function may have changed
+their values.  Return probes may be further qualified with \textbf{.maxactive},
+which specifies how many instances of the specified function can be probed simultaneously.
+You can leave off \textbf{.maxactive} in most cases, as the default
+(\textbf{KRETACTIVE}) should be sufficient.
+However, if you notice an excessive number of skipped probes, try setting \textbf{.maxactive}
+to incrementally higher values to see if the number of skipped probes decreases.
+
+The \textbf{.inline} modifier for \textbf{.function} filters the results to include only
+instances of inlined functions. The \textbf{.call} modifier selects the opposite subset.
+Inline functions do not have an identifiable return point, so \textbf{.return}
+is not supported on \textbf{.inline} probes.
+
+The \textbf{.statement} variant places a probe at the exact spot, exposing those local
+variables that are visible there.
+
+In the above probe descriptions, MPATTERN stands for a string literal
+that identifies the loaded kernel module of interest and LPATTERN
+stands for a source program label. Both MPATTERN and LPATTERN may
+include asterisk ({*}), square brackets \char`\"{}{[}]\char`\"{}, and
+question mark (?) wildcards.
+
+PATTERN stands for a string literal that identifies a point in the program.
+It is composed of three parts:
+
+\begin{enumerate}
+\item The first part is the name of a function, as would appear in the nm program's
+output. This part may use the asterisk and question mark wildcard operators
+to match multiple names.
+\item The second part is optional, and begins with the ampersand (@) character.
+It is followed by the path to the source file containing the function,
+which may include a wildcard pattern, such as mm/slab{*}.
+In most cases, the path should be relative to the top of the
+linux source directory, although an absolute path may be necessary for some kernels.
+If a relative pathname doesn't work, try absolute.
+\item The third part is optional if the file name part was given. It identifies
+the line number in the source file, preceded by a ``:'' or ``+''.
+The line number is assumed to be an
+absolute line number if preceded by a ``:'', or relative to the entry of
+the function if preceded by a ``+''.
+All the lines in the function can be matched with ``:*''.
+A range of lines x through y can be matched with ``:x-y''.
+
+\end{enumerate}
+Alternately, specify PATTERN as a numeric constant to indicate a relative
+module address or an absolute kernel address.
+
+Some of the source-level variables, such as function parameters, locals,
+or globals visible in the compilation unit, are visible to probe handlers.
+Refer to these variables by prefixing their name with a dollar sign within
+the scripts. In addition, a special syntax allows limited traversal of structures,
+pointers, and arrays.
+
+\texttt{\$var} refers to an in-scope variable var. If it is a type similar
+to an integer, it will be cast to a 64-bit integer for script use. Pointers
+similar to a string (char {*}) are copied to SystemTap string values by the
+\texttt{kernel\_string()} or \texttt{user\_string()} functions.
+
+\texttt{\$var->field} traverses a structure's field. The indirection operator
+may be repeated to follow additional levels of pointers.
+
+\texttt{\$var{[}N]} indexes into an array. The index is given with a literal
+number.
+
+\texttt{\$\$vars} expands to a character string that is equivalent to
+\texttt{sprintf("parm1=\%x ... parmN=\%x var1=\%x ... varN=\%x", \$parm1, ..., \$parmN,
+\$var1, ..., \$varN)}
+
+\texttt{\$\$locals} expands to a character string that is equivalent to
+\texttt{sprintf("var1=\%x ... varN=\%x", \$var1, ..., \$varN)}
+
+\texttt{\$\$parms} expands to a character string that is equivalent to
+\texttt{sprintf("parm1=\%x ... parmN=\%x", \$parm1, ..., \$parmN)}
+
+
+\subsubsection{kernel.function, module().function}
+\index{kernel.function}
+\index{module().function}
+The \textbf{.function} variant places a probe near the beginning of the named function,
+so that parameters are available as context variables.
+
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+kernel.function("func[@file]"
+module("modname").function("func[@file]"
+\end{verbatim}
+\end{vindent}
+Examples:
+
+\begin{vindent}
+\begin{verbatim}
+# Refers to all kernel functions with "init" or "exit"
+# in the name:
+kernel.function("*init*"), kernel.function("*exit*")
+
+# Refers to any functions within the "kernel/sched.c"
+# file that span line 240:
+kernel.function("*@kernel/sched.c:240")
+
+# Refers to all functions in the ext3 module:
+module("ext3").function("*")
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{kernel.statement, module().statement}
+\index{kernel.statement}
+\index{module().statement}
+The \textbf{.statement} variant places a probe at the exact spot, exposing those local
+variables that are visible there.
+
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+kernel.statement("func@file:linenumber")
+module("modname").statement("func@file:linenumber")
+\end{verbatim}
+\end{vindent}
+Example:
+
+\begin{vindent}
+\begin{verbatim}
+# Refers to the statement at line 2917 within the
+# kernel/sched.c file:
+kernel.statement("*@kernel/sched.c:2917")
+# Refers to the statement at line bio_init+3 within the fs/bio.c file:
+kernel.statement("bio_init@fs/bio.c+3")
+\end{verbatim}
+\end{vindent}
+
+
+\subsection{Function return probes}
+\index{return probes}
+The \texttt{.return} variant places a probe at the moment of return from
+the named function, so that the return value is available as the \$return
+context variable. The entry parameters are also accessible in the context
+of the return probe, though their values may have been changed by the function.
+Inline functions do not have an identifiable return point, so \texttt{.return}
+is not supported on \texttt{.inline} probes.
+
+\subsection{DWARF-less probing}
+\index{DWARF-less probing}
+
+In the absence of debugging information, you can still use the
+\emph{kprobe} family of probes to examine the entry and exit points of
+kernel and module functions. You cannot look up the arguments or local
+variables of a function using these probes. However, you can access
+the parameters by following this procedure:
+
+When you're stopped at the entry to a function, you can refer to the
+function's arguments by number. For example, when probing the function
+declared:
+
+\begin{vindent}
+\begin{verbatim}
+asmlinkage ssize_t sys_read(unsigned int fd, char __user * buf, size_t
+count)
+\end{verbatim}
+\end{vindent}
+
+You can obtain the values of \texttt{fd}, \texttt{buf}, and
+\texttt{count}, respectively, as \texttt{uint\_arg(1)},
+\texttt{pointer\_arg(2)}, and \texttt{ulong\_arg(3)}. In this case, your
+probe code must first call \texttt{asmlinkage()}, because on some
+architectures the asmlinkage attribute affects how the function's
+arguments are passed.
+
+When you're in a return probe, \texttt{\$return} isn't supported
+without DWARF, but you can call \texttt{returnval()} to get the value
+of the register in which the function value is typically returned, or
+call \texttt{returnstr()} to get a string version of that value.
+
+And at any code probepoint, you can call
+\texttt{{register("regname")}} to get the value of the specified CPU
+register when the probe point was hit.
+\texttt{u\_register("regname")} is like \texttt{register("regname")},
+but interprets the value as an unsigned integer.
+
+SystemTap supports the following constructs:
+\begin{vindent}
+\begin{verbatim}
+kprobe.function(FUNCTION)
+kprobe.function(FUNCTION).return
+kprobe.module(NAME).function(FUNCTION)
+kprobe.module(NAME).function(FUNCTION).return
+kprobe.statement(ADDRESS).absolute
+\end{verbatim}
+\end{vindent}
+
+Use \textbf{.function} probes for kernel functions and
+\textbf{.module} probes for probing functions of a specified module.
+If you do not know the absolute address of a kernel or module
+function, use \textbf{.statement} probes. Do not use wildcards in
+\textit{FUNCTION} and \textit{MODULE} names. Wildcards cause the probe
+to not register. Also, statement probes are available only in guru mode.
+
+
+\subsection{Userspace probing}
+\index{userspace probing}
+\index{process}
+Support for userspace probing is supported on kernels that are
+configured to include the utrace extensions.  Red Hat and CentOS
+distributions provide kernels with utrace support enabled.  For more
+information about utrace, see
+\url{http://people.redhat.com/roland/utrace/}.
+
+\subsubsection{Begin/end variants}
+\label{sec:beginendvariants}
+Constructs:
+\begin{vindent}
+\begin{verbatim}
+process.begin
+process("PATH").begin
+process(PID).begin
+
+process.thread.begin
+process("PATH").thread.begin
+process(PID).thread.begin
+
+process.end
+process("PATH").end
+process(PID).end
+
+process.thread.end
+process("PATH").thread.end
+process(PID).thread.end
+\end{verbatim}
+\end{vindent}
+
+The \texttt{.begin} variant is called when a new process described by
+\texttt{PID} or \texttt{PATH} is created. If no \texttt{PID} or
+\texttt{PATH} argument is specified (for example
+\texttt{process.begin}), the probe flags any new process being
+spawned.
+
+The \texttt{.thread.begin} variant is called when a new thread
+described by \texttt{PID} or \texttt{PATH} is created.
+
+The \texttt{.end} variant is called when a process described by
+\texttt{PID} or \texttt{PATH} dies.
+
+The \texttt{.thread.end} variant is called when a thread described by
+\texttt{PID} or \texttt{PATH} dies.
+
+\subsubsection{Syscall variants}
+\label{sec:syscallvariants}
+Constructs:
+\begin{vindent}
+\begin{verbatim}
+process.syscall
+process("PATH").syscall
+process(PID).syscall
+
+process.syscall.return
+process("PATH").syscall.return
+process(PID).syscall.return
+\end{verbatim}
+\end{vindent}
+
+The \texttt{.syscall} variant is called when a thread described by
+\texttt{PID} or \texttt{PATH} makes a system call.  The system call
+number is available in the \texttt{\$syscall} context variable.  The
+first six arguments of the system call are available in the
+\texttt{\$argN} parameter, for example \texttt{\$arg1},
+\texttt{\$arg2}, and so on.
+
+The \texttt{.syscall.return} variant is called when a thread described
+by \texttt{PID} or \texttt{PATH} returns from a system call.  The
+system call number is available in the \texttt{\$syscall} context
+variable.  The return value of the system call is available in the
+\texttt{\$return} context variable.
+
+
+\subsubsection{Function/statement variants}
+\label{sec:function-statement}
+Constructs:
+\begin{vindent}
+\begin{verbatim}
+process("PATH").function("NAME")
+process("PATH").statement("*@FILE.c:123")
+process("PATH").function("*").return
+process("PATH").function("myfun").label("foo")
+\end{verbatim}
+\end{vindent}
+
+Full symbolic source-level probes in userspace programs and shared
+libraries are supported.  These are exactly analogous to the symbolic
+DWARF-based kernel or module probes described previously and expose
+similar contextual \texttt{\$-variables}. See
+Section~\ref{dwarfprobes} for more information
+
+Here is an example of prototype symbolic userspace probing support:
+\begin{vindent}
+\begin{verbatim}
+# stap -e 'probe process("ls").function("*").call {
+           log (probefunc()." ".$$parms)
+           }' \
+       -c 'ls -l'
+\end{verbatim}
+\end{vindent}
+
+To run, this script requires debugging information for the named
+program and utrace support in the kernel. If you see a "pass 4a-time"
+build failure, check that your kernel supports utrace.
+
+\subsubsection{Absolute variant}
+\label{sec:absolutevariant}
+A non-symbolic probe point such as
+\texttt{process(PID).statement(ADDRESS).absolute} is analogous to
+\newline\texttt{kernel.statement(ADDRESS).absolute} in that both use
+raw, unverified virtual addresses and provide no \texttt{\$variables}.
+The target \texttt{PID} parameter must identify a running process and
+\texttt{ADDRESS} must identify a valid instruction address.  All
+threads of the listed process will be probed.  This is a guru mode
+probe.
+
+\subsubsection{Process probe paths}
+\label{sec:paths}
+For all process probes, \texttt{PATH} names refer to executables that
+are searched the same way that shells do: the explicit path specified
+if the path name begins with a slash (/) character sequence; otherwise
+\texttt{\$PATH} is searched.  For example, the following probe syntax:
+\begin{vindent}
+\begin{verbatim}
+probe process("ls").syscall {}
+probe process("./a.out").syscall {}
+\end{verbatim}
+\end{vindent}
+
+works the same as:
+\begin{vindent}
+\begin{verbatim}
+probe process("/bin/ls").syscall {}
+probe process("/my/directory/a.out").syscall {}
+\end{verbatim}
+\end{vindent}
+
+If a process probe is specified without a \texttt{PID} or
+\texttt{PATH} parameter, all user threads are probed. However, if
+systemtap is invoked in target process mode, process probes are
+restricted to the process hierarchy associated with the target
+process. If stap is running in \texttt{--unprivileged} mode, only
+processes owned by the current user are selected.
+
+\subsubsection{Target process mode}
+\label{sec:targetprocessmode}
+Target process mode (invoked with \texttt{stap -c CMD} or \texttt{-x
+  PID}) implicitly restricts all \texttt{process.*} probes to the
+given child process.  It does not affect \texttt{kernel.*} or other
+probe types.  The \texttt{CMD} string is normally run directly, rather
+than from a ``\texttt{/bin/sh -c}'' sub-shell, since utrace and uprobe
+probes receive a fairly "clean" event stream.  If meta-characters such
+as redirection operators are present in \texttt{CMD}, ``\texttt{/bin/sh
+  -c CMD}'' is still used, and utrace and uprobe probes will receive
+events from the shell. For example:
+\begin{vindent}
+\begin{verbatim}
+% stap -e 'probe process.syscall, process.end {
+           printf("%s %d %s\n", execname(), pid(), pp())}' \
+       -c ls
+\end{verbatim}
+\end{vindent}
+
+Here is the output from this command:
+\begin{vindent}
+\begin{verbatim}
+ls 2323 process.syscall
+ls 2323 process.syscall
+ls 2323 process.end
+\end{verbatim}
+\end{vindent}
+
+If \texttt{PATH} names a shared library, all processes that map that
+shared library can be probed.  If dwarf debugging information is
+installed, try using a command with this syntax:
+\begin{vindent}
+\begin{verbatim}
+probe process("/lib64/libc-2.8.so").function("....") { ... }
+\end{verbatim}
+\end{vindent}
+This command probes all threads that call into that library.  Typing
+``\texttt{stap -c CMD}'' or ``\texttt{stap -x PID}'' restricts this to
+the target command and descendants only.  You can use
+\texttt{\$\$vars} and others. You can provide the location of debug
+information to the stap command with the \texttt{-d DIRECTORY} option.
+
+\subsubsection{Instruction probes}
+\label{sec:insnprobes}
+Constructs:
+\begin{vindent}
+\begin{verbatim}
+process("PATH").insn
+process(PID).insn
+
+process("PATH").insn.block
+process(PID).insn.block
+\end{verbatim}
+\end{vindent}
+The \texttt{process().insn} and \texttt{process().insn.block} probes
+inspect the process after each instruction or block of instructions is
+executed. These probes are not implemented on all architectures. If
+they are not implemented on your system, you will receive an error
+message when the script starts.
+
+The \texttt{.insn} probe is called for every single-stepped
+instruction of the process described by \texttt{PID} or \texttt{PATH}.
+
+The \texttt{.insn.block} probe is called for every block-stepped
+instruction of the process described by \texttt{PID} or \texttt{PATH}.
+
+To count the total number of instructions that a process executes,
+type a command similar to:
+\begin{vindent}
+\begin{verbatim}
+$ stap -e 'global steps; probe process("/bin/ls").insn {steps++}
+           probe end {printf("Total instructions: %d\n", steps);}' \
+       -c /bin/ls
+\end{verbatim}
+\end{vindent}
+
+Using this feature will significantly slow process execution.
+
+\subsubsection{Static userspace probing}
+\label{sec:staticuserspace}
+You can probe symbolic static instrumentation compiled into programs
+and shared libraries with the following syntax:
+\begin{vindent}
+\begin{verbatim}
+process("PATH").mark("LABEL")
+\end{verbatim}
+\end{vindent}
+
+The \texttt{.mark} variant is called from a static probe defined in
+the application by
+\texttt{STAP\_PROBE1(handle,LABEL,arg1)}. \texttt{STAP\_PROBE1} is
+defined in the sdt.h file.  The parameters are:
+
+
+\begin{tabular}{|l|r|c|}
+  Parameter & Definition \\ \hline
+  \texttt{handle} & the application handle \\ \hline
+  \texttt{LABEL} & corresponds to the \texttt{.mark} argument \\ \hline
+  \texttt{arg1} & the argument \\ \hline
+\end{tabular}
+
+
+Use \texttt{STAP\_PROBE1} for probes with one argument.  Use
+\texttt{STAP\_PROBE2} for probes with 2 arguments, and so on.  The
+arguments of the probe are available in the context variables
+\texttt{\$arg1}, \texttt{\$arg2}, and so on.
+
+As an alternative to the \texttt{STAP\_PROBE} macros, you can use the
+dtrace script to create custom macros. The sdt.h file also provides
+dtrace compatible markers through \texttt{DTRACE\_PROBE} and an
+associated python \texttt{dtrace} script.  You can use these in builds
+based on dtrace that need dtrace -h or -G functionality.
+
+\subsection{PROCFS probes}
+\index{PROCFS probes}
+These probe points allow procfs pseudo-files in
+\texttt{/proc/systemtap/\textit{MODNAME}} to be created, read and
+written.  Specify the name of the systemtap module as
+\texttt{\textit{MODNAME}}.  There are four probe point variants
+supported by the translator:
+\begin{vindent}
+\begin{verbatim}
+procfs("PATH").read
+procfs("PATH").write
+procfs.read
+procfs.write
+\end{verbatim}
+\end{vindent}
+
+\texttt{PATH} is the file name to be created, relative to
+\texttt{/proc/systemtap/MODNAME}.  If no \texttt{PATH} is specified
+(as in the last two variants in the previous list), \texttt{PATH}
+defaults to "command".
+
+When a user reads \texttt{/proc/systemtap/MODNAME/PATH}, the
+corresponding procfs read probe is triggered.  Assign the string data
+to be read to a variable named \texttt{\$value}, as follows:
+\begin{vindent}
+\begin{verbatim}
+procfs("PATH").read { $value = "100\n" }
+\end{verbatim}
+\end{vindent}
+
+When a user writes into \texttt{/proc/systemtap/MODNAME/PATH}, the
+corresponding procfs write probe is triggered.  The data the user
+wrote is available in the string variable named \texttt{\$value}, as
+follows:
+\begin{vindent}
+\begin{verbatim}
+procfs("PATH").write { printf("User wrote: %s", $value) }
+\end{verbatim}
+\end{vindent}
+
+
+\subsection{Marker probes}
+\index{marker probes}
+This family of probe points connects to static probe markers inserted
+into the kernel or a module. These markers are special macro calls in
+the kernel that make probing faster and more reliable than with
+DWARF-based probes.  DWARF debugging information is not required to
+use probe markers.
+
+Marker probe points begin with a \texttt{kernel} prefix which
+identifies the source of the symbol table used for finding
+markers. The suffix names the marker itself:
+\texttt{mark.("MARK")}. The marker name string, which can contain
+wildcard characters, is matched against the names given to the marker
+macros when the kernel or module is compiled.  Optionally, you can
+specify \texttt{format("FORMAT")}.  Specifying the marker format
+string allows differentiation between two markers with the same name
+but different marker format strings.
+
+The handler associated with a marker probe reads any optional
+parameters specified at the macro call site named \texttt{\$arg1}
+through \texttt{\$argNN}, where \texttt{NN} is the number of
+parameters supplied by the macro. Number and string parameters are
+passed in a type-safe manner.
+
+The marker format string associated with a marker is available in
+\texttt{\$format}. The marker name string is available in
+\texttt{\$name}.
+
+Here are the marker probe constructs:
+\begin{vindent}
+\begin{verbatim}
+kernel.mark("MARK")
+kernel.mark("MARK").format("FORMAT")
+\end{verbatim}
+\end{vindent}
+
+For more information about marker probes, see
+\url{http://sourceware.org/systemtap/wiki/UsingMarkers}.
+
+
+\subsection{Tracepoints}
+\label{sec:tracepoints}
+\index{tracepoints}
+
+This family of probe points hooks to static probing tracepoints
+inserted into the kernel or kernel modules.  As with marker probes,
+these tracepoints are special macro calls inserted by kernel
+developers to make probing faster and more reliable than with
+DWARF-based probes.  DWARF debugging information is not required to
+probe tracepoints.  Tracepoints have more strongly-typed parameters
+than marker probes.
+
+Tracepoint probes begin with \texttt{kernel}.  The next part names the
+tracepoint itself: \texttt{trace("name")}.  The tracepoint
+\texttt{name} string, which can contain wildcard characters, is
+matched against the names defined by the kernel developers in the
+tracepoint header files.
+
+The handler associated with a tracepoint-based probe can read the
+optional parameters specified at the macro call site.  These
+parameters are named according to the declaration by the tracepoint
+author.  For example, the tracepoint probe
+\texttt{kernel.trace("sched\_switch")} provides the parameters
+\texttt{\$rq}, \texttt{\$prev}, and \texttt{\$next}.  If the parameter
+is a complex type such as a struct pointer, then a script can access
+fields with the same syntax as DWARF \texttt{\$target} variables.
+Tracepoint parameters cannot be modified; however, in guru mode a
+script can modify fields of parameters.
+
+The name of the tracepoint is available in \texttt{\$\$name}, and a
+string of \texttt{name=value} pairs for all parameters of the
+tracepoint is available in \texttt{\$\$vars} or \texttt{\$\$parms}.
+
+
+\subsection{Syscall probes}
+\label{sec:syscall}
+\index{syscall probes}
+The \texttt{syscall.*}  aliases define several hundred probes.  They
+use the following syntax:
+\begin{vindent}
+\begin{verbatim}
+syscall.NAME
+syscall.NAME.return
+\end{verbatim}
+\end{vindent}
+
+Generally, two probes are defined for each normal system call as
+listed in the syscalls(2) manual page: one for entry and one for
+return.   System calls that never return do not have a
+corresponding \texttt{.return} probe.
+
+Each probe alias defines a variety of variables. Look at the tapset
+source code to find the most reliable source of variable definitions.
+Generally, each variable listed in the standard manual page is
+available as a script-level variable. For example,
+\texttt{syscall.open} exposes file name, flags, and mode.  In addition,
+a standard suite of variables is available at most aliases, as follows:
+
+\begin{itemize}
+\item \texttt{argstr}: A pretty-printed form of the entire argument
+  list, without parentheses.
+\item \texttt{name}: The name of the system call.
+\item \texttt{retstr}: For return probes, a pretty-printed form of the
+  system call result.
+\end{itemize}
+
+Not all probe aliases obey all of these general guidelines.  Please
+report exceptions that you encounter as a bug.
+
+
+\subsection{Timer probes}
+\index{timer probes}
+You can use intervals defined by the standard kernel jiffies\index{jiffies}
+timer to trigger probe handlers asynchronously. A \emph{jiffy} is a kernel-defined
+unit of time typically between 1 and 60 msec. Two probe point variants are
+supported by the translator:
+
+\begin{vindent}
+\begin{verbatim}
+timer.jiffies(N)
+timer.jiffies(N).randomize(M)
+\end{verbatim}
+\end{vindent}
+The probe handler runs every N jiffies. If the \texttt{randomize}\index{randomize}
+component is given, a linearly distributed random value in the range {[}-M
+\ldots{} +M] is added to N every time the handler executes. N is restricted
+to a reasonable range (1 to approximately 1,000,000), and M is restricted
+to be less than N. There are no target variables provided in either context.
+Probes can be run concurrently on multiple processors.
+
+Intervals may be specified in units of time. There are two probe point variants
+similar to the jiffies timer:
+
+\begin{vindent}
+\begin{verbatim}
+timer.ms(N)
+timer.ms(N).randomize(M)
+\end{verbatim}
+\end{vindent}
+Here, N and M are specified in milliseconds\index{milliseconds}, but the
+full options for units are seconds (s or sec), milliseconds (ms or msec),
+microseconds (us or usec), nanoseconds (ns or nsec), and hertz (hz). Randomization
+is not supported for hertz timers.
+
+The resolution of the timers depends on the target kernel. For kernels prior
+to 2.6.17, timers are limited to jiffies resolution, so intervals are rounded
+up to the nearest jiffies interval. After 2.6.17, the implementation uses
+hrtimers for greater precision, though the resulting resolution will be dependent
+upon architecture. In either case, if the randomize component is given, then
+the random value will be added to the interval before any rounding occurs.
+
+Profiling timers are available to provide probes that execute on all CPUs
+at each system tick. This probe takes no parameters, as follows.
+
+\begin{vindent}
+\begin{verbatim}
+timer.profile
+\end{verbatim}
+\end{vindent}
+Full context information of the interrupted process is available, making
+this probe suitable for implementing a time-based sampling profiler.
+
+The following is an example of timer usage.
+
+\begin{vindent}
+\begin{verbatim}
+# Refers to a periodic interrupt, every 1000 jiffies:
+timer.jiffies(1000)
+
+# Fires every 5 seconds:
+timer.sec(5)
+
+# Refers to a periodic interrupt, every 1000 +/- 200 jiffies:
+timer.jiffies(1000).randomize(200)
+\end{verbatim}
+\end{vindent}
+
+\subsection{Special probe points}
+
+The probe points \texttt{begin} and \texttt{end} are defined by the translator
+to refer to the time of session startup and shutdown. There are no target
+variables available in either context.
+
+
+\subsubsection{begin}
+\index{begin}
+The \texttt{begin} probe is the start of the SystemTap session.
+All \texttt{begin}
+probe handlers are run during the startup of the session.
+
+
+\subsubsection{end}
+\index{end}
+The \texttt{end} probe is the end of the SystemTap session. All \texttt{end}
+probes are run during the normal shutdown of a session, such as in the aftermath
+of a SystemTap \texttt{exit} function call, or an interruption from the user.
+In the case of an shutdown triggered by error, \texttt{end} probes are not run.
+
+
+\subsubsection{error}
+\index{error}
+The \emph{error} probe point is similar to the end
+probe, except the probe handler runs when the session ends if an error
+occurred.  In this case, an \texttt{end} probe is skipped, but each
+\texttt{error} probe is still attempted.  You can use an
+\texttt{error} probe to clean up or perform a final action on script
+termination.
+
+Here is a simple example:
+\begin{vindent}
+\begin{verbatim}
+probe error { println ("Oops, errors occurred. Here's a report anyway.")
+              foreach (coin in mint) { println (coin) } }
+\end{verbatim}
+\end{vindent}
+
+
+\subsubsection{begin, end, and error probe sequence}
+\index{probe sequence}
+\texttt{begin}, \texttt{end}, and \texttt{error} probes can be
+specified with an optional sequence number that controls the order in
+which they are run. If no sequence number is provided, the sequence
+number defaults to zero and probes are run in the order that they
+occur in the script file. Sequence numbers may be either positive or
+negative, and are especially useful for tapset writers who want to do
+initialization in a \texttt{begin} probe. The following are examples.
+
+\begin{vindent}
+\begin{verbatim}
+# In a tapset file:
+probe begin(-1000) { ... }
+
+# In a user script:
+probe begin { ... }
+\end{verbatim}
+\end{vindent}
+The user script \texttt{begin} probe defaults to sequence number zero, so
+the tapset \texttt{begin} probe will run first.
+
+
+\subsubsection{never}
+\index{never}
+The \texttt{never} probe point is defined by the translator to mean \emph{never}.
+Its statements are analyzed for symbol and type correctness, but its probe
+handler is never run. This probe point may be useful in conjunction with
+optional probes. See Section~\ref{sub:Optional-probe-points}.
+
+
+\section{Language elements\label{sec:Language-Elements}}
+\subsection{Identifiers}
+\index{identifiers}
+\emph{Identifiers} are used to name variables and functions. They are an
+alphanumeric sequence that may include the underscore (\_) and dollar sign
+(\$) characters. They have the same syntax as C identifiers, except that
+the dollar sign is also a legal character. Identifiers that begin with a
+dollar sign are interpreted as references to variables in the target software,
+rather than to SystemTap script variables. Identifiers may not start with
+a plain digit.
+
+
+\subsection{Data types\label{sub:Data-types}}
+\index{data types}
+The SystemTap language includes a small number of data types, but no type
+declarations. A variable's type is inferred\index{inference} from its use.
+To support this inference, the translator enforces consistent typing of function
+arguments and return values, array indices and values. There are no implicit
+type conversions between strings and numbers. Inconsistent type-related use
+of an identifier signals an error.
+
+
+\subsubsection{Literals}
+\index{literals}
+Literals are either strings or integers.
+Literal integers can be expressed as decimal,
+octal, or hexadecimal, using C notation. Type suffixes (e.g., \emph{L} or
+\emph{U}) are not used.
+
+
+\subsubsection{Integers\label{sub:Integers}}
+\index{integers} \index{numbers}
+Integers are decimal, hexadecimal, or octal, and use the same notation as
+in C. Integers are 64-bit signed quantities, although the parser also accepts
+(and wraps around) values above positive $2^{63}$ but below $2^{64}$.
+
+
+\subsubsection{Strings\label{sub:Strings}}
+\index{strings}
+Strings are enclosed in quotation marks ({}``string''), and pass through
+standard C escape codes with backslashes. Strings are limited in length to
+MAXSTRINGLEN. For more information about this and other limits, see
+Section~\ref{sub:SystemTap-safety}.
+
+
+\subsubsection{Associative arrays}
+
+See Section~\ref{sec:Associative-Arrays}
+
+
+\subsubsection{Statistics}
+
+See Section~\ref{sec:Statistics}
+
+
+\subsection{Semicolons}
+\index{;}
+The semicolon is the null statement, or do nothing statement. It is optional,
+and useful as a separator between statements to improve detection of syntax
+errors and to reduce ambiguities in grammar.
+
+
+\subsection{Comments}
+\index{comments}
+Three forms of comments are supported, as follows.
+
+\begin{vindent}
+\begin{verbatim}
+# ... shell style, to the end of line
+// ... C++ style, to the end of line
+/* ... C style ... */
+\end{verbatim}
+\end{vindent}
+
+\subsection{Whitespace}
+\index{whitespace}
+As in C, spaces, tabs, returns, newlines, and comments are treated as whitespace.
+Whitespace is ignored by the parser.
+
+
+\subsection{Expressions}
+\index{expressions}
+SystemTap supports a number of operators that use the same general syntax,
+semantics, and precedence as in C and awk. Arithmetic is performed per C
+rules for signed integers. If the parser detects division by zero or an overflow,
+it generates an error. The following subsections list these operators.
+
+\subsubsection{Binary numeric operators}
+\index{binary}
+\texttt{{*} / \% + - >\,{}> <\,{}< \& \textasciicircum{}
+| \&\& ||}
+
+\subsubsection{Binary string operators}
+\index{binary}
+\texttt{\textbf{.}} (string concatenation)
+
+\subsubsection{Numeric assignment operators}
+\index{numeric}
+\texttt{= {*}= /= \%= += -= >\,{}>= <\,{}<=
+\&= \textasciicircum{}= |=}
+
+\subsubsection{String assignment operators}
+
+\texttt{= .=}
+
+\subsubsection{Unary numeric operators}
+\index{unary}
+\texttt{+ - ! \textasciitilde{} ++ -{}-}
+
+\subsubsection{Binary numeric or string comparison operators}
+\index{comparison}
+\texttt{< > <= >= == !=}
+
+\subsubsection{Ternary operator\label{sub:Ternary-operator}}
+\index{?}
+\texttt{cond ? exp1 : exp2}
+
+
+\subsubsection{Grouping operator}
+\index{grouping}
+\texttt{( exp )}
+
+
+\subsubsection{Function call}
+\index{fn}
+General syntax:
+
+\texttt{fn ({[} arg1, arg2, ... ])}
+
+
+\subsubsection{\$ptr-\textgreater member}
+\index{pointer}
+\texttt{ptr} is a kernel pointer available in a probed context.
+
+
+\subsubsection{Pointer typecasting}
+\index{Pointer typecasting}
+
+\emph{Typecasting} is supported using the \texttt{@cast()} operator. A
+script can define a pointer type for a \emph{long} value, then access
+type members using the same syntax as with \texttt{\$target}
+variables. After a pointer is saved into a script integer variable,
+the translator loses the necessary type information to access members
+from that pointer.  The \texttt{@cast()} operator tells the translator
+how to read a pointer.
+
+The following statement interprets \texttt{p} as a pointer to a struct
+or union named \texttt{type\_name} and dereferences the
+\texttt{member} value:
+\begin{vindent}
+\begin{verbatim}
+@cast(p, "type_name"[, "module"])->member
+\end{verbatim}
+\end{vindent}
+
+The optional \texttt{module} parameter tells the translator where to
+look for information about that type. You can specify multiple modules
+as a list with colon (\texttt{:}) separators. If you do not specify
+the module parameter, the translator defaults to either the probe
+module for dwarf probes or to \textit{kernel} for functions and all
+other probe types.
+
+The following statement retrieves the parent PID from a kernel
+task\_struct:
+\begin{vindent}
+\begin{verbatim}
+@cast(pointer, "task_struct", "kernel")->parent->tgid
+\end{verbatim}
+\end{vindent}
+
+The translator can create its own module with type information from a
+header surrounded by angle brackets (\texttt{< >}) if normal debugging
+information is not available.  For kernel headers, prefix it with
+\texttt{kernel} to use the appropriate build system.  All other
+headers are built with default GCC parameters into a user module. The
+following statements are examples.
+\begin{vindent}
+\begin{verbatim}
+@cast(tv, "timeval", "<sys/time.h>")->tv_sec
+@cast(task, "task_struct", "kernel<linux/sched.h>")->tgid
+\end{verbatim}
+\end{vindent}
+
+In guru mode, the translator allows scripts to assign new values to
+members of typecasted pointers.
+
+Typecasting is also useful in the case of \texttt{void*} members whose
+type might be determinable at run time.
+\begin{vindent}
+\begin{verbatim}
+probe foo {
+   if ($var->type == 1) {
+      value = @cast($var->data, "type1")->bar
+   } else {
+      value = @cast($var->data, "type2")->baz
+   }
+   print(value)
+}
+\end{verbatim}
+\end{vindent}
+
+
+\subsubsection{\textless value\textgreater\ in \textless array\_name\textgreater}
+\index{index}
+This expression evaluates to true if the array contains an element with the
+specified index.
+
+
+\subsubsection{{[} \textless value\textgreater, ... ] in \textless array\_name\textgreater}
+
+The number of index values must match the number of indexes previously specified.
+
+\subsection{Literals passed in from the stap command line\label{sub:Literals-passed-in}}
+\index{literals}
+\emph{Literals} are either strings enclosed in double quotes ('' '') or
+integers. For information about integers, see Section~\ref{sub:Integers}.
+For information about strings, see Section~\ref{sub:Strings}.
+
+Script arguments at the end of a command line are expanded as literals. You
+can use these in all contexts where literals are accepted. A reference to
+a nonexistent argument number is an error.
+
+
+\subsubsection{\$1 \ldots{} \$\textless NN\textgreater\ for literal pasting}
+\index{\$}
+Use \texttt{\$1 \ldots{} \$<NN>} for pasting the entire argument string 
+into the input stream, which will be further lexically tokenized.
+
+\subsubsection{@1 \ldots{} @\textless NN\textgreater\ for strings}
+
+Use \texttt{@1 \ldots{} @<NN>} for casting an entire argument
+as a string literal.
+
+\subsubsection{Examples}
+
+For example, if the following script named example.stp
+
+\begin{vindent}
+\begin{verbatim}
+probe begin { printf("%d, %s\n", $1, @2) }
+\end{verbatim}
+\end{vindent}
+is invoked as follows
+
+\begin{vindent}
+\begin{verbatim}
+# stap example.stp '5+5' mystring
+\end{verbatim}
+\end{vindent}
+then 5+5 is substituted for \$1 and \char`\"{}mystring\char`\"{} for @2. The
+output will be
+
+\begin{vindent}
+\begin{verbatim}
+10, mystring
+\end{verbatim}
+\end{vindent}
+
+\subsection{Conditional compilation}
+
+
+\subsubsection{Conditions}
+\index{conditions}
+One of the steps of parsing is a simple conditional preprocessing stage.
+The general form of this is similar to the ternary operator (Section~\ref{sub:Ternary-operator}).
+
+\begin{vindent}
+\begin{verbatim}
+%( CONDITION %? TRUE-TOKENS %)
+%( CONDITION %? TRUE-TOKENS %: FALSE-TOKENS %)
+\end{verbatim}
+\end{vindent}
+The CONDITION is a limited expression whose format is determined by its first
+keyword. The following is the general syntax.
+
+\begin{vindent}
+\begin{verbatim}
+%( <condition> %? <code> [ %: <code> ] %)
+\end{verbatim}
+\end{vindent}
+
+\subsubsection{Conditions based on available target variables}
+\index{defined target variable}
+The predicate @defined() is available for testing whether a
+particular \$variable/expression is resolvable at translation time. The
+following is an example of its use:
+
+\begin{vindent}
+\begin{verbatim}
+  probe foo { if (@defined($bar)) log ("$bar is available here") }
+\end{verbatim}
+\end{vindent}
+
+
+\subsubsection{Conditions based on kernel version: kernel\_v, kernel\_vr}
+\index{kernel version}
+\index{kernel\_vr}
+\index{kernel\_v}
+If the first part of a conditional expression is the identifier \texttt{kernel\_v}
+or \texttt{kernel\_vr}, the second part must be one of six standard numeric
+comparison operators {}``\textless'', {}``\textless ='', {}``=='', {}``!='', {}``\textgreater'',
+or {}``\textgreater ='',
+and the third part must be a string literal that contains an RPM-style version-release
+value. The condition returns true if the version of the target kernel (as
+optionally overridden by the \textbf{-r} option) matches the given version
+string. The comparison is performed by the glibc function strverscmp.
+
+\texttt{kernel\_v} refers to the kernel version number only, such as {}``2.6.13\char`\"{}.
+
+\texttt{kernel\_vr} refers to the kernel version number including the release
+code suffix, such as {}``2.6.13-1.322FC3smp''.
+
+
+\subsubsection{Conditions based on architecture: arch}
+\index{arch}
+If the first part of the conditional expression is the identifier \texttt{arch}
+which refers to the processor architecture, then the second part is a string
+comparison operator ''=='' or ''!='', and the third part is a string
+literal for matching it. This comparison is a simple string equality or inequality.
+The currently supported architecture strings are i386, i686, x86\_64, ia64,
+s390, and powerpc.
+
+
+\subsubsection{True and False Tokens}
+\index{tokens}
+TRUE-TOKENS and FALSE-TOKENS are zero or more general parser tokens, possibly
+including nested preprocessor conditionals, that are pasted into the input
+stream if the condition is true or false. For example, the following code
+induces a parse error unless the target kernel version is newer than 2.6.5.
+
+\begin{vindent}
+\begin{verbatim}
+%( kernel_v <= "2.6.5" %? **ERROR** %) # invalid token sequence
+\end{verbatim}
+\end{vindent}
+The following code adapts to hypothetical kernel version drift.
+
+\begin{vindent}
+\begin{verbatim}
+probe kernel.function (
+    %( kernel_v <= "2.6.12" %? "__mm_do_fault" %:
+        %( kernel_vr == "2.6.13-1.8273FC3smp" %? "do_page_fault" %: UNSUPPORTED %)
+    %)) { /* ... */ }
+
+%( arch == "ia64" %?
+    probe syscall.vliw = kernel.function("vliw_widget") {}
+%)
+
+\end{verbatim}
+\end{vindent}
+
+The following code adapts to the presence of a kernel CONFIG option.
+
+\begin{vindent}
+\begin{verbatim}
+%( CONFIG_UTRACE == "y" %?
+    probe process.syscall {}
+%)
+\end{verbatim}
+\end{vindent}
+
+\section{Statement types\label{sec:Statement-Types}}
+
+Statements enable procedural control flow within functions and probe handlers.
+The total number of statements executed in response to any single probe event
+is limited to MAXACTION, which defaults to 1000. See Section~\ref{sub:SystemTap-safety}.
+
+
+\subsection{break and continue}
+\index{break}
+\index{continue}
+Use \texttt{break} or \texttt{continue} to exit or iterate the innermost
+nesting loop statement, such as within a \texttt{while, for,} or \texttt{foreach}
+statement. The syntax and semantics are the same as those used in C.
+
+
+\subsection{try/catch}
+\index{try}
+\index{catch}
+Use \texttt{try}/\texttt{catch} to handle most kinds of run-time errors within the script
+instead of aborting the probe handler in progress.  The semantics are similar
+to C++ in that try/catch blocks may be nested.  The error string may be captured
+by optionally naming a variable which is to receive it.
+
+\begin{vindent}
+\begin{verbatim}
+try { 
+   /* do something */
+   /* trigger error like kread(0), or divide by zero, or error("foo") */
+} catch (msg) { /* omit (msg) entirely if not interested */
+   /* println("caught error ", msg) */
+   /* handle error */
+}
+/* execution continues */
+\end{verbatim}
+\end{vindent}
+
+
+\subsection{delete}
+\index{delete}
+\texttt{delete} removes an element.
+
+The following statement removes from ARRAY the element specified by the index
+tuple. The value will no longer be available, and subsequent iterations will
+not report the element. It is not an error to delete an element that does
+not exist.
+
+\begin{vindent}
+\begin{verbatim}
+delete ARRAY[INDEX1, INDEX2, ...]
+\end{verbatim}
+\end{vindent}
+The following syntax removes all elements from ARRAY:
+
+\begin{vindent}
+\begin{verbatim}
+delete ARRAY
+\end{verbatim}
+\end{vindent}
+The following statement removes the value of SCALAR. Integers and strings
+are cleared to zero and null (\char`\"{}\char`\"{}) respectively, while statistics
+are reset to their initial empty state.
+
+\begin{vindent}
+\begin{verbatim}
+delete SCALAR
+\end{verbatim}
+\end{vindent}
+
+\subsection{EXP (expression)}
+\index{expression}
+An \texttt{expression} executes a string- or integer-valued expression and
+discards the value.
+
+
+\subsection{for}
+\index{for}
+General syntax:
+\begin{vindent}
+\begin{verbatim}
+for (EXP1; EXP2; EXP3) STMT
+\end{verbatim}
+\end{vindent}
+The \texttt{for} statement is similar to the \texttt{for} statement in C.
+The \texttt{for} expression executes EXP1 as initialization. While EXP2 is
+non-zero, it executes STMT, then the iteration expression EXP3.
+
+\subsection{foreach\label{sub:foreach}}
+\index{foreach}
+General syntax:
+\begin{vindent}
+\begin{verbatim}
+foreach (VAR in ARRAY) STMT
+\end{verbatim}
+\end{vindent}
+The \texttt{foreach} statement loops over each element of a named global array, assigning
+the current key to VAR. The array must not be modified within the statement.
+If you add a single plus (+) or minus (-) operator after the VAR or the ARRAY
+identifier, the iteration order will be sorted by the ascending or descending
+index or value.
+
+The following statement behaves the same as the first example, except it
+is used when an array is indexed with a tuple of keys.  Use a sorting suffix
+on at most one VAR or ARRAY identifier.
+
+\begin{vindent}
+\begin{verbatim}
+foreach ([VAR1, VAR2, ...] in ARRAY) STMT
+\end{verbatim}
+\end{vindent}
+The following statement is the same as the first example, except that the
+\texttt{limit} keyword limits the number of loop iterations to EXP times.
+EXP is evaluated once at the beginning of the loop.
+
+\begin{vindent}
+\begin{verbatim}
+foreach (VAR in ARRAY limit EXP) STMT
+\end{verbatim}
+\end{vindent}
+
+\subsection{if}
+\index{if}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+if (EXP) STMT1 [ else STMT2 ]
+\end{verbatim}
+\end{vindent}
+The \texttt{if} statement compares an integer-valued EXP to zero. It executes
+the first STMT if non-zero, or the second STMT if zero.
+
+The \texttt{if} command has the same syntax and semantics as used in C.
+
+
+\subsection{next}
+\index{next}
+The \texttt{next} statement returns immediately from the enclosing probe
+handler.
+
+
+\subsection{; (null statement)}
+\index{;}
+\index{null statement}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+statement1
+;
+statement2
+\end{verbatim}
+\end{vindent}
+The semicolon represents the null statement, or do nothing. It is useful
+as an optional separator between statements to improve syntax error detection
+and to handle certain grammar ambiguities.
+
+
+\subsection{return}
+\index{return}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+return EXP
+\end{verbatim}
+\end{vindent}
+The \texttt{return} statement returns the EXP value from the enclosing function.
+If the value of the function is not returned, then a return statement is
+not needed, and the function will have a special \emph{unknown} type with
+no return value.
+
+\subsection{\{ \} (statement block)}
+\index{\{ \}}
+\index{statement block}
+This is the statement block with zero or more statements enclosed within
+brackets. The following is the general syntax:
+
+\begin{vindent}
+\begin{verbatim}
+{ STMT1 STMT2 ... }
+\end{verbatim}
+\end{vindent}
+The statement block executes each statement in sequence in the block. Separators
+or terminators are generally not necessary between statements. The statement
+block uses the same syntax and semantics as in C.
+
+
+\subsection{while}
+\index{while}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+while (EXP) STMT
+\end{verbatim}
+\end{vindent}
+The \texttt{while} statement uses the same syntax and semantics as in C.
+In the statement above, while the integer-valued EXP evaluates to non-zero,
+the parser will execute STMT.
+
+
+\section{Associative arrays\label{sec:Associative-Arrays}}
+\index{associative arrays}
+Associative arrays are implemented as hash tables with a maximum size set
+at startup. Associative arrays are too large to be created dynamically for
+individual probe handler runs, so they must be declared as global. The basic
+operations for arrays are setting and looking up elements. These operations
+are expressed in awk syntax: the array name followed by an opening bracket
+({[}), a comma-separated list of up to nine index index expressions, and
+a closing bracket (]). Each index expression may be a string or a number,
+as long as it is consistently typed throughout the script.
+
+
+\subsection{Examples}
+
+\begin{vindent}
+\begin{verbatim}
+# Increment the named array slot:
+foo [4,"hello"] ++
+
+# Update a statistic:
+processusage [uid(),execname()] ++
+
+# Set a timestamp reference point:
+times [tid()] = get_cycles()
+
+# Compute a timestamp delta:
+delta = get_cycles() - times [tid()]
+\end{verbatim}
+\end{vindent}
+
+\subsection{Types of values}
+
+Array elements may be set to a number, a string, or an aggregate.
+The type must be consistent
+throughout the use of the array. The first assignment to the array defines
+the type of the elements. Unset array elements may be fetched and return
+a null value (zero or empty string) as appropriate, but they are not seen
+by a membership test.
+
+
+\subsection{Array capacity}
+
+Array sizes can be specified explicitly or allowed to default to the maximum
+size as defined by MAXMAPENTRIES. See Section~\ref{sub:SystemTap-safety}
+for details on changing MAXMAPENTRIES.
+
+You can explicitly specify the size of an array as follows:
+
+\begin{vindent}
+\begin{verbatim}
+global ARRAY[<size>]
+\end{verbatim}
+\end{vindent}
+If you do not specify the size parameter, then the array is created to hold
+MAXMAPENTRIES number of elements
+
+
+\subsection{Iteration, foreach}
+\index{foreach}
+Like awk, SystemTap's foreach creates a loop that iterates over key tuples
+of an array, not only values. The iteration may be sorted by any single key
+or a value by adding an extra plus symbol (+) or minus symbol (-) to the
+code. The following are examples.
+
+\begin{vindent}
+\begin{verbatim}
+# Simple loop in arbitrary sequence:
+foreach ([a,b] in foo)
+    fuss_with(foo[a,b])
+
+# Loop in increasing sequence of value:
+foreach ([a,b] in foo+) { ... }
+
+# Loop in decreasing sequence of first key:
+foreach ([a-,b] in foo) { ... }
+\end{verbatim}
+\end{vindent}
+The \texttt{break} and \texttt{continue} statements also work inside foreach
+loops. Since arrays can be large but probe handlers must execute quickly,
+you should write scripts that exit iteration early, if possible. For simplicity,
+SystemTap forbids any modification of an array during iteration with a foreach.
+
+
+\section{Statistics (aggregates)\label{sec:Statistics}}
+\index{aggregates}
+Aggregate instances are used to collect statistics on numerical values, when
+it is important to accumulate new data quickly and in large volume. These
+instances operate without exclusive locks, and store only aggregated stream
+statistics. Aggregates make sense only for global variables. They are stored
+individually or as elements of an associative array.
+
+\subsection{The aggregation (\textless\hspace{1 sp}\textless\hspace{1 sp}\textless) operator}
+\index{\textless\hspace{1 sp}\textless\hspace{1 sp}\textless}
+The aggregation operator is {}``\textless\hspace{1 sp}\textless\hspace{1 sp}\textless'',
+and its effect is similar to an assignment or a C++ output streaming operation.
+The left operand specifies a scalar or array-index \emph{l-value}, which
+must be declared global. The right operand is a numeric expression. The meaning
+is intuitive: add the given number as a sample to the set of numbers to compute their
+statistics. The specific list of statistics to gather is given separately
+by the extraction functions. The following is an example.
+
+\begin{vindent}
+\begin{verbatim}
+a <<< delta_timestamp
+writes[execname()] <<< count
+\end{verbatim}
+\end{vindent}
+
+\subsection{Extraction functions}
+\index{extraction}
+For each instance of a distinct extraction function operating on a given
+identifier, the translator computes a set of statistics. With each execution
+of an extraction function, the aggregation is computed for that moment across
+all processors. The first argument of each function is the same style of
+l-value as used on the left side of the aggregation operation.
+
+
+\subsection{Integer extractors}
+
+The following functions provide methods to extract information about aggregate.
+
+
+\subsubsection{@count(s)}
+\index{count}
+This statement returns the number of samples accumulated in aggregate s.
+
+
+\subsubsection{@sum(s)}
+\index{sum}
+This statement returns the total sum of all samples in aggregate s.
+
+
+\subsubsection{@min(s)}
+\index{min}
+This statement returns the minimum of all samples in aggregate s.
+
+
+\subsubsection{@max(s)}
+\index{max}
+This statement returns the maximum of all samples in aggregate s.
+
+
+\subsubsection{@avg(s)}
+\index{avg}
+This statement returns the average value of all samples in aggregate s.
+
+
+\subsection{Histogram extractors}
+\index{histograms}
+The following functions provide methods to extract histogram information.
+Printing a histogram with the print family of functions renders a histogram
+object as a tabular "ASCII art" bar chart.
+
+\subsubsection{@hist\_linear}
+\index{hist\_linear}
+The statement \texttt{@hist\_linear(v,L,H,W)} represents a linear histogram
+of aggregate \texttt{v},
+where \emph{L} and \emph{H} represent the lower and upper end of
+a range of values and \emph{W} represents the width (or size) of each bucket
+within the range.  The low and high values can be negative, but the overall
+difference (high minus low) must be positive. The width parameter must also
+be positive.
+
+In the output, a range of consecutive empty buckets may be replaced with a tilde
+(\textasciitilde{}) character.  This can be controlled on the command line
+with -DHIST\_ELISION=\textless\hspace{1 sp}num\textgreater\hspace{1 sp},
+where \textless\hspace{1 sp}num\textgreater\hspace{1 sp} specifies how many
+empty buckets at the top and bottom of the range to print.
+The default is 2.  A \textless\hspace{1 sp}num\textgreater\hspace{1 sp} of 0
+removes all empty buckets. A negative \textless\hspace{1 sp}num\textgreater\hspace{1 sp}
+disables removal.
+
+For example, if you specify -DHIST\_ELISION=3 and the histogram has 10
+consecutive empty buckets, the first 3 and last 3 empty buckets will
+be printed and the middle 4 empty buckets will be represented by a
+tilde (\textasciitilde{}).
+
+The following is an example.
+
+\begin{vindent}
+\begin{verbatim}
+global reads
+probe netdev.receive {
+    reads <<< length
+}
+probe end {
+    print(@hist_linear(reads, 0, 10240, 200))
+}
+\end{verbatim}
+\end{vindent}
+This generates the following output.
+
+\begin{samepage}
+\begin{vindent}
+\begin{verbatim}
+value |-------------------------------------------------- count
+    0 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 1650
+  200 |                                                      8
+  400 |                                                      0
+  600 |                                                      0
+      ~
+ 1000 |                                                      0
+ 1200 |                                                      0
+ 1400 |                                                      1
+ 1600 |                                                      0
+ 1800 |                                                      0
+\end{verbatim}
+\end{vindent}
+\end{samepage}
+This shows that 1650 network reads were of a size between 0 and 199 bytes,
+8 reads were between 200 and 399 bytes, and 1 read was between
+1200 and 1399 bytes.  The tilde (\textasciitilde{}) character indicates
+the bucket for 800 to 999 bytes was removed because it was empty.
+Empty buckets for 2000 bytes and larger were also removed because they
+were empty.
+
+\subsubsection{@hist\_log}
+\index{hist\_log}
+The statement \texttt{@hist\_log(v)} represents a base-2 logarithmic
+histogram.  Empty buckets are replaced with a tilde (\textasciitilde{})
+character in the same way as \texttt{@hist\_linear()} (see above).
+
+The following is an example.
+
+\begin{vindent}
+\begin{verbatim}
+global reads
+probe netdev.receive {
+    reads <<< length
+}
+probe end {
+    print(@hist_log(reads))
+}
+\end{verbatim}
+\end{vindent}
+This generates the following output.
+
+\begin{samepage}
+\begin{vindent}
+\begin{verbatim}
+value |-------------------------------------------------- count
+    8 |                                                      0
+   16 |                                                      0
+   32 |                                                    254
+   64 |                                                      3
+  128 |                                                      2
+  256 |                                                      2
+  512 |                                                      4
+ 1024 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 16689
+ 2048 |                                                      0
+ 4096 |                                                      0
+\end{verbatim}
+\end{vindent}
+\end{samepage}
+
+
+\section{Formatted output}
+
+\subsection{print}
+\index{print}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+print ()
+\end{verbatim}
+\end{vindent}
+This function prints a single value of any type.
+
+
+\subsection{printf}
+\index{printf}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+printf (fmt:string, ...)
+\end{verbatim}
+\end{vindent}
+The printf function takes a formatting string as an argument, and a number
+of values of corresponding types, and prints them all. The format must be a
+literal string constant. The printf formatting directives are similar to those
+of C, except that they are fully checked for type by the translator.
+
+The formatting string can contain tags that are defined as follows:
+
+\begin{vindent}
+\begin{verbatim}
+%[flags][width][.precision][length]specifier
+\end{verbatim}
+\end{vindent}
+Where \texttt{specifier} is required and defines the type and the interpretation
+of the value of the corresponding argument. The following table shows the
+details of the specifier parameter:
+
+\begin{table}[H]
+\caption{printf specifier values}
+\begin{tabular}{|>{\raggedright}p{1in}|>{\raggedright}p{3.5in}|>{\raggedright}p{1.25in}|}
+\hline
+\textbf{Specifier}&
+\textbf{Output}&
+\textbf{Example}\tabularnewline
+\hline
+\hline
+d or i&
+Signed decimal&
+392\tabularnewline
+\hline
+o&
+Unsigned octal&
+610\tabularnewline
+\hline
+s&
+String&
+sample\tabularnewline
+\hline
+u&
+Unsigned decimal&
+7235\tabularnewline
+\hline
+x&
+Unsigned hexadecimal (lowercase letters)&
+7fa\tabularnewline
+\hline
+X&
+Unsigned hexadecimal (uppercase letters)&
+7FA\tabularnewline
+\hline
+p&
+Pointer address&
+0x0000000000bc614e\tabularnewline
+\hline
+b&
+Writes a binary value as text using the computer's native byte order.
+The field width specifies the number of bytes
+to write. Valid specifications are \%b, \%1b, \%2b, \%4b and \%8b. The default
+width is 8 (64-bits).&
+See below\tabularnewline
+\hline
+\%&
+A \% followed by another \% character will write \% to stdout.&
+\%\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+The tag can also contain \texttt{flags}, \texttt{width}, \texttt{.precision}
+and \texttt{modifiers} sub-specifiers, which are optional and follow these
+specifications:
+
+\begin{table}[H]
+\caption{printf flag values}
+\begin{tabular}{|>{\raggedright}p{1.5in}|>{\raggedright}p{4.5in}|}
+\hline
+\textbf{Flags}&
+\textbf{Description}\tabularnewline
+\hline
+\hline
+- (minus sign)&
+Left-justify within the given field width. Right justification is the default
+(see \texttt{width} sub-specifier).\tabularnewline
+\hline
++ (plus sign)&
+Precede the result with a plus or minus sign even for positive numbers. By
+default, only negative numbers are preceded with a minus sign.\tabularnewline
+\hline
+(space)&
+If no sign is going to be written, a blank space is inserted before the value.\tabularnewline
+\hline
+\#&
+Used with \texttt{o}, \texttt{x} or \texttt{X} specifiers the value is preceded
+with \texttt{0}, \texttt{0x} or \texttt{0X} respectively for non-zero values.\tabularnewline
+\hline
+0&
+Left-pads the number with zeroes instead of spaces, where padding is specified
+(see \texttt{width} sub-specifier).\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\caption{printf width values}
+\begin{tabular}{|>{\raggedright}p{1.5in}|>{\raggedright}p{4.5in}|}
+\hline
+\textbf{Width}&
+\textbf{Description}\tabularnewline
+\hline
+\hline
+(number)&
+Minimum number of characters to be printed. If the value to be printed is
+shorter than this number, the result is padded with blank spaces. The value
+is not truncated even if the result is larger.\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+%
+\begin{table}[H]
+
+\caption{printf precision values}
+
+\begin{tabular}{|>{\raggedright}p{1.5in}|>{\raggedright}p{4.5in}|}
+\hline
+\textbf{Precision}&
+\textbf{Description}\tabularnewline
+\hline
+\hline
+.number&
+For integer specifiers (\texttt{d, i, o, u, x, X}): \texttt{precision} specifies
+the minimum number of digits to be written. If the value to be written is
+shorter than this number, the result is padded with leading zeros. The value
+is not truncated even if the result is longer. A precision of 0 means that
+no character is written for the value 0. For s: this is the maximum number
+of characters to be printed. By default all characters are printed until
+the ending null character is encountered. When no \texttt{precision} is specified,
+the default is 1. If the period is specified without an explicit value for
+\texttt{precision}, 0 is assumed.\tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Binary Write Examples}
+
+The following is an example of using the binary write functions:
+
+\begin{vindent}
+\begin{verbatim}
+probe begin {
+    for (i = 97; i < 110; i++)
+        printf("%3d: %1b%1b%1b\n", i, i, i-32, i-64)
+    exit()
+}
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+ 97: aA!
+ 98: bB"
+ 99: cC#
+100: dD$
+101: eE%
+102: fF&
+103: gG'
+104: hH(
+105: iI)
+106: jJ*
+107: kK+
+108: lL,
+109: mM-
+\end{verbatim}
+\end{vindent}
+Another example:
+
+\begin{vindent}
+\begin{verbatim}
+stap -e 'probe begin{printf("%b%b", 0xc0dedbad, \
+0x12345678);exit()}' | hexdump -C
+
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+00000000  ad db de c0 00 00 00 00  78 56 34 12 00 00 00 00  |........xV4.....|
+00000010
+\end{verbatim}
+\end{vindent}
+Another example:
+
+\begin{vindent}
+\begin{verbatim}
+probe begin{
+    printf("%1b%1b%1blo %1b%1brld\n", 72,101,108,87,111)
+    exit()
+}
+\end{verbatim}
+\end{vindent}
+This prints:
+
+\begin{vindent}
+\begin{verbatim}
+Hello World
+\end{verbatim}
+\end{vindent}
+
+\subsection{printd}
+\index{printd}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+printd (delimiter:string, ...)
+\end{verbatim}
+\end{vindent}
+This function takes a string delimiter and two or more values of any type, then
+prints the values with the delimiter interposed. The delimiter must be a
+literal string constant.
+
+For example:
+\begin{vindent}
+\begin{verbatim}
+printd("/", "one", "two", "three", 4, 5, 6)
+\end{verbatim}
+\end{vindent}
+prints:
+\begin{vindent}
+\begin{verbatim}
+one/two/three/4/5/6
+\end{verbatim}
+\end{vindent}
+
+\subsection{printdln}
+\index{printdln}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+printdln (delimiter:string, ...)
+\end{verbatim}
+\end{vindent}
+This function operates like \texttt{printd}, but also appends a newline.
+
+\subsection{println}
+\index{println}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+println ()
+\end{verbatim}
+\end{vindent}
+This function prints a single value like \texttt{print},
+but also appends a newline.
+
+\subsection{sprint}
+\index{sprint}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+sprint:string ()
+\end{verbatim}
+\end{vindent}
+This function operates like \texttt{print}, but returns the string rather
+than printing it.
+
+\subsection{sprintf}
+\index{sprintf}
+General syntax:
+
+\begin{vindent}
+\begin{verbatim}
+sprintf:string (fmt:string, ...)
+\end{verbatim}
+\end{vindent}
+This function operates like \texttt{printf}, but returns the formatted string
+rather than printing it.
+
+\section{Tapset-defined functions\label{sec:Predefined-Functions}}
+
+Unlike built-in functions, tapset-defined functions are implemented in tapset scripts.
+These are individually documented in the in the \tt{stapfuncs(3)}, \tt{function::*(3stap)},
+and \tt{probe::*(3stap)} man pages, and implemented under \tt{/usr/share/systemtap/tapset}.
+
+\section{For Further Reference\label{sec:For-Further-Reference}}
+
+For more information, see:
+\begin{itemize}
+\item The SystemTap tutorial at \url{http://sourceware.org/systemtap/tutorial/}
+\item The SystemTap wiki at \url{http://sourceware.org/systemtap/wiki}
+\item The SystemTap documentation page at \url{http://sourceware.org/systemtap/documentation.html}
+\item From an unpacked source tarball or GIT directory, the examples in in the
+src/examples directory, the tapsets in the src/tapset directory, and the
+test scripts in the src/testsuite directory.
+\item The man pages for tapsets.
+For a list, run the command \texttt{{}``man -k tapset::}''.
+\item The man pages for individual probe points.
+For a list, run the command \texttt{{}``man -k probe::}''.
+\item The man pages for individual systemtap functions.
+For a list, run the command \texttt{{}``man -k function::}''.
+\end {itemize}
+
+\setcounter{secnumdepth}{0}
+\newpage{}
+\addcontentsline{toc}{section}{Index}
+\printindex{}
+\end{document}

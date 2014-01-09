@@ -1,0 +1,11 @@
+#! /usr/bin/env stap
+probe begin {
+	printf("%6s %16s %6s %6s %16s\n",
+	"UID", "CMD", "PID", "PORT", "IP_SOURCE")
+}
+
+probe kernel.function("sys_socket")
+{
+	printf("%s-%s\n", probefunc(), execname())
+}
+

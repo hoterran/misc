@@ -1,0 +1,4 @@
+#! stap -p1
+
+# premature EOF during THEN tokens
+%( 0 == 0 %?

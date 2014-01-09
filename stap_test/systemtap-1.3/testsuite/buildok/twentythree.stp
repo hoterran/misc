@@ -1,0 +1,9 @@
+#! stap -gp4
+
+# Test for writing 64-bit target variable, PR 1271
+
+probe kernel.function("deactivate_super")
+{
+	$s->s_maxbytes = 22;
+	printf("set to 22 => %d\n", $s->s_maxbytes)
+}

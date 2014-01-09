@@ -1,0 +1,10 @@
+*.aux
+*.glo
+*.idx
+*.log
+*.lot
+*.out
+*.pdf
+*.toc
+*.dvi
+_region_.*

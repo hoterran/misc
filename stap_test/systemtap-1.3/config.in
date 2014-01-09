@@ -1,0 +1,109 @@
+/* config.in.  Generated from configure.ac by autoheader.  */
+
+/* Configuration/build date */
+#undef DATE
+
+/* make -P prologue-searching default */
+#undef ENABLE_PROLOGUES
+
+/* Define to 1 if you have the avahi libraries. */
+#undef HAVE_AVAHI
+
+/* Define to 1 if you have the <boost/algorithm/string.hpp> header file. */
+#undef HAVE_BOOST_ALGORITHM_STRING_HPP
+
+/* Define to 1 if you have the <boost/range.hpp> header file. */
+#undef HAVE_BOOST_RANGE_HPP
+
+/* Define to 1 if you have the <boost/shared_ptr.hpp> header file. */
+#undef HAVE_BOOST_SHARED_PTR_HPP
+
+/* Define to 1 if you have the <crash/defs.h> header file. */
+#undef HAVE_CRASH_DEFS_H
+
+/* Define to 1 if you have the <elfutils/version.h> header file. */
+#undef HAVE_ELFUTILS_VERSION_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `dw' library (-ldw). */
+#undef HAVE_LIBDW
+
+/* have librpm */
+#undef HAVE_LIBRPM
+
+/* Define to 1 if you have the `sqlite3' library (-lsqlite3). */
+#undef HAVE_LIBSQLITE3
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the nss libraries. */
+#undef HAVE_NSS
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <tr1/memory> header file. */
+#undef HAVE_TR1_MEMORY
+
+/* Define to 1 if you have the <tr1/unordered_map> header file. */
+#undef HAVE_TR1_UNORDERED_MAP
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#undef NO_MINUS_C_MINUS_O
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define to 1 if the C compiler supports function prototypes. */
+#undef PROTOTYPES
+
+/* configure prefix location */
+#undef STAP_PREFIX
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define like PROTOTYPES; this can be used by system headers. */
+#undef __PROTOTYPES

@@ -1,0 +1,5 @@
+probe syscall.* 
+{
+	if (pid() == target())
+		print("%s\n", name)
+}

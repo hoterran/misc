@@ -1,0 +1,12 @@
+#! stap -gp4
+
+# Test for writing to target variables, PR 1131
+
+probe kernel.function("vfs_readdir")
+{
+%( kernel_v >= "2.6.20" %?
+	$file->f_path->dentry->d_name->len = 1
+%:
+	$file->f_dentry->d_name->len = 1
+%)
+}

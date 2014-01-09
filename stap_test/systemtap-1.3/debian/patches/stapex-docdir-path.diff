@@ -1,0 +1,20 @@
+stapex docdir path patch
+Index: systemtap/stapex.3stap.in
+===================================================================
+--- systemtap.orig/stapex.3stap.in	2009-09-12 17:07:27.404037877 +0200
++++ systemtap/stapex.3stap.in	2009-09-12 17:40:41.230002008 +0200
+@@ -114,12 +114,12 @@
+ .SH MORE EXAMPLES
+ 
+ Larger examples, demos and samples can be found in
+-@prefix@/doc/systemtap*/examples, each example comes with either a .txt
++@prefix@/share/doc/systemtap\-doc/examples, each example comes with either a .txt
+ or .meta file explaining what the example, sample or demo does and how
+ it is ordinarily run.
+ 
+ .SH SEE ALSO
+-.BR @prefix@/doc/systemtap*/examples
++.BR /usr/share/doc/systemtap\-doc/examples
+ .IR stap (1)
+ .IR stapprobes (3stap)
+ .IR stapfuncs (3stap)

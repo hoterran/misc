@@ -1,0 +1,4 @@
+probe syscall.sys_writev
+{ 
+	print ("hello world\n")
+}

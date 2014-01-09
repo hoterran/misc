@@ -1,0 +1,20 @@
+%{
+#include <linux/sched.h>
+#include <linux/list.h>
+%}
+
+function task_execname_by_pid:string (pid:long) %{
+  struct task_struct *p;
+  struct list_head *_p, *_n;
+  list_for_each_safe(_p, _n, &current->tasks) {
+    p = list_entry(_p, struct task_struct, tasks);
+    if (p->pid == (int)THIS->pid) 
+      snprintf(THIS->__retvalue, MAXSTRINGLEN, "%s", p->comm);
+  }
+%}
+
+probe begin
+{
+  printf("%s(%d)\n", task_execname_by_pid(target()), target())
+  exit()
+}

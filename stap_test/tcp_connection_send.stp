@@ -1,0 +1,13 @@
+#! /usr/bin/env stap
+
+probe begin {
+        printf("%6s %16s %6s %6s %16s\n",                                                                                                   
+	        "UID", "CMD", "PID", "PORT", "IP_SOURCE")
+}
+
+probe kernel.function("*@net/socket.c"), kernel.function("*@net/ipv4/tcp_output.c")                                                         
+{       
+        if ((execname() == "redis-cli") && (probefunc() == "tcp_transmit_skb")) {
+		printf("%s - %s -> %s - %s \n", execname(), thread_indent(1), probefunc(), $$parms$$)
+        }
+}

@@ -1,0 +1,12 @@
+probe kernel.function("*@net/socket.c")
+{
+	if (execname() != "Xorg") {
+		printf("%s -> %s\n", thread_indent(1), probefunc())
+	}
+}
+
+probe kernel.function("*@net/socket.c").return 
+{
+	printf("%s -> %s\n", thread_indent(-1), probefunc())
+}
+

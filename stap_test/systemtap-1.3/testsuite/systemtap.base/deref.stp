@@ -1,0 +1,138 @@
+/*
+ * deref.stp
+ *
+ * Check that the deref mechanisms work correctly.
+ */
+
+probe begin {  println("systemtap starting probe")  }
+probe end   {  println("systemtap ending probe")    }
+
+probe end(1) {
+  log_test("kread u8", kread_u8())
+  log_test("kread u16", kread_u16())
+  log_test("kread u32", kread_u32())
+  log_test("kread u64", kread_u64())
+  log_test("kread ptr", kread_ptr())
+
+  log_test("kread const u8", kread_const_u8())
+  log_test("kread const u16", kread_const_u16())
+  log_test("kread const u32", kread_const_u32())
+  log_test("kread const u64", kread_const_u64())
+  log_test("kread const ptr", kread_const_ptr())
+
+  log_test("kwrite u8", kwrite_u8())
+  log_test("kwrite u16", kwrite_u16())
+  log_test("kwrite u32", kwrite_u32())
+  log_test("kwrite u64", kwrite_u64())
+  log_test("kwrite ptr", kwrite_ptr())
+}
+
+function log_test(test:string, result:long) {
+  if (result)
+    println("systemtap test success")
+  else
+    printf("systemtap test failure - %s\n", test)
+}
+
+function kread_u8:long() %{
+  uint8_t local = 0x42;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_u16:long() %{
+  uint16_t local = 0xBEEF;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_u32:long() %{
+  uint32_t local = 0xDEADBEEF;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_u64:long() %{
+  uint64_t local = 0xDEADBEEFBAADF00DLL;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_ptr:long() %{
+  struct task_struct *local = current;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_const_u8:long() %{
+  const uint8_t local = 0x42;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_const_u16:long() %{
+  const uint16_t local = 0xBEEF;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_const_u32:long() %{
+  const uint32_t local = 0xDEADBEEF;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_const_u64:long() %{
+  const uint64_t local = 0xDEADBEEFBAADF00DLL;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+function kread_const_ptr:long() %{
+  const struct task_struct *local = current;
+  THIS->__retvalue = (local == kread(&local));
+  CATCH_DEREF_FAULT();
+%}
+
+// NB: kwrite uses system macros with inline asm, with this comment:
+//
+//   Tell gcc we read from memory instead of writing: this is because we do not
+//   write to any memory gcc knows about, so there are no aliasing issues.
+//
+// In this test I'm writing to memory that gcc *does* know about, thus we need
+// the memory marked volatile to force gcc to re-read it.
+
+function kwrite_u8:long() %{
+  volatile uint8_t local = 0;
+  kwrite(&local, 0x42);
+  THIS->__retvalue = (local == 0x42);
+  CATCH_DEREF_FAULT();
+%}
+
+function kwrite_u16:long() %{
+  volatile uint16_t local = 0;
+  kwrite(&local, 0xBEEF);
+  THIS->__retvalue = (local == 0xBEEF);
+  CATCH_DEREF_FAULT();
+%}
+
+function kwrite_u32:long() %{
+  volatile uint32_t local = 0;
+  kwrite(&local, 0xDEADBEEF);
+  THIS->__retvalue = (local == 0xDEADBEEF);
+  CATCH_DEREF_FAULT();
+%}
+
+function kwrite_u64:long() %{
+  volatile uint64_t local = 0;
+  kwrite(&local, 0xDEADBEEFBAADF00DLL);
+  THIS->__retvalue = (local == 0xDEADBEEFBAADF00DLL);
+  CATCH_DEREF_FAULT();
+%}
+
+function kwrite_ptr:long() %{
+  struct task_struct * volatile local = NULL;
+  kwrite(&local, current);
+  THIS->__retvalue = (local == current);
+  CATCH_DEREF_FAULT();
+%}

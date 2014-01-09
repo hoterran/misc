@@ -1,0 +1,93 @@
+manpage hyphen and spelling error fixes
+Index: systemtap/grapher/stapgraph.1.in
+===================================================================
+--- systemtap.orig/grapher/stapgraph.1.in	2010-05-23 22:39:54.000000000 +0530
++++ systemtap/grapher/stapgraph.1.in	2010-08-06 13:21:56.850483272 +0530
+@@ -82,7 +82,7 @@
+ The scroll wheel can be used to zoom in and out on the graph.
+ 
+ .SH SCRIPT OUTPUT SYNTAX
+-Scripts can output  Comma Seperated Values (CSV) which will be interpreted by
++Scripts can output  Comma Separated Values (CSV) which will be interpreted by
+ .IR stapgraph.
+ The first value is the X coordinate of the graph, usually a time value.
+ .IR stapgraph
+Index: systemtap/runtime/access_process_vm.h
+===================================================================
+--- systemtap.orig/runtime/access_process_vm.h	2010-05-23 22:39:54.000000000 +0530
++++ systemtap/runtime/access_process_vm.h	2010-08-06 13:21:56.850483272 +0530
+@@ -26,7 +26,7 @@
+     return 0;
+ 
+   down_read (&mm->mmap_sem);
+-  /* ignore errors, just check how much was sucessfully transferred */
++  /* ignore errors, just check how much was successfully transferred */
+   while (len)
+     {
+       int bytes, ret, offset;
+Index: systemtap/runtime/uprobes/uprobes.c
+===================================================================
+--- systemtap.orig/runtime/uprobes/uprobes.c	2010-08-06 12:49:40.000000000 +0530
++++ systemtap/runtime/uprobes/uprobes.c	2010-08-06 13:21:56.854483272 +0530
+@@ -2722,7 +2722,7 @@
+ 		return 0;
+ 
+ 	down_read(&mm->mmap_sem);
+-	/* ignore errors, just check how much was sucessfully transfered */
++	/* ignore errors, just check how much was successfully transfered */
+ 	while (len) {
+ 		int bytes, ret, offset;
+ 		void *maddr;
+Index: systemtap/runtime/uprobes2/uprobes.c
+===================================================================
+--- systemtap.orig/runtime/uprobes2/uprobes.c	2010-08-06 12:49:40.000000000 +0530
++++ systemtap/runtime/uprobes2/uprobes.c	2010-08-06 13:21:56.854483272 +0530
+@@ -2996,7 +2996,7 @@
+ 		return 0;
+ 
+ 	down_read(&mm->mmap_sem);
+-	/* ignore errors, just check how much was sucessfully transfered */
++	/* ignore errors, just check how much was successfully transfered */
+ 	while (len) {
+ 		int bytes, ret, offset;
+ 		void *maddr;
+Index: systemtap/tapset/signal.stp
+===================================================================
+--- systemtap.orig/tapset/signal.stp	2010-08-06 12:49:40.000000000 +0530
++++ systemtap/tapset/signal.stp	2010-08-06 13:21:56.854483272 +0530
+@@ -134,7 +134,7 @@
+  * Possible __group_send_sig_info and
+  * specific_send_sig_info return values are as follows;
+  *
+- * 0 -- The signal is sucessfully sent to a process,
++ * 0 -- The signal is successfully sent to a process,
+  * which means that:
+  * (1) the signal was ignored by the receiving process,
+  * (2) this is a non-RT signal and the system already has one queued, and
+@@ -147,7 +147,7 @@
+  * Possible send_group_sigqueue and
+  * send_sigqueue return values are as follows;
+  *
+- * 0 -- The signal was either sucessfully added into the
++ * 0 -- The signal was either successfully added into the
+  * sigqueue of the receiving process, or a SI_TIMER entry is already
+  * queued (in which case, the overrun count will be simply incremented).
+  *
+@@ -204,7 +204,7 @@
+ 
+ // Return values for "__group_send_sig_info" and "specific_send_sig_info"
+ //
+-// - return 0 if  the signal is sucessfully sent to a process,
++// - return 0 if  the signal is successfully sent to a process,
+ //   which means the following:
+ //     <1> the signal is ignored by receiving process
+ //     <2> this is a non-RT signal and we already have one queued
+@@ -230,7 +230,7 @@
+     send2queue = 0
+ }
+ 
+-// - return 0 if the signal is either sucessfully added into the
++// - return 0 if the signal is either successfully added into the
+ //   sigqueue of receiving process or a SI_TIMER entry is already
+ //   queued so just increment the overrun count
+ //

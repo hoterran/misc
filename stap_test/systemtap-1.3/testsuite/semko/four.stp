@@ -1,0 +1,12 @@
+#! stap -p2
+
+global a, b # types unknown
+
+function bar ()
+{
+  # no return statement
+}
+
+probe begin {
+  a = b;
+}

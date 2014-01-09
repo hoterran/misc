@@ -1,0 +1,8 @@
+#! stap -p1
+
+probe all
+{
+  "1" in a1;  ["1", 2] in a2;  [a] in a3;  [("1").("2"), "1"."2"] in a4;
+  a = [akbar(("foo").("bar"))] in it_s_a_trap
+  foreach ([a, b] in a4) { foreach ([c, d] in a2) ; } 
+}

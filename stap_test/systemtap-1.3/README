@@ -1,0 +1,117 @@
+systemtap: a linux trace/probe tool
+
+Visit the project web site at <http://sources.redhat.com/systemtap>,
+for documentation and mailing lists for developers and users.
+
+This is free software.
+See the COPYING file for redistribution/modification terms.
+See the INSTALL file for generic build instructions.
+
+Prerequisites:
+
+- linux kernel with kprobes (mainline 2.6.11+ or backport)
+- kernel module build environment (kernel-devel rpm)
+- kernel debugging information (kernel-debuginfo rpm)
+- C compiler (same as what kernel was compiled with)
+- elfutils with libdwfl for debugging information parsing
+- root privileges
+
+Installation steps:
+
+- Install the kernel development and gcc packages.
+- Install any debuginfo packages you need, for kernel and/or userspace.
+  (Beware of confusion between kernel vs. kernel-debug vs kernel-PAE etc.
+  variants.  Each likely has a corresponding development and debuginfo
+  package.)
+- Install the systemtap package, if one already exists.
+
+Build steps:
+
+- Install the kernel-debuginfo, kernel-devel, gcc and dependent
+  packages (or see below if you are building your own kernels from source).
+
+- If available, install your distribution's copy of elfutils and its
+  development headers/libraries.
+  Or if desired, download an elfutils source release to build in
+  "bundled mode" (below), and untar it into some new directory.
+  Or if desired, build elfutils separately one time, and install
+  it to /usr/local.
+  See http://fedorahosted.org/elfutils/
+
+- On modern Fedora, install general optional build-requisites:
+  # yum-builddep systemtap
+  On modern Debian/Ubuntu, similarly:
+  # apt-get build-dep systemtap
+
+- Download systemtap sources:
+  http://sources.redhat.com/systemtap/ftp/releases/
+  http://sources.redhat.com/systemtap/ftp/snapshots/
+  (or)
+  git clone git://sources.redhat.com/git/systemtap.git
+      (or) http://sources.redhat.com/git/systemtap.git
+
+- Build systemtap normally:
+  % .../configure [other autoconf options]
+  Or, with build it with a bundled internal copy of elfutils:
+  % .../configure --with-elfutils=ELFUTILS-SOURCE-DIR [other autoconf options]
+
+  Consider configuring with "--enable-dejazilla" to automatically
+  contribute to our public test result database.
+
+  Consider configuring with "--prefix=DIRECTORY" to specify an
+  installation directory other than /usr/local.  It can be an ordinary
+  personal directory.
+
+  % make all
+  % sudo make install
+
+  To uninstall systemtap:
+  % sudo make uninstall
+
+- Run systemtap:
+
+  To run systemtap after installation, add $prefix/bin to your $PATH, or
+  refer to $prefix/bin/stap directly.  If you keep your build tree
+  around, you can also use the "stap" binary there.  
+
+  Some samples should be available under $prefix/share/doc/systemtap/examples.
+
+  Normally, run "stap" as root.  If desired, create "stapdev" and
+  "stapusr" entries in /etc/groups.  Any users in "stapdev" will be
+  able to run systemtap as if with root privileges.  Users in "stapusr"
+  can only launch (with "staprun") pre-compiled probe modules (created
+  by "stap -p4 ...") that a system administrator copied under
+  /lib/modules/`uname -r`/systemtap.
+
+  To run the full test suite from the build tree.
+  % sudo make installcheck
+
+
+Tips:
+
+- By default, systemtap looks for the debug info in these locations:
+  /boot/vmlinux-`uname -r`
+  /usr/lib/debug/lib/modules/`uname -r`/vmlinux
+  /lib/modules/`uname -r`/vmlinux
+  /lib/modules/`uname -r`/build/vmlinux
+
+
+Building a kernel.org kernel:
+
+- Build the kernel using your normal procedures.  Enable
+  CONFIG_DEBUG_INFO, CONFIG_KPROBES, CONFIG_RELAY, CONFIG_DEBUG_FS,
+  CONFIG_MODULES, CONFIG_MODULES_UNLOAD
+- % make modules_install install headers_install
+- Boot into the kernel.
+
+- If you wish to leave the kernel build tree in place, simply run
+  % stap -r /path/to/kernel/build/tree [...]
+  You're done.
+
+- Or else, if you wish to install the kernel build/debuginfo data into
+  a place where systemtap will find it without the "-r" option:
+  % ln -s /path/to/kernel/build/tree /lib/modules/RELEASE/build 
+
+- Instead of using the "-r" option, you can also use the environment 
+  variable SYSTEMTAP_RELEASE to direct systemtap to the kernel data.
+

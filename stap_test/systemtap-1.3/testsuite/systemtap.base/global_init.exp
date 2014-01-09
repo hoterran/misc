@@ -1,0 +1,5 @@
+# Check that global variables are initialized before all begin probes
+
+set test "global_init"
+
+stap_run $srcdir/$subdir/$test.stp no_load $all_pass_string

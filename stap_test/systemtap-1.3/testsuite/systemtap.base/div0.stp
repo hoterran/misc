@@ -1,0 +1,32 @@
+/*
+ * div.stp0
+ *
+ * Check the systemtap divide by 0 does not kill the machine
+ *	
+ * Note: Error messages are written to stderr. That means it is
+ * possible that if a printf is followed by something that 
+ * generates an error, the error will get displayed before the printf.
+ * That is why both print's are in the begin probe.
+ * 
+ */
+
+global x3
+global x1
+global x2
+
+probe begin
+{
+	print("systemtap starting probe\n")
+	print("systemtap ending probe\n")
+	x1 = 56088; x2 = 0;
+}
+
+probe end
+{
+	x3 = x1 / x2
+	/* this part does not get executed */
+	if (x3 != 456 )
+		print("systemtap test failure\n")
+	else
+		print("systemtap test failure\n")
+}

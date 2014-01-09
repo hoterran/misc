@@ -1,0 +1,8 @@
+#! stap -p2
+
+# tests that an inline function is *not* matched using
+# the function().call pattern
+
+probe kernel.function("context_switch").call {
+  log ("found an inline via function().call")
+}

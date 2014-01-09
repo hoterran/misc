@@ -1,0 +1,46 @@
+#! stap -p4
+
+probe kprocess.create {
+  log(pp())
+  log(sprint(task))
+}
+
+probe kprocess.start {
+  log(pp())
+}
+
+probe kprocess.exec {
+  log(pp())
+  log(filename)
+}
+
+probe kprocess.exec_complete {
+  log(pp())
+  log(sprint(errno))
+  log(sprint(success))
+}
+
+probe kprocess.exit {
+  log(pp())
+  log(sprint(code))
+}
+
+probe kprocess.release {
+  log(pp())
+  log(sprint(task))
+}
+
+probe signal.send {
+  log(pp())
+  log(sprint(sig))
+  log(sig_name)
+  log(sprint(task))
+  log(sprint(shared))
+}
+
+probe signal.handle {
+  log(pp())
+  log(sprint(sig))
+  log(sig_name)
+}
+

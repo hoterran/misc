@@ -1,0 +1,13 @@
+#! stap -p4
+
+# tests probing of an inline function: note that due to comments
+# listed in PR 1155 we cannot resolve the parameters of the inline
+# at the moment.
+
+probe kernel.function("context_switch").inline ? {
+  log ("found an inline function")
+}
+
+probe never {
+  log ("or not ...")
+}

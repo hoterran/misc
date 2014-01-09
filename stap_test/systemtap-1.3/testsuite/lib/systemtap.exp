@@ -1,0 +1,298 @@
+load_lib site.exp
+
+proc installtest_p {} {
+    global TOOL_OPTIONS
+    if {[info exists TOOL_OPTIONS] && [string match "*install*" $TOOL_OPTIONS]} {
+        return 1
+    } else { return 0 }
+}
+
+
+proc use_server_p {} {
+    global TOOL_OPTIONS
+    if {[info exists TOOL_OPTIONS] && [string match "*server*" $TOOL_OPTIONS]} {
+        return 1
+    } else { return 0 }
+}
+
+
+proc utrace_p {} {
+    set path "/proc/kallsyms"
+    if {! [catch {exec grep -q utrace_attach $path} dummy]} {
+        return 1
+    } else {
+        return 0
+    }
+}
+
+
+proc uprobes_p {} {
+    global env
+    if {! [utrace_p]} {
+        return 0
+    }
+    set uprobes $env(SYSTEMTAP_RUNTIME)/uprobes
+    set res [catch "exec make -q -C $uprobes uprobes.ko" output]
+    if {$res != 0} {
+        # build as user at $uprobes which will be the source
+	# tree for 'make check' and the install tree for
+	# 'make installcheck'.
+	verbose -log "exec make -C $uprobes"
+	set res [catch "exec make -C $uprobes" output]
+	verbose -log "OUT $output"
+	verbose -log "RC $res"
+    }
+    if {$res == 0} { return 1 } else { return 0 }
+}
+
+
+proc print_systemtap_version {} {
+    set version [exec /bin/uname -r]
+    set location "/boot/vmlinux-$version"
+    if {! [file exists $location]} {
+	# try the debuginfo location
+	set location "/usr/lib/debug/lib/modules/$version/vmlinux"
+	if {! [file exists $location]} { set location "" }
+    }
+
+    print "kernel location: $location"
+    print "kernel version: $version"
+
+    set location [exec /usr/bin/which stap]
+    regexp {version [^)]*} [exec stap -V 2>@ stdout] version
+
+    print "systemtap location: $location"
+    print "systemtap version: $version"
+
+    set location [exec /usr/bin/which gcc]
+    set version [exec gcc --version | head -1]
+
+    print "gcc location: $location"
+    print "gcc version: $version"
+}
+
+
+proc setup_systemtap_environment {} {
+    global srcdir env server_pid net_path
+
+    # need an absolute SRCDIR for the top-level src/ tree
+    # XXX: or, we could change nearby uses of ${SRCDIR}/testsuite to ${SRCDIR}
+    if {[string index $srcdir 0] != "/"} then {
+        set env(SRCDIR) [exec pwd]/$srcdir/..
+    } else {
+        set env(SRCDIR) $srcdir/..
+    }
+
+    # Use a local systemtap directory and cache.  Add user name so
+    # make check and sudo make check don't clobber each other.
+    set env(SYSTEMTAP_DIR) [exec pwd]/.systemtap-[exec whoami]
+
+    # Start a systemtap server, if requested.
+    set net_path ""
+    set server_pid 0
+    if {[use_server_p]} then {
+	if {! [setup_server]} then {
+	    return 0
+	}
+    }
+
+    # PATH, SYSTEMTAP_TAPSET, SYSTEMTAP_RUNTIME, LD_LIBRARY_PATH are already set.
+    foreach var {PATH STAP SRCDIR SYSTEMTAP_TAPSET SYSTEMTAP_RUNTIME SYSTEMTAP_DIR LD_LIBRARY_PATH} {
+        if [info exists env($var)] {
+            verbose -log "env $var = $env($var)"
+        }
+    }
+
+    return 1
+}
+
+# Set up the environment so that tests will be performed using the systemtap
+# client and server.
+proc setup_server {} {
+    global srcdir env server_pid net_path installed_stap
+
+    # Make sure that the necessary resources are available to run the client/server.
+    if {[catch {exec /usr/bin/which avahi-publish-service} dummy]} then {
+	print "Unable to start a server: avahi-publish-service is not found in PATH"
+	return 0
+    }
+
+    # A place for some temporary files and scripts.
+    set net_path [exec pwd]/net
+    exec /bin/mkdir -p $net_path
+
+    # Server management scripts and data are installed if this is an
+    # install test, otherwise there is some setup to do.
+    # Make sure the server management scripts and tools are on the $PATH.
+    if {! [installtest_p]} then {
+	set env(PATH) "$srcdir/..:[exec pwd]/..:$env(PATH)"
+	set env(SYSTEMTAP_SERVER_SCRIPTS) "$srcdir/.."
+    } else {
+	set env(PATH) "$env(PKGLIBDIR):$env(PATH)"
+	set env(SYSTEMTAP_SERVER_SCRIPTS) $env(PKGLIBDIR)
+    }
+
+    # Erase the old server log file.
+    set logfile "[exec pwd]/server.log"
+    if {[file exists $logfile]} then {
+	exec rm -f $logfile;
+    }
+    # Create a new one and make sure it's world writable.
+    exec touch $logfile
+    exec chmod 666 $logfile
+
+    # Try to find or start the server.
+    set server_pid [exec env STAP_PR11197_OVERRIDE=1 env SYSTEMTAP_STAP=[exec which stap] stap-start-server --log=$logfile]
+    if { "$server_pid" == "" } then {
+	print "Cannot start a systemtap server"
+	set server_pid 0
+	return 0
+    } else {
+	print "Started a systemtap server as PID==$server_pid"
+    }
+
+    # See what avahi finds
+    catch { exec avahi-browse _stap._tcp -t -r | grep -A4 {^=.*Systemtap.Compile} } looksee
+    verbose -log "avahi-browse found:\n$looksee"
+
+    # Make sure that stap can find the server.
+    set lines [exec stap --list-servers=online,compatible 2>@ stdout | wc -l]
+    if {$lines < 2} then {
+	print "Unable to find a systemtap server -- check firewall settings"
+	shutdown_server
+	return 0
+    }
+
+    # Substitute a script on the PATH in place of stap which calls the real
+    # stap with the --use-server flag.
+    set path "$net_path/stap"
+    set fp [open $path "w"]
+    puts $fp "#!/bin/sh"
+    puts $fp "[exec which stap] --use-server \"\$@\""
+    close $fp
+    exec chmod +x $path
+
+    # Add the wrapper script to the PATH after creating it
+    set installed_stap [exec which stap]
+    set env(PATH) "$net_path:$env(PATH)"
+
+    return 1
+}
+
+proc shutdown_server {} {
+    global server_pid net_path
+
+    if { $server_pid != 0 } then {
+	print "Stopping the systemtap server with PID==$server_pid"
+	exec stap-stop-server $server_pid
+	set server_pid 0
+    }
+
+    # Remove the temporary stap script
+    if [file exists $net_path] {
+	exec /bin/rm -fr $net_path
+    }
+
+    foreach module [glob -nocomplain [exec pwd]/stap_*.ko] {
+	exec /bin/rm -f $module
+    }
+}
+
+proc get_system_info {} {
+    global Host Snapshot Distro GCC_Version env
+    
+    set Host [exec /bin/uname -a] 
+    if [file exists ../SNAPSHOT] {
+	set Snapshot [exec /bin/cat ../SNAPSHOT]
+    } elseif [file exists $env(SRCDIR)/../SNAPSHOT] {
+	set Snapshot [exec /bin/cat $env(SRCDIR)/../SNAPSHOT]
+    } else {
+        regexp {version [^)]*} [exec stap -V 2>@ stdout] version
+        set Snapshot $version
+    }
+    set Distro "Linux"
+    if [file exists /usr/bin/lsb_release] {
+        # this produces one line of this format:
+        # Distribution:\tSTRING
+        set Distro [lrange [exec /usr/bin/lsb_release -d] 1 end]
+    } else {
+        foreach f {/etc/fedora-release /etc/enterprise-release /etc/redhat-release /etc/suse-release /etc/debian_version} {
+            if [file exists $f] then {set Distro [exec /bin/cat $f]; break }
+        }
+    }
+    # Easily parsable version first major minor patch level
+    set n [exec echo "__GNUC__ __GNUC_MINOR__ __GNUC_PATCHLEVEL__" | cpp -P]
+    set n [string map {" " "."} $n]
+    set n [string map {"\n" ""} $n]
+    # Plus full version between square brackets.
+    set full [exec gcc --version | head -1]
+    set GCC_Version "$n \[$full\]"
+}
+
+if {! [setup_systemtap_environment]} then {
+    return 0
+}
+
+print_systemtap_version
+get_system_info
+
+proc systemtap_init {args} {}
+proc systemtap_version {} {}
+
+proc cleanup {} {
+    # Stop the stap server, if we started it.
+    shutdown_server
+}
+
+
+proc stap_run_batch {args} {
+    verbose -log "starting $args"
+
+    # Many of our test cases use "#! stap ...".  Since these lack
+    # /full/paths, they are not really executable.  (We can't have
+    # /full/paths because the choice of systemtap interpreter is set
+    # at "make check" time.)
+
+    # So we cheat.  If the file begins with "#! stap", we will spawn
+    # stap manually here (relying on $PATH).  Otherwise, we presume
+    # the file properly executable.
+
+    set file [open [lindex $args 0] r]
+    set firstbits [gets $file]
+    close $file
+    if [regexp -line {\#! stap (.*)} $firstbits -> stap_args] {
+        verbose -log "spawn1 stap $stap_args [lindex $args 0]"
+        spawn stap $stap_args [lindex $args 0]
+    } else {
+        verbose -log "spawn2 $args"
+        spawn $args
+    }
+
+    expect { 
+	-timeout -1
+        -re {[^\r]*\r} { verbose -log $expect_out(0,string); exp_continue } 
+        eof { }
+    }
+    set results [wait]
+    verbose -log "wait results: $results"
+    if {[llength $results] >= 5} {
+	# Unexpected output. stap must have crashed
+	return -1
+    } else {
+	return [lindex $results 3]
+    }
+}
+
+proc as_root { command } {
+
+     set effective_pid [exec /usr/bin/id -u]
+
+     if {$effective_pid != 0} {
+	 set command "sudo $command"
+     }
+     verbose -log "as_root $command"
+     set res [catch {eval exec $command} value]
+     verbose -log "OUT $value"
+     verbose -log "RC $res"
+     return  $res
+ }

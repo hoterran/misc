@@ -1,0 +1,120 @@
+use pdflater for generation
+--- a/configure.ac
++++ b/configure.ac
+@@ -170,19 +170,19 @@ AC_ARG_ENABLE([docs],
+     [enable building documentation (default on if latex etc. found).]),
+   [enable_docs=$enableval],
+   [enable_docs="check"])
+-AC_CHECK_PROG(have_latex, latex, yes, no)
+-AC_CHECK_PROG(have_dvips, dvips, yes, no)
+-AC_CHECK_PROG(have_ps2pdf, ps2pdf, yes, no)
+-AC_CHECK_PROG(have_latex2html, latex2html, yes, no)
+-if test "x${have_latex}${have_dvips}${have_ps2pdf}${have_latex2html}" != "xyesyesyesyes"; then
+-   if test "$enable_docs" == "yes"; then
+-      AC_MSG_ERROR([cannot find all tools for building documentation])
+-   fi
+-  if test "$enable_docs" == "check"; then
+-    AC_MSG_WARN([will not build documentation, cannot find all tools])
+-  fi
+-fi
+-if test "x${have_latex}${have_dvips}${have_ps2pdf}${have_latex2html}" == "xyesyesyesyes" -a "$enable_docs" != "no"; then
++#AC_CHECK_PROG(have_latex, latex, yes, no)
++#AC_CHECK_PROG(have_dvips, dvips, yes, no)
++#AC_CHECK_PROG(have_ps2pdf, ps2pdf, yes, no)
++#AC_CHECK_PROG(have_latex2html, latex2html, yes, no)
++#if test "x${have_latex}${have_dvips}${have_ps2pdf}${have_latex2html}" != "xyesyesyesyes"; then
++#   if test "$enable_docs" == "yes"; then
++#      AC_MSG_ERROR([cannot find all tools for building documentation])
++#   fi
++#  if test "$enable_docs" == "check"; then
++#    AC_MSG_WARN([will not build documentation, cannot find all tools])
++#  fi
++#fi
++if test "$enable_docs" != "no"; then
+    building_docs="yes"
+ fi
+ AM_CONDITIONAL([BUILD_DOCS], [test "$building_docs" == "yes"])
+--- a/doc/langref.tex
++++ b/doc/langref.tex
+@@ -10,6 +10,7 @@
+ \usepackage{makeidx}
+ \usepackage{verbatim}
+ \usepackage{url}
++\usepackage[colorlinks]{hyperref}
+ \makeindex
+ 
+ \makeatletter
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -22,20 +22,14 @@ uninstall-local:
+ 	done
+ endif
+ 
+-SUFFIXES = ps pdf dvi ps tex
++SUFFIXES = pdf tex
+ 
+-.ps.pdf:
+-	ps2pdf -r600 $<
+-
+-.dvi.ps:
+-	dvips -t letter -o $@ $<
+-
+-.tex.dvi:
++.tex.pdf:
+ 	pwd=`pwd`; cd $(srcdir); \
+-	latex -output-directory=$$pwd $<; \
++	pdflatex -output-directory=$$pwd $<; \
+ 	touch $*.glo \
+ 	makeindex $*.glo -s nomencl.ist -o $*.gls \
+-	latex -output-directory=$$pwd $<; \
+-	latex -output-directory=$$pwd $<; \
+-	latex -output-directory=$$pwd $<
++	pdflatex -output-directory=$$pwd $<; \
++	pdflatex -output-directory=$$pwd $<; \
++	pdflatex -output-directory=$$pwd $<
+ 
+--- a/doc/tutorial.tex
++++ b/doc/tutorial.tex
+@@ -5,7 +5,7 @@
+ % later version.
+ 
+ \documentclass{article}
+-\usepackage{html}
++%\usepackage{html}
+ \usepackage{graphicx}
+ % \usepackage{moreverb}
+ \usepackage{fancyvrb}
+@@ -16,14 +16,15 @@
+ % \usepackage{geometry}
+ % \geometry{letterpaper,text={7in,8.5in}}
+ \usepackage{charter}
++\usepackage[colorlinks]{hyperref}
+ 
+ \newenvironment{boxedminipage}%% Boxed minipage
+-    {\begin{makeimage}\begin{center}\begin{Sbox}\begin{minipage}}%
+-    {\end{minipage}\end{Sbox}\fbox{\TheSbox}\end{center}\end{makeimage}}
++    {\begin{center}\begin{Sbox}\begin{minipage}}%
++    {\end{minipage}\end{Sbox}\fbox{\TheSbox}\end{center}}
+ 
+-\begin{htmlonly}
+-\renewcommand{\nomenclature}[2]{}
+-\end{htmlonly}
++%\begin{htmlonly}
++%\renewcommand{\nomenclature}[2]{}
++%\end{htmlonly}
+ 
+ % \usepackage{draftcopy} % ugly
+ \bibliographystyle{plain}
+@@ -1071,9 +1072,9 @@ repository.  Come join us!
+ \section{Glossary}
+ \renewcommand{\nomname}{}
+ \printglossary
+-\begin{htmlonly}
+-{\em Sorry, not available in HTML.}
+-\end{htmlonly}
++%\begin{htmlonly}
++%{\em Sorry, not available in HTML.}
++%\end{htmlonly}
+ 
+ \section{Errors}
+ 

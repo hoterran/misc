@@ -1,0 +1,8 @@
+manpage-and-spelling-error-fixes.patch
+use-pdflatex.diff
+dont-build-pdfdocs.diff
+vim-filetype-override.diff
+new-elfutils.diff
+grapher-libs.diff
+debversion.diff
+CVE-2010-4170+CVE-2010-4171.patch

@@ -1,0 +1,6 @@
+#! stap -p2
+
+global stats
+probe begin {
+  stats <<< "string"  # stats only collect numbers
+}

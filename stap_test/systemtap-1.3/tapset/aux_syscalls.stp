@@ -1,0 +1,2048 @@
+#
+# Given a userspace pointer to a timeval,
+# copy and decode it and return a string.
+#
+function _struct_timeval_u:string(uaddr:long, n:long)
+%{ /* pure */
+	int n = (int)THIS->n;
+	struct timeval tv[n];
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL || n > 2)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char*)&tv, ptr, n*sizeof(struct timeval)) == 0) {
+			if (n == 2)
+				snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%ld.%06ld][%ld.%.06ld]", 
+					tv[0].tv_sec, tv[0].tv_usec, tv[1].tv_sec, tv[1].tv_usec);
+			else
+				snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%ld.%06ld]", tv[0].tv_sec, tv[0].tv_usec);
+	   	} else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+%}
+
+function _struct_compat_timeval_u:string(uaddr:long, n:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+	int n = (int)THIS->n;
+	struct compat_timeval tv[n];
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL || n > 2)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char*)&tv, ptr, 	n*sizeof(struct compat_timeval)) == 0)
+			if (n == 2)
+				snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%ld.%06ld][%ld.%.06ld]", 
+					(long)tv[0].tv_sec, (long)tv[0].tv_usec, (long)tv[1].tv_sec, (long)tv[1].tv_usec);
+			else
+				snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%ld.%06ld]", (long)tv[0].tv_sec, (long)tv[0].tv_usec);
+	   	else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+#endif
+%}
+
+function _struct_timezone_u:string(uaddr:long)
+%{ /* pure */
+	struct timezone tz;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char*)&tz,ptr,sizeof(struct timezone)) == 0)
+			snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%d, %d]", tz.tz_minuteswest, tz.tz_dsttime);
+		else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+%} 
+
+%{
+// Needed for the following four functions
+// _struct_utimbuf_actime, _struct_utimbuf_modtime,
+// _struct_compat_utimbuf_actime, _struct_compat_utimbuf_modtime
+#include <linux/utime.h>
+%}
+
+// Returns the value of the actime field of a utimbuf in user space
+// at the given address, or zero on when userspace data is not accessible.
+function _struct_utimbuf_actime:long(uaddr:long)
+%{ /* pure */
+	struct utimbuf ubuf;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+	  THIS->__retvalue = 0;
+	else
+	  if(_stp_copy_from_user((char*)&ubuf,ptr,sizeof(ubuf)) == 0)
+	    THIS->__retvalue = ubuf.actime;
+	  else
+	    THIS->__retvalue = 0;
+%} 
+
+// Returns the value of the modtime field of a utimbuf in user space
+// at the given address, or zero on when userspace data is not accessible.
+function _struct_utimbuf_modtime:long(uaddr:long)
+%{ /* pure */
+	struct utimbuf ubuf;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+	  THIS->__retvalue = 0;
+	else
+	  if(_stp_copy_from_user((char*)&ubuf,ptr,sizeof(ubuf)) == 0)
+	    THIS->__retvalue = ubuf.modtime;
+	  else
+	    THIS->__retvalue = 0;
+%} 
+
+// Returns the value of the actime field of a compat_utimbuf in user space
+// at the given address, or zero on when userspace data is not accessible.
+function _struct_compat_utimbuf_actime:long(uaddr:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+	struct compat_utimbuf ubuf;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+	  THIS->__retvalue = 0;
+	else
+	  if(_stp_copy_from_user((char*)&ubuf,ptr,sizeof(ubuf)) == 0)
+	    THIS->__retvalue = ubuf.actime;
+	  else
+	    THIS->__retvalue = 0;
+#endif
+%} 
+
+// Returns the value of the modtime field of a compat_utimbuf in user space
+// at the given address, or zero on when userspace data is not accessible.
+function _struct_compat_utimbuf_modtime:long(uaddr:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+	struct compat_utimbuf ubuf;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+	  THIS->__retvalue = 0;
+	else
+	  if(_stp_copy_from_user((char*)&ubuf,ptr,sizeof(ubuf)) == 0)
+	    THIS->__retvalue = ubuf.modtime;
+	  else
+	    THIS->__retvalue = 0;
+#endif
+%} 
+
+function _struct_timespec_u:string(uaddr:long, n:long)
+%{ /* pure */
+#define STP_UTIME_NOW  ((1l << 30) - 1l)
+#define STP_UTIME_OMIT ((1l << 30) - 2l)
+	int n = (int)THIS->n;
+	struct timespec ts[n];
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL || n > 2)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char *)&ts, ptr, n*sizeof(struct timespec)))  {
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+		} else {
+			char *str;
+			int len, i = 0;
+			ptr = THIS->__retvalue;
+			while (i < n) {
+				str = NULL;
+				if (ts[i].tv_nsec == STP_UTIME_NOW)
+					str = "UTIME_NOW";
+				else if (ts[i].tv_nsec == STP_UTIME_OMIT)
+					str = "UTIME_OMIT";
+				if (str)
+					len = snprintf(ptr, MAXSTRINGLEN, "[%s]", str);
+				else
+					len = snprintf(ptr, MAXSTRINGLEN, "[%ld.%09ld]", (long)ts[i].tv_sec, ts[i].tv_nsec);
+				ptr += len; i++;
+			}
+		}
+	}
+#undef STP_UTIME_NOW
+#undef STP_UTIME_OMIT
+%}
+function _struct_compat_timespec_u:string(uaddr:long, n:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+#define STP_UTIME_NOW  ((1l << 30) - 1l)
+#define STP_UTIME_OMIT ((1l << 30) - 2l)
+	int n = (int)THIS->n;
+	struct compat_timespec ts[n];
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL || n > 2)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char *)&ts, ptr, n*sizeof(struct compat_timespec)))  {
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+		} else {
+			char *str;
+			int len, i = 0;
+			ptr = THIS->__retvalue;
+			while (i < n) {
+				str = NULL;
+				if (ts[i].tv_nsec == STP_UTIME_NOW)
+					str = "UTIME_NOW";
+				else if (ts[i].tv_nsec == STP_UTIME_OMIT)
+					str = "UTIME_OMIT";
+				if (str)
+					len = snprintf(ptr, MAXSTRINGLEN, "[%s]", str);
+				else
+					len = snprintf(ptr, MAXSTRINGLEN, "[%ld.%09ld]", (long)ts[i].tv_sec, (long)ts[i].tv_nsec);
+				ptr += len; i++;
+			}
+		}
+	}
+#undef STP_UTIME_NOW
+#undef STP_UTIME_OMIT
+#endif
+%}
+
+
+function _struct_itimerspec_u:string(uaddr:long)
+%{ /* pure */
+	struct itimerspec its;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char *)&its, ptr,sizeof(struct itimerspec)))
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+		else
+			snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%d.%06d,%d.%06d]",
+				(int)its.it_interval.tv_sec, (int)its.it_interval.tv_nsec,
+				(int)its.it_value.tv_sec, (int)its.it_value.tv_nsec);
+	}	
+%}
+
+function _struct_itimerval_u:string(uaddr:long)
+%{ /* pure */
+	struct itimerval itv;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char *)&itv,ptr,sizeof(struct itimerval)))
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+		else
+			snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%d.%06d,%d.%06d]", 
+				(int)itv.it_interval.tv_sec, (int)itv.it_interval.tv_usec,
+				(int)itv.it_value.tv_sec, (int)itv.it_value.tv_usec);
+	}
+%}
+
+function _struct_compat_itimerval_u:string(uaddr:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+	struct compat_itimerval itv;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char *)&itv,ptr,sizeof(struct compat_itimerval)))
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+		else
+			snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%d.%06d,%d.%06d]", 
+				(int)itv.it_interval.tv_sec, (int)itv.it_interval.tv_usec,
+				(int)itv.it_value.tv_sec, (int)itv.it_value.tv_usec);
+	}
+#endif
+%}
+
+%{
+// Needed for function _struct_sockaddr_u. Unfortunately cannot be
+// inlined into the function since these header files define static
+// functions themselves.
+#include <linux/socket.h>
+#include <linux/in.h>
+#include <linux/netlink.h>
+%}
+
+function _struct_sockaddr_u:string(uaddr:long, len:long)
+%{ /* pure */
+#include <linux/version.h>
+#include <linux/in6.h>
+#include <linux/un.h>
+#include <linux/if_packet.h>
+
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		char buf[128];
+		size_t len = THIS->len < 128 ? THIS->len : 128;
+		if(_stp_copy_from_user(buf, ptr, len))
+			strlcpy (THIS->__retvalue, "[...]", MAXSTRINGLEN);
+		else {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,11)
+#define LPORT   (inet->inet.num)
+#define DADDR   (&inet->inet.daddr)
+#else
+#define LPORT   (inet->num)
+#define DADDR   (&inet->daddr)
+#endif
+
+// Use kernel builtin instead of picking up user space ntohs (function).
+#define _stp_ntohs be16_to_cpu
+
+	//FIXME. Not done yet.
+	char *str = THIS->__retvalue;
+	const int strlen = MAXSTRINGLEN;
+	struct sockaddr *sa = (struct sockaddr *)buf;
+	if ((sa->sa_family == AF_INET)&&(len == sizeof(struct sockaddr_in)))
+	{
+		struct sockaddr_in *sin = (struct sockaddr_in *)buf;
+		const unsigned char *addr = (unsigned char *)&sin->sin_addr;
+		snprintf(str, strlen, "{AF_INET, %d.%d.%d.%d, %d}", 
+			addr[0], addr[1], addr[2], addr[3], _stp_ntohs(sin->sin_port));
+	}
+	else if ((sa->sa_family == AF_UNIX)&&(len == sizeof(struct sockaddr_un)))
+	{	
+		struct sockaddr_un *sun = (struct sockaddr_un *)buf;	
+		snprintf(str, strlen, "{AF_UNIX, %s}", sun->sun_path); 
+	}
+	else if ((sa->sa_family == AF_NETLINK)&&(len == sizeof(struct sockaddr_nl)))
+	{
+		struct sockaddr_nl *nl = (struct sockaddr_nl *)buf;
+		snprintf(str, strlen, "{AF_NETLINK, pid=%d, groups=%08x}", nl->nl_pid, nl->nl_groups); 
+	}
+	else if ((sa->sa_family == AF_INET6)&&(len == sizeof(struct sockaddr_in6)))
+	{
+		// FIXME. Address is probably not correctly displayed
+		struct sockaddr_in6 *sin = (struct sockaddr_in6 *)buf;
+		snprintf(str, strlen, "{AF_INET6, %016llx, %d}", 
+			*(long long *)&sin->sin6_addr, _stp_ntohs(sin->sin6_port));
+	}
+	else if ((sa->sa_family == AF_PACKET)&&(len == sizeof(struct sockaddr_ll))) 
+	{
+		struct sockaddr_ll *sll = (struct sockaddr_ll *)buf;
+		snprintf(str, strlen, "{AF_PACKET, proto=%d, ind=%d, hatype=%d, pkttype=%d, halen=%d, addr=0x%llx}", 
+			(int)sll->sll_protocol, sll->sll_ifindex, (int)sll->sll_hatype, (int)sll->sll_pkttype,
+			(int)sll->sll_halen,
+			(long long)(*(uint64_t *)sll->sll_addr));
+	}
+	else
+	{
+		if (len >= sizeof(sa_family_t))
+		{
+			snprintf(str, strlen, "{unknown sockaddr with sa=%d, salen=%d}", sa->sa_family, (int) len);
+		}
+		else
+		{
+			snprintf(str, strlen, "{unknown sockaddr with salen=%d}", (int)len);
+		}
+	}
+	}
+}	
+%}
+
+function _struct_rlimit_u:string(uaddr:long)
+%{ /* pure */
+	struct rlimit rl;
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if (_stp_copy_from_user((char *)&rl, ptr, sizeof(struct rlimit)) == 0)
+			snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%ld,%ld]",
+				rl.rlim_cur, rl.rlim_max);
+		else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+%}
+
+function _fildes_u:string (uaddr:long)
+%{ /* pure */
+	int fd[2];
+	char *ptr = (char *)(unsigned long)THIS->uaddr;
+
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if (_stp_copy_from_user((char *)&fd, ptr, 2*sizeof(int)) == 0)
+			 snprintf(THIS->__retvalue, MAXSTRINGLEN, "[%d, %d]", fd[0], fd[1]);
+		else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+%}
+
+
+function __sem_flags:string(semflg:long)
+%{ /* pure */
+	long semflg = THIS->semflg;
+	char *str = THIS->__retvalue;
+	int mode = semflg & S_IRWXUGO;
+	int len;
+
+	if (mode)
+		snprintf(str, MAXSTRINGLEN, "%#o|", mode); 
+	if (semflg & IPC_CREAT)
+		strlcat(str, "IPC_CREAT|", MAXSTRINGLEN);
+	if (semflg & IPC_EXCL)
+		strlcat(str, "IPC_EXCL|", MAXSTRINGLEN);
+
+	len = strlen(str);
+	if (len)
+		str[len-1] = 0;
+%}
+
+
+/* This function copies an argv from userspace. */
+function __get_argv:string(argv:long, first:long)
+{
+%( CONFIG_64BIT == "y" %?
+	if (first && argv)
+		argv += 8
+	while (argv) {
+		vstr = user_long(argv)
+		if (!vstr)
+			break
+		if (len)
+			str .= " "
+		str .= user_string_quoted(vstr)
+
+		newlen = strlen(str)
+		if (newlen == len)
+			break
+		len = newlen
+		argv += 8
+	}
+
+	return str
+%:
+	return __get_compat_argv(argv, first)
+%)
+}
+/* This function copies an argv from userspace. */
+function __get_compat_argv:string(argv:long, first:long)
+{
+	if (first && argv)
+		argv += 4
+	while (argv) {
+		vstr = user_int(argv) & 0xffffffff
+		if (!vstr)
+			break
+		if (len)
+			str .= " "
+		str .= user_string_quoted(vstr)
+
+		newlen = strlen(str)
+		if (newlen == len)
+			break
+		len = newlen
+		argv += 4
+	}
+
+	return str
+}
+
+/*
+ * Return the  symbolic string  representation
+ * of the struct timex.mode member of adjtimex
+ * consult `man adjtimex` for more information
+ * CALLERS:
+ *    syscall.adjtimex
+ */
+function _adjtx_mode_str(f) {
+   if((f & 32769) == 32769) bs="ADJ_OFFSET_SINGLESHOT|".bs
+   if(f  & 16384) bs="ADJ_TICK|".bs
+   if(f  & 32)    bs="ADJ_TIMECONST|".bs
+   if(f  & 16)    bs="ADJ_STATUS|".bs
+   if(f  & 8)     bs="ADJ_ESTERROR|".bs
+   if(f  & 4)     bs="ADJ_MAXERROR|".bs
+   if(f  & 2)     bs="ADJ_FREQUENCY|".bs
+   if(f & 1 && ((f & 32769) != 32769)) bs="ADJ_OFFSET|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+function _inotify_watch_mask_str(f) {
+	if (f & 0x00000001) bs="IN_ACCESS|"
+	if (f & 0x00000002) bs=bs."IN_MODIFY|"
+	if (f & 0x00000004) bs=bs."IN_ATTRIB|"
+	if (f & 0x00000008) bs=bs."IN_CLOSE_WRITE|"
+	if (f & 0x00000010) bs=bs."IN_CLOSE_NOWRITE|"
+	if (f & 0x00000020) bs=bs."IN_OPEN|"
+	if (f & 0x00000040) bs=bs."IN_MOVED_FROM|"
+	if (f & 0x00000080) bs=bs."IN_MOVED_TO|"
+	if (f & 0x00000100) bs=bs."IN_CREATE|"
+	if (f & 0x00000200) bs=bs."IN_DELETE|"
+	if (f & 0x00000400) bs=bs."IN_DELETE_SELF|"
+	if (f & 0x00000800) bs=bs."IN_MOVE_SELF|"
+	return substr(bs,0,strlen(bs)-1)
+}
+
+/*
+ * Return the symbolic string representation
+ * of the how argument given in *sigprocmask
+ * consult  `man sigprocmask`  for more info
+ * CALLERS:
+ *    syscall.sigprocmask
+ *    syscall.rt_sigprocmask
+ */
+function _sigprocmask_how_str:string(how:long)
+%{ /* pure */
+	int len;
+	char *str = THIS->__retvalue;
+	switch (THIS->how) {
+	case SIG_BLOCK:
+		strlcpy(str, "SIG_BLOCK", MAXSTRINGLEN);
+		break;
+	case SIG_UNBLOCK:
+		strlcpy(str, "SIG_UNBLOCK", MAXSTRINGLEN);
+		break;
+	case SIG_SETMASK:
+		strlcpy(str, "SIG_SETMASK", MAXSTRINGLEN);
+		break;
+	default:
+		snprintf(str, MAXSTRINGLEN, "0x%lx", (long)THIS->how);
+	}	
+%}
+
+/*
+ * Return the symbolic string representation
+ * of the which argument  given to setitimer
+ * consult  `man setitimer`  for  more  info
+ * CALLERS:
+ *    syscall.getitimer
+ *    syscall.setitimer
+ * INCLUDE: <linux/time.h>
+ */
+function _itimer_which_str(which) {
+   if(which==0) return "ITIMER_REAL"
+   if(which==1) return "ITIMER_VIRTUAL"
+   if(which==2) return "ITIMER_PROF"
+   return sprintf("BAD VALUE: %d", which)
+}
+
+/*
+ * Return the command name for nfsservctl()
+ */
+function _nfsctl_cmd_str(cmd) {
+	if(cmd == 0) return "NFSCTL_SVC"
+	if(cmd == 1) return "NFSCTL_ADDCLIENT"
+	if(cmd == 2) return "NFSCTL_DELCLIENT"
+	if(cmd == 3) return "NFSCTL_EXPORT"
+	if(cmd == 4) return "NFSCTL_UNEXPORT"
+	if(cmd == 5) return "NFSCTL_UGIDUPDATE"
+	if(cmd == 6) return "NFSCTL_GETFH" 
+	if(cmd == 7) return "NFSCTL_GETFD"
+	if(cmd == 8) return "NFSCTL_GETFS"
+	return sprintf("UNRECOGNIZED VALUE: %d", cmd)
+}
+
+/*
+ * Return  the  symbolic   string  representation
+ * of the clockid argument  given to create_timer
+ * consult  `man create_timer`  for  more  info
+ * CALLERS:
+ *    syscall.timer_create
+ *    syscall.clock_settime
+ *    syscall.clock_gettime
+ *    syscall.clock_getres
+ *    syscall.clock_nanosleep
+ */
+function _get_wc_str(wc) {
+   if(wc==0) return "CLOCK_REALTIME"
+   if(wc==1) return "CLOCK_MONOTONIC"
+   if(wc==2) return "CLOCK_PROCESS_CPUTIME_ID"
+   if(wc==3) return "CLOCK_THREAD_CPUTIME_ID"
+   if(wc==4) return "CLOCK_REALTIME_HR"
+   if(wc==5) return "CLOCK_MONOTONIC_HR"
+   return sprintf("BAD VALUE: %d", wc)
+}
+
+function _flock_cmd_str(c) {
+   if(c & 1) bs="LOCK_SH|".bs
+   if(c & 2) bs="LOCK_EX|".bs
+   if(c & 8) bs="LOCK_UN|".bs
+   if(c & 4) bs="LOCK_NB|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man 2 pipe2` for more information */
+function _sys_pipe2_flag_str:string (f:long)
+%{ /* pure */ /* unprivileged */
+  long flags = THIS->f;
+  char *str = THIS->__retvalue;
+  int len;
+
+#if defined(O_NONBLOCK)
+  if (flags & O_NONBLOCK)
+    strlcat(str, "O_NONBLOCK|", MAXSTRINGLEN);
+#endif
+#if defined(O_CLOEXEC)
+  if (flags & O_CLOEXEC)
+    strlcat(str, "O_CLOEXEC|", MAXSTRINGLEN);
+#endif
+
+  len = strlen(str);
+  if (len)
+    str[strlen(str)-1] = 0;
+%}
+
+/* `man 2 open` for more information */
+function _sys_open_flag_str:string (f:long)
+%{ /* pure */
+	int flags = (int)THIS->f;
+	int acc = flags & O_ACCMODE;
+
+	switch (acc) {
+	case O_WRONLY:
+		strlcpy (THIS->__retvalue, "O_WRONLY", MAXSTRINGLEN);
+		break;
+	case O_RDWR:
+		strlcpy (THIS->__retvalue, "O_RDWR", MAXSTRINGLEN);
+		break;
+	default:
+		strlcpy (THIS->__retvalue, "O_RDONLY", MAXSTRINGLEN);
+	}
+
+#ifdef O_APPEND
+	if (flags & O_APPEND)
+		strlcat (THIS->__retvalue, "|O_APPEND", MAXSTRINGLEN);
+#endif
+#ifdef O_CLOEXEC
+	if (flags & O_CLOEXEC)
+		strlcat (THIS->__retvalue, "|O_CLOEXEC", MAXSTRINGLEN);
+#endif
+#ifdef O_CREAT
+	if (flags & O_CREAT)
+		strlcat (THIS->__retvalue, "|O_CREAT", MAXSTRINGLEN);
+#endif
+#ifdef O_ASYNC
+	if (flags & O_ASYNC)
+		strlcat (THIS->__retvalue, "|O_ASYNC", MAXSTRINGLEN);
+#elif defined(FASYNC)
+	if (flags & FASYNC)
+		strlcat (THIS->__retvalue, "|O_ASYNC", MAXSTRINGLEN);
+#endif
+#ifdef O_DIRECT
+	if (flags & O_DIRECT)
+		strlcat (THIS->__retvalue, "|O_DIRECT", MAXSTRINGLEN);
+#endif
+#ifdef O_DIRECTORY
+	if (flags & O_DIRECTORY)
+		strlcat (THIS->__retvalue, "|O_DIRECTORY", MAXSTRINGLEN);
+#endif
+#ifdef O_EXCL
+	if (flags & O_EXCL)
+		strlcat (THIS->__retvalue, "|O_EXCL", MAXSTRINGLEN);
+#endif
+#ifdef O_LARGEFILE
+	if (flags & O_LARGEFILE)
+		strlcat (THIS->__retvalue, "|O_LARGEFILE", MAXSTRINGLEN);
+#endif
+#ifdef O_NOATIME
+	if (flags & O_NOATIME)
+		strlcat (THIS->__retvalue, "|O_NOATIME", MAXSTRINGLEN);
+#endif
+#ifdef O_NOCTTY
+	if (flags & O_NOCTTY)
+		strlcat (THIS->__retvalue, "|O_NOCTTY", MAXSTRINGLEN);
+#endif
+#ifdef O_NOFOLLOW
+	if (flags & O_NOFOLLOW)
+		strlcat (THIS->__retvalue, "|O_NOFOLLOW", MAXSTRINGLEN);
+#endif
+#ifdef O_NONBLOCK
+	if (flags & O_NONBLOCK)
+		strlcat (THIS->__retvalue, "|O_NONBLOCK", MAXSTRINGLEN);
+#endif
+#ifdef O_SYNC
+	if (flags & O_SYNC)
+		strlcat (THIS->__retvalue, "|O_SYNC", MAXSTRINGLEN);
+#endif
+#ifdef O_TRUNC
+	if (flags & O_TRUNC)
+		strlcat (THIS->__retvalue, "|O_TRUNC", MAXSTRINGLEN);
+#endif
+#ifdef O_CLOEXEC
+	if (flags & O_CLOEXEC)
+		strlcat (THIS->__retvalue, "|O_CLOEXEC", MAXSTRINGLEN);
+#endif
+%}
+
+
+/* `man 2 open` for more information */
+function _access_mode_str(m) {
+	if((m & 7) == 0) return "F_OK"	
+	if(m & 4) bs="R_OK |".bs
+	if(m & 2) bs="W_OK |".bs
+	if(m & 1) bs="X_OK |".bs
+	return substr(bs,0,strlen(bs)-2)
+}
+
+/* `man 2 open` for more information */
+function _sys_open_mode_str(f) {
+   if((f & 448) == 448) bs="S_IRWXU|".bs
+   else {
+        if(f & 256) bs="S_IRUSR|".bs
+        if(f & 128) bs="S_IWUSR|".bs
+        if(f & 64) bs="S_IXUSR|".bs
+   }
+   if((f & 56) == 56) bs="S_IRWXG|".bs
+   else {
+        if(f & 32) bs="S_IRGRP|".bs
+        if(f & 16) bs="S_IWGRP|".bs
+        if(f & 8) bs="S_IXGRP|".bs
+   }
+   if((f & 7) == 7) bs="S_IRWXO|".bs
+   else {
+        if(f & 4) bs="S_IROTH|".bs
+        if(f & 2) bs="S_IWOTH|".bs
+        if(f & 1) bs="S_IXOTH|".bs
+   }
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man 2 mknod` for more information */
+function _mknod_mode_str(mode) {
+   if((mode & 0xF000)==0x8000)
+        return "S_IFREG|"._sys_open_mode_str(mode)
+   if((mode & 0xF000)==0x2000)
+        return "S_IFCHR|"._sys_open_mode_str(mode)
+   if((mode & 0xF000)==0x6000)
+        return "S_IFBLK|"._sys_open_mode_str(mode)
+   if((mode & 0xF000)==0x1000)
+        return "S_IFIFO|"._sys_open_mode_str(mode)
+   if((mode & 0xF000)==0xC000)
+        return "S_IFSOCK|"._sys_open_mode_str(mode)
+   return ""
+}
+
+/* `man msync` for more information */
+function _msync_flag_str(f) {
+	if (f & 7 == 0) return ""
+	if(f & 4) bs="MS_SYNC|".bs
+	if(f & 2) bs="MS_INVALIDATE|".bs
+	if(f & 1) bs="MS_ASYNC|".bs
+	return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man wait4` for more information */
+function _wait4_opt_str(f) {
+   if(f & 8) bs="WCONTINUED|".bs
+   if(f & 2) bs="WUNTRACED|".bs
+   if(f & 1) bs="WNOHANG|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man waitid` for more information */
+function _waitid_opt_str(f) {
+   if(f & 0x01000000) bs="WNOWAIT|".bs
+   if(f & 8) bs="WCONTINUED|".bs
+   if(f & 4) bs="WEXITED|".bs
+   if(f & 2) bs="WSTOPPED|".bs
+   if(f & 1) bs="WNOHANG|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man sendmsg` for more information */
+function _sendflags_str(f) {
+   if(f & 0x0001) bs="MSG_OOB|".bs
+   if(f & 0x0080) bs="MSG_EOR|".bs
+   if(f & 0x0004) bs="MSG_DONTROUTE|".bs
+   if(f & 0x0040) bs="MSG_DONTWAIT|".bs
+   if(f & 0x4000) bs="MSG_NOSIGNAL|".bs
+   if(f & 0x0800) bs="MSG_CONFIRM|".bs
+   if(f & 0x8000) bs="MSG_MORE|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man recv` for more information */
+function _recvflags_str(f) {
+   if(f & 1) bs="MSG_OOB|".bs
+   if(f & 2) bs="MSG_PEEK|".bs
+   if(f & 32) bs="MSG_TRUNC|".bs
+   if(f & 64) bs="MSG_DONTWAIT|".bs
+   if(f & 256) bs="MSG_WAITALL|".bs
+   if(f & 8192) bs="MSG_ERRQUEUE|".bs
+   if(f & 0x40000000) bs="MSG_CMSG_CLOEXEC|".bs
+   return substr(bs,0,strlen(bs)-1)
+}
+
+/* `man mlockall` for more information */
+function _mlockall_flags_str:string(flags:long)
+%{ /* pure */
+	#include <linux/mman.h>
+	int len;
+	long f = THIS->flags;
+	char *str = THIS->__retvalue;
+	if (f & MCL_CURRENT)
+		strlcat(str, "MCL_CURRENT|", MAXSTRINGLEN);
+	if (f & MCL_FUTURE)
+		strlcat(str, "MCL_FUTURE|", MAXSTRINGLEN);
+	len = strlen(str);
+	if (len)
+		str[strlen(str)-1] = 0;
+	else	
+		snprintf(str, MAXSTRINGLEN, "0x%lx", f);
+%}
+
+/* used by sys_delete_module */
+function _module_flags_str:string(flags:long)
+%{ /* pure */
+	int len;
+	long flags = THIS->flags;
+	char *str = THIS->__retvalue;
+	if (flags & O_TRUNC)
+		strlcat(str,"O_TRUNC|", MAXSTRINGLEN);
+	if (flags & O_NONBLOCK)
+		strlcat(str,"O_NONBLOCK|", MAXSTRINGLEN);
+	len = strlen(str);
+	if (len)
+		str[strlen(str)-1] = 0;
+%}
+
+function _sched_policy_str(policy) {
+   if(policy==0) return "SCHED_OTHER"
+   if(policy==1) return "SCHED_FIFO"
+   if(policy==2) return "SCHED_RR"
+   if(policy==3) return "SCHED_BATCH"
+   return sprintf("UNKNOWN VALUE: %d", policy)
+}
+
+function _priority_which_str(which) {
+   if(which==0) return "PRIO_PROCESS"
+   if(which==1) return "PRIO_PGRP"
+   if(which==2) return "PRIO_USER"
+   return sprintf("UNKNOWN VALUE: %d", which)
+}
+
+function _shutdown_how_str(how) {
+   if(how==0) return "SHUT_RD"
+   if(how==1) return "SHUT_WR"
+   if(how==2) return "SHUT_RDWR"
+   return sprintf("UNKNOWN VALUE: %d", how)
+}
+
+%{
+// Needed for function __reboot_magic_str:string. Unfortunately cannot
+// be inlined into the function since these header file defines static
+// functions on some architectures.
+#include <linux/reboot.h>
+%}
+
+function _reboot_magic_str:string(magic:long)
+%{ /* pure */
+	int magic = (int)THIS->magic;
+	switch (magic) {
+	case LINUX_REBOOT_MAGIC1:
+		strlcpy(THIS->__retvalue, "LINUX_REBOOT_MAGIC1", MAXSTRINGLEN);
+		break;
+	case LINUX_REBOOT_MAGIC2:
+		strlcpy(THIS->__retvalue, "LINUX_REBOOT_MAGIC2", MAXSTRINGLEN);
+		break;
+	case LINUX_REBOOT_MAGIC2A:
+		strlcpy(THIS->__retvalue, "LINUX_REBOOT_MAGIC2A", MAXSTRINGLEN);
+		break;
+	case LINUX_REBOOT_MAGIC2B:
+		strlcpy(THIS->__retvalue, "LINUX_REBOOT_MAGIC2B", MAXSTRINGLEN);
+		break;
+/*
+	LINUX_REBOOT_MAGIC2C is supported from kernel 2.6
+*/
+#ifdef LINUX_REBOOT_MAGIC2C
+	case LINUX_REBOOT_MAGIC2C:
+		strlcpy(THIS->__retvalue, "LINUX_REBOOT_MAGIC2C", MAXSTRINGLEN);
+		break;
+#endif
+	default:
+		snprintf(THIS->__retvalue, MAXSTRINGLEN, "UNKNOWN VALUE: %d", magic);
+	}
+%}
+
+function _reboot_flag_str(flag) {
+   if(flag==0x01234567) return "LINUX_REBOOT_CMD_RESTART"
+   if(flag==0xCDEF0123) return "LINUX_REBOOT_CMD_HALT"
+   if(flag==0x4321FEDC) return "LINUX_REBOOT_CMD_POWER_OFF"
+   if(flag==0xA1B2C3D4) return "LINUX_REBOOT_CMD_RESTART2"
+   if(flag==0x89ABCDEF) return "LINUX_REBOOT_CMD_CAD_ON"
+   if(flag==0x00000000) return "LINUX_REBOOT_CMD_CAD_OFF"
+   if(flag==0xD000FCE2) return "LINUX_REBOOT_CMD_SW_SUSPEND"
+   if(flag==0x45584543) return "LINUX_REBOOT_CMD_KEXEC"
+   return sprintf("UNKNOWN VALUE: %d", flag)
+}
+
+function _waitid_which_str(flag) {
+   if(flag==0) return "P_ALL"
+   if(flag==1) return "P_PID"
+   if(flag==2) return "P_PGID"
+   return sprintf("UNKNOWN VALUE: %d", flag)
+}
+
+function _futex_op_str(op) {
+   if(op==0) return "FUTEX_WAIT"
+   if(op==1) return "FUTEX_WAKE"
+   if(op==2) return "FUTEX_FD"
+   if(op==3) return "FUTEX_REQUEUE"
+   if(op==4) return "FUTEX_CMP_REQUEUE"
+   if(op==5) return "FUTEX_WAKE_OP"
+   if(op==6) return "FUTEX_LOCK_PI"
+   if(op==7) return "FUTEX_UNLOCK_PI"
+   if(op==8) return "FUTEX_TRYLOCK_PI"
+   if(op==128) return "FUTEX_WAIT_PRIVATE"
+   if(op==129) return "FUTEX_WAKE_PRIVATE"
+   if(op==131) return "FUTEX_REQUEUE_PRIVATE"
+   if(op==132) return "FUTEX_CMP_REQUEUE_PRIVATE"
+   if(op==133) return "FUTEX_WAKE_OP_PRIVATE"
+   if(op==134) return "FUTEX_LOCK_PI_PRIVATE"
+   if(op==135) return "FUTEX_UNLOCK_PI_PRIVATE"
+   if(op==136) return "FUTEX_TRYLOCK_PI_PRIVATE"
+   return sprintf("UNKNOWN VALUE: %d", op)
+}
+
+function _mountflags_str:string(op:long) 
+%{ /* pure */
+	int len, op = THIS->op;
+	char *str = THIS->__retvalue;
+	if (op & MS_BIND)
+		strlcat(str,"MS_BIND|",MAXSTRINGLEN);
+	if (op & MS_DIRSYNC)
+		strlcat(str,"MS_DIRSYNC|",MAXSTRINGLEN);
+	if (op & MS_MANDLOCK)
+		strlcat(str,"MS_MANDLOCK|",MAXSTRINGLEN);
+	if (op & MS_MOVE)
+		strlcat(str,"MS_MOVE|",MAXSTRINGLEN);
+	if (op & MS_NOATIME)
+		strlcat(str,"MS_NOATIME|",MAXSTRINGLEN);
+	if (op & MS_NODEV)
+		strlcat(str,"MS_NODEV|",MAXSTRINGLEN);
+	if (op & MS_NODIRATIME)
+		strlcat(str,"MS_NODIRATIME|",MAXSTRINGLEN);
+	if (op & MS_NOEXEC)
+		strlcat(str,"MS_NOEXEC|",MAXSTRINGLEN);
+	if (op & MS_NOSUID)
+		strlcat(str,"MS_NOSUID|",MAXSTRINGLEN);
+	if (op & MS_RDONLY)
+		strlcat(str,"MS_RDONLY|",MAXSTRINGLEN);
+	if (op & MS_REC)
+		strlcat(str,"MS_REC|",MAXSTRINGLEN);
+	if (op & MS_REMOUNT)
+		strlcat(str,"MS_REMOUNT|",MAXSTRINGLEN);
+	if (op & MS_SYNCHRONOUS)
+		strlcat(str,"MS_SYNCHRONOUS|",MAXSTRINGLEN);
+	if (op & MS_VERBOSE)
+		strlcat(str,"MS_VERBOSE|",MAXSTRINGLEN);
+	len = strlen(str);
+	if (len)
+		str[strlen(str)-1] = 0;
+%}
+
+function _umountflags_str:string(op:long) 
+%{ /* pure */
+	int len, op = THIS->op;
+	char *str = THIS->__retvalue;
+	if (op == 0)
+		strlcat(str,"0",MAXSTRINGLEN);
+	else {
+		if (op & MNT_FORCE)
+			strlcat(str,"MNT_FORCE|",MAXSTRINGLEN);
+		if (op & MNT_DETACH)
+			strlcat(str,"MNT_DETACH|",MAXSTRINGLEN);
+		if (op & MNT_EXPIRE)
+			strlcat(str,"MNT_EXPIRE|",MAXSTRINGLEN);
+		len = strlen(str);
+		if (len)
+			str[strlen(str)-1] = 0;
+	}
+%}
+
+function _statfs_f_type_str(f) {
+   if(f==0xadf5)     return "ADFS_SUPER_MAGIC"
+   if(f==0xADFF)     return "AFFS_SUPER_MAGIC"
+   if(f==0x42465331) return "BEFS_SUPER_MAGIC"
+   if(f==0x1BADFACE) return "BFS_MAGIC"
+   if(f==0xFF534D42) return "CIFS_MAGIC_NUMBER"
+   if(f==0x73757245) return "CODA_SUPER_MAGIC"
+   if(f==0x012FF7B7) return "COH_SUPER_MAGIC"
+   if(f==0x28cd3d45) return "CRAMFS_MAGIC"
+   if(f==0x1373)     return "DEVFS_SUPER_MAGIC"
+   if(f==0x00414A53) return "EFS_SUPER_MAGIC"
+   if(f==0x137D)     return "EXT_SUPER_MAGIC"
+   if(f==0xEF51)     return "EXT2_OLD_SUPER_MAGIC"
+   if(f==0xEF53)     return "EXT2_SUPER_MAGIC"
+   if(f==0xEF53)     return "EXT3_SUPER_MAGIC"
+   if(f==0x4244)     return "HFS_SUPER_MAGIC"
+   if(f==0xF995E849) return "HPFS_SUPER_MAGIC"
+   if(f==0x958458f6) return "HUGETLBFS_MAGIC"
+   if(f==0x9660)     return "ISOFS_SUPER_MAGIC"
+   if(f==0x72b6)     return "JFFS2_SUPER_MAGIC"
+   if(f==0x3153464a) return "JFS_SUPER_MAGIC"
+   if(f==0x137F)     return "MINIX_SUPER_MAGIC"
+   if(f==0x138F)     return "MINIX_SUPER_MAGIC2"
+   if(f==0x2468)     return "MINIX2_SUPER_MAGIC"
+   if(f==0x2478)     return "MINIX2_SUPER_MAGIC2"
+   if(f==0x4d44)     return "MSDOS_SUPER_MAGIC"
+   if(f==0x564c)     return "NCP_SUPER_MAGIC"
+   if(f==0x6969)     return "NFS_SUPER_MAGIC"
+   if(f==0x5346544e) return "NTFS_SB_MAGIC"
+   if(f==0x9fa1)     return "OPENPROM_SUPER_MAGIC"
+   if(f==0x9fa0)     return "PROC_SUPER_MAGIC"
+   if(f==0x002f)     return "QNX4_SUPER_MAGIC"
+   if(f==0x52654973) return "REISERFS_SUPER_MAGIC"
+   if(f==0x7275)     return "ROMFS_MAGIC"
+   if(f==0x517B)     return "SMB_SUPER_MAGIC"
+   if(f==0x012FF7B6) return "SYSV2_SUPER_MAGIC"
+   if(f==0x012FF7B5) return "SYSV4_SUPER_MAGIC"
+   if(f==0x01021994) return "TMPFS_MAGIC"
+   if(f==0x15013346) return "UDF_SUPER_MAGIC"
+   if(f==0x00011954) return "UFS_MAGIC"
+   if(f==0x9fa2)     return "USBDEVICE_SUPER_MAGIC"
+   if(f==0xa501FCF5) return "VXFS_SUPER_MAGIC"
+   if(f==0x012FF7B4) return "XENIX_SUPER_MAGIC"
+   if(f==0x58465342) return "XFS_SUPER_MAGIC"
+   if(f==0x012FD16D) return "_XIAFS_SUPER_MAGIC"
+   return sprintf("UNKNOWN VALUE: %d", f)
+}
+
+function _mremap_flags(flags) {
+	if (flags & 1) msg="MREMAP_MAYMOVE|"
+	if (flags & 2) msg="MREMAP_FIXED|".msg
+	return substr(msg,0,strlen(msg)-1)
+}
+
+function _madvice_advice_str(behavior) {
+   if(behavior==0x00000000) return "MADV_NORMAL"
+   if(behavior==0x00000001) return "MADV_RANDOM"
+   if(behavior==0x00000002) return "MADV_SEQUENTIAL"
+   if(behavior==0x00000003) return "MADV_WILLNEED"
+   if(behavior==0x00000004) return "MADV_DONTNEED"
+   return sprintf("UNKNOWN VALUE: %d", behavior)
+}
+
+function _fadvice_advice_str(behavior) {
+   if(behavior==0x00000000) return "FADV_NORMAL"
+   if(behavior==0x00000001) return "FADV_RANDOM"
+   if(behavior==0x00000002) return "FADV_SEQUENTIAL"
+   if(behavior==0x00000003) return "FADV_WILLNEED"
+   if(behavior==0x00000004) return "FADV_DONTNEED"
+   return sprintf("UNKNOWN VALUE: %d", behavior)
+}
+
+function _fcntl_cmd_str(cmd) {
+   if(cmd==0) return "F_DUPFD"
+   if(cmd==1) return "F_GETFD"
+   if(cmd==2) return "F_SETFD"
+   if(cmd==3) return "F_GETFL"
+   if(cmd==4) return "F_SETFL"
+   if(cmd==5) return "F_GETLK"
+   if(cmd==6) return "F_SETLK"
+   if(cmd==7) return "F_SETLKW"
+   if(cmd==8) return "F_SETOWN"
+   if(cmd==9) return "F_GETOWN"
+   if(cmd==10) return "F_SETSIG"
+   if(cmd==11) return "F_GETSIG"
+   if(cmd==12) return "F_GETLK64"
+   if(cmd==13) return "F_SETLK64"
+   if(cmd==14) return "F_SETLKW64"
+   if(cmd==1030) return "F_DUPFD_CLOEXEC"
+   return sprintf("UNKNOWN VALUE: %d", cmd)
+}
+
+function _seek_whence_str(w) {
+   if(w==0x00000000) return "SEEK_SET"
+   if(w==0x00000001) return "SEEK_CUR"
+   if(w==0x00000002) return "SEEK_END"
+   return sprintf("UNKNOWN VALUE: %d", w)
+}
+
+function _quotactl_cmd_str(cmd) {
+   if(cmd==0x800002) return "Q_QUOTAON"
+   if(cmd==0x800003) return "Q_QUOTAOFF"
+   if(cmd==0x800007) return "Q_GETQUOTA"
+   if(cmd==0x800008) return "Q_SETQUOTA"
+   if(cmd==0x800005) return "Q_GETINFO"
+   if(cmd==0x800006) return "Q_SETINFO"
+   if(cmd==0x800004) return "Q_GETFMT"
+   if(cmd==0x800001) return "Q_SYNC"
+   /* XFS Quota Manager (XQM) Codes */
+   if(cmd==0x5801) return "Q_XQUOTAON"
+   if(cmd==0x5802) return "Q_XQUOTAOFF"
+   if(cmd==0x5803) return "Q_XGETQUOTA"
+   if(cmd==0x5804) return "Q_XSETQLIM"
+   if(cmd==0x5805) return "Q_XGETQSTAT"
+   if(cmd==0x5806) return "Q_XQUOTARM"
+   if(cmd==0x5807) return "Q_XQUOTASYNC"
+   return sprintf("UNKNOWN VALUE: %d", cmd)
+}
+
+/* see sys/socket.h (for setsockopt) */
+function _sockopt_optname_str(opt) {
+   if(opt==1) return "SO_DEBUG"
+   if(opt==2) return "SO_REUSEADDR"
+   if(opt==3) return "SO_TYPE"
+   if(opt==4) return "SO_ERROR"
+   if(opt==5) return "SO_DONTROUTE"
+   if(opt==6) return "SO_BROADCAST"
+   if(opt==7) return "SO_SNDBUF"
+   if(opt==8) return "SO_RCVBUF"
+   if(opt==9) return "SO_KEEPALIVE"
+   if(opt==10) return "SO_OOBINLINE"
+   if(opt==11) return "SO_NO_CHECK"
+   if(opt==12) return "SO_PRIORITY"
+   if(opt==13) return "SO_LINGER"
+   if(opt==14) return "SO_BSDCOMPAT"
+
+   if(opt==16) return "SO_PASSCRED"
+   if(opt==17) return "SO_PEERCRED"
+   if(opt==18) return "SO_RCVLOWAT"
+   if(opt==19) return "SO_SNDLOWAT"
+   if(opt==20) return "SO_RCVTIMEO"
+   if(opt==21) return "SO_SNDTIMEO"
+   if(opt==32) return "SO_SNDBUFFORCE"
+   if(opt==33) return "SO_RCVBUFFORCE"
+   return sprintf("UNKNOWN VALUE: %d", opt)
+}
+
+/* `man 2 setsockopt` for more information */
+function _sockopt_level_str(l) {
+   if(l==0) return "IP"
+   if(l==1) return "SOL_SOCKET" # not ICMP
+   if(l==2) return "IGMP"
+   if(l==3) return "GGP"
+   if(l==4) return "IP-ENCAP"
+   if(l==5) return "ST"
+   if(l==6) return "TCP"
+   if(l==7) return "CBT"
+   if(l==8) return "EGP"
+   if(l==9) return "IGP"
+   if(l==10) return "BBN-RCC-MON"
+   if(l==11) return "NVP-II"
+   if(l==12) return "PUP"
+   if(l==13) return "ARGUS"
+   if(l==14) return "EMCON"
+   if(l==15) return "XNET"
+   if(l==16) return "CHAOS"
+   if(l==17) return "UDP"
+   if(l==18) return "MUX"
+   if(l==19) return "DCN-MEAS"
+   if(l==20) return "HMP"
+   if(l==21) return "PRM"
+   if(l==22) return "XNS-IDP"
+   if(l==23) return "TRUNK-1"
+   if(l==24) return "TRUNK-2"
+   if(l==25) return "LEAF-1"
+   if(l==26) return "LEAF-2"
+   if(l==27) return "RDP"
+   if(l==28) return "IRTP"
+   if(l==29) return "ISO-TP4"
+   if(l==30) return "NETBLT"
+   if(l==31) return "MFE-NSP"
+   if(l==32) return "MERIT-INP"
+   if(l==33) return "SEP"
+   if(l==34) return "3PC"
+   if(l==35) return "IDPR"
+   if(l==36) return "XTP"
+   if(l==37) return "DDP"
+   if(l==38) return "IDPR-CMTP"
+   if(l==39) return "TP++"
+   if(l==40) return "IL"
+   if(l==41) return "IPv6"
+   if(l==42) return "SDRP"
+   if(l==43) return "IPv6-Route"
+   if(l==44) return "IPv6-Frag"
+   if(l==45) return "IDRP"
+   if(l==46) return "RSVP"
+   if(l==47) return "GRE"
+   if(l==48) return "MHRP"
+   if(l==49) return "BNA"
+   if(l==50) return "IPv6-Crypt"
+   if(l==51) return "IPv6-Auth"
+   if(l==52) return "I-NLSP"
+   if(l==53) return "SWIPE"
+   if(l==54) return "NARP"
+   if(l==55) return "MOBILE"
+   if(l==56) return "TLSP"
+   if(l==57) return "SKIP"
+   if(l==58) return "IPv6-ICMP"
+   if(l==59) return "IPv6-NoNxt"
+   if(l==60) return "IPv6-Opts"
+   if(l==62) return "CFTP"
+   if(l==64) return "SAT-EXPAK"
+   if(l==65) return "KRYPTOLAN"
+   if(l==66) return "RVD"
+   if(l==67) return "IPPC"
+   if(l==69) return "SAT-MON"
+   if(l==70) return "VISA"
+   if(l==71) return "IPCV"
+   if(l==72) return "CPNX"
+   if(l==73) return "CPHB"
+   if(l==74) return "WSN"
+   if(l==75) return "PVP"
+   if(l==76) return "BR-SAT-MON"
+   if(l==77) return "SUN-ND"
+   if(l==78) return "WB-MON"
+   if(l==79) return "WB-EXPAK"
+   if(l==80) return "ISO-IP"
+   if(l==81) return "VMTP"
+   if(l==82) return "SECURE-VMTP"
+   if(l==83) return "VINES"
+   if(l==84) return "TTP"
+   if(l==85) return "NSFNET-IGP"
+   if(l==86) return "DGP"
+   if(l==87) return "TCF"
+   if(l==88) return "EIGRP"
+   if(l==89) return "OSPFIGP"
+   if(l==90) return "Sprite-RPC"
+   if(l==91) return "LARP"
+   if(l==92) return "MTP"
+   if(l==93) return "AX.25"
+   if(l==94) return "IPIP"
+   if(l==95) return "MICP"
+   if(l==96) return "SCC-SP"
+   if(l==97) return "ETHERIP"
+   if(l==98) return "ENCAP"
+   if(l==100) return "GMTP"
+   if(l==101) return "IFMP"
+   if(l==102) return "PNNI"
+   if(l==103) return "PIM"
+   if(l==104) return "ARIS"
+   if(l==105) return "SCPS"
+   if(l==106) return "QNX"
+   if(l==107) return "A/N"
+   if(l==108) return "IPComp"
+   if(l==109) return "SNP"
+   if(l==110) return "Compaq-Peer"
+   if(l==111) return "IPX-in-IP"
+   if(l==112) return "VRRP"
+   if(l==113) return "PGM"
+   if(l==115) return "L2TP"
+   if(l==116) return "DDX"
+   if(l==117) return "IATP"
+   if(l==118) return "STP"
+   if(l==119) return "SRP"
+   if(l==120) return "UTI"
+   if(l==121) return "SMP"
+   if(l==122) return "SM"
+   if(l==123) return "PTP"
+   if(l==124) return "ISIS"
+   if(l==125) return "FIRE"
+   if(l==126) return "CRTP"
+   if(l==127) return "CRUDP"
+   if(l==128) return "SSCOPMCE"
+   if(l==129) return "IPLT"
+   if(l==130) return "SPS"
+   if(l==131) return "PIPE"
+   if(l==132) return "SCTP"
+   if(l==133) return "FC"
+   if(l==134) return "RSVP-E2E-IGNORE"
+   if(l==135) return "Mobility-Header"
+   if(l==136) return "UDPLite"
+   if(l==137) return "MPLS-IN-IP"
+   return sprintf("UNKNOWN VALUE: %d", l)
+}
+
+function _sock_family_str(f) {
+   if(f==0) return "PF_UNSPEC"
+   if(f==1) return "PF_LOCAL"
+   if(f==2) return "PF_INET"
+   if(f==3) return "PF_AX25"
+   if(f==4) return "PF_IPX"
+   if(f==5) return "PF_APPLETALK"
+   if(f==6) return "PF_NETROM"
+   if(f==7) return "PF_BRIDGE"
+   if(f==8) return "PF_ATMPVC"
+   if(f==9) return "PF_X25"
+   if(f==10) return "PF_INET6"
+   if(f==11) return "PF_ROSE"
+   if(f==12) return "PF_DECnet"
+   if(f==13) return "PF_NETBEUI"
+   if(f==14) return "PF_SECURITY"
+   if(f==15) return "PF_KEY"
+   if(f==16) return "PF_NETLINK"
+   if(f==17) return "PF_PACKET"
+   if(f==18) return "PF_ASH"
+   if(f==19) return "PF_ECONET"
+   if(f==20) return "PF_ATMSVC"
+   if(f==22) return "PF_SNA"
+   if(f==23) return "PF_IRDA"
+   if(f==24) return "PF_PPPOX"
+   if(f==25) return "PF_WANPIPE"
+   if(f==26) return "PF_LLC"
+   if(f==30) return "PF_TIPC"
+   if(f==31) return "PF_BLUETOOTH"
+   if(f==32) return "PF_IUCV"
+   if(f==33) return "PF_RXRPC"
+   return sprintf("UNKNOWN VALUE: %d", f)
+}
+
+function _sock_type_str:string(type:long)
+%{ /* pure */
+#ifdef SOCK_TYPE_MASK
+	int flags = (int)THIS->type & ~SOCK_TYPE_MASK;
+	int t = (int)THIS->type & SOCK_TYPE_MASK;
+#else
+	int t = (int)THIS->type;
+#endif
+
+	switch (t) {
+	case SOCK_STREAM:
+		strlcpy (THIS->__retvalue, "SOCK_STREAM", MAXSTRINGLEN);
+		break;
+	case SOCK_DGRAM:
+		strlcpy (THIS->__retvalue, "SOCK_DGRAM", MAXSTRINGLEN);
+		break;
+	case SOCK_RAW:
+		strlcpy (THIS->__retvalue, "SOCK_RAW", MAXSTRINGLEN);
+		break;
+	case SOCK_RDM:
+		strlcpy (THIS->__retvalue, "SOCK_RDM", MAXSTRINGLEN);
+		break;
+	case SOCK_SEQPACKET:
+		strlcpy (THIS->__retvalue, "SOCK_SEQPACKET", MAXSTRINGLEN);
+		break;
+#ifdef SOL_DCCP
+	case SOCK_DCCP:
+		strlcpy (THIS->__retvalue, "SOCK_DCCP", MAXSTRINGLEN);
+		break;
+#endif
+	case SOCK_PACKET:
+		strlcpy (THIS->__retvalue, "SOCK_PACKET", MAXSTRINGLEN);
+		break;
+	default:
+		snprintf (THIS->__retvalue, MAXSTRINGLEN, "UNKNOWN VALUE: %d", t);
+		break;
+	}
+
+#ifdef SOCK_TYPE_MASK
+	if (flags & SOCK_CLOEXEC) {
+		strlcat (THIS->__retvalue, "|SOCK_CLOEXEC", MAXSTRINGLEN);
+	}
+	if (flags & SOCK_NONBLOCK) {
+		strlcat (THIS->__retvalue, "|SOCK_NONBLOCK", MAXSTRINGLEN);
+	}
+#endif
+%}
+
+function _sock_flags_str:string(f:long)
+%{ /* pure */
+#ifdef SOCK_TYPE_MASK
+	int flags = (int)THIS->f;
+	int len;
+
+	THIS->__retvalue[0] = '\0';
+	if (flags & SOCK_CLOEXEC) {
+		strlcat (THIS->__retvalue, "SOCK_CLOEXEC|", MAXSTRINGLEN);
+	}
+	if (flags & SOCK_NONBLOCK) {
+		strlcat (THIS->__retvalue, "SOCK_NONBLOCK|", MAXSTRINGLEN);
+	}
+	len = strlen(THIS->__retvalue);
+	if (len) {
+		THIS->__retvalue[len - 1] = '\0';
+	}
+	else {
+		strlcat (THIS->__retvalue, "0", MAXSTRINGLEN);
+	}
+#endif
+%}
+
+function _opoll_op_str(o) {
+   if(o==1) return "EPOLL_CTL_ADD"
+   if(o==3) return "EPOLL_CTL_MOD"
+   if(o==2) return "EPOLL_CTL_DEL"
+   return sprintf("UNKNOWN VALUE: %d", o)
+}
+
+function _epoll_events_str(e) {
+   if(e==1) return "EPOLLIN"
+   if(e==4) return "EPOLLOUT"
+   if(e==2) return "EPOLLPRI"
+   if(e==8) return "EPOLLERR"
+   if(e==16) return "EPOLLHUP"
+   if(e==-2147483648) return "EPOLLET"
+   if(e==1073741824) return "EPOLLONESHOT"
+   return sprintf("UNKNOWN VALUE: %d", e)
+}
+
+function _rlimit_resource_str(r) {
+   if(r==-1) return "RLIM_INFINITY"
+   if(r==9) return "RLIMIT_AS"
+   if(r==4) return "RLIMIT_CORE"
+   if(r==0) return "RLIMIT_CPU"
+   if(r==2) return "RLIMIT_DATA"
+   if(r==1) return "RLIMIT_FSIZE"
+   if(r==10) return "RLIMIT_LOCKS"
+   if(r==8) return "RLIMIT_MEMLOCK"
+   if(r==7) return "RLIMIT_NOFILE"
+   if(r==6) return "RLIMIT_NPROC"
+   if(r==5) return "RLIMIT_RSS"
+   if(r==3) return "RLIMIT_STACK"
+%( kernel_v >= "2.6.8" %?
+   if(r==11) return "RLIMIT_SIGPENDING"
+   if(r==12) return "RLIMIT_MSGQUEUE"
+%)
+%( kernel_v >= "2.6.12" %?
+   if(r==13) return "RLIMIT_NICE"
+   if(r==14) return "RLIMIT_RTPRIO"
+%)
+   return sprintf("UNKNOWN VALUE: %d", r)
+}
+
+function _rusage_who_str(w) {
+   if(w==0) return "RUSAGE_SELF"
+   if(w==-1) return "RUSAGE_CHILDREN"
+   if(w==-2) return "RUSAGE_BOTH"
+   return sprintf("UNKNOWN VALUE: %d", w)
+}
+
+/* for accessing 16-bit values encoded in a long */
+function __short:long(val:long) %{ /* pure */
+	THIS->__retvalue = (short)THIS->val;
+%}
+
+/* uid_t is unsigned, but calling functions take "-1" as a parameter */
+/* so this hack is necessary to correct that mismatch. */
+function __int32:long(val:long) %{ /* pure */
+	THIS->__retvalue = (int32_t)THIS->val;
+%}
+
+
+# For utimensat and futimesat, the directory fd can have a special value
+function _dfd_str(d) {
+	# 0xffffff9c is a 32-bit -100, for compatability mode.
+	if((d == -100) || (d == 0xffffff9c)) return "AT_FDCWD"
+	return sprint(d)
+}
+
+function _adjtimex_return_str(ret) {
+	if (ret == 0)
+		val = "OK"
+	else if (ret == 1)
+		val = "INS"
+	else if (ret == 2)
+		val = "DEL"
+	else if (ret == 3)
+		val = "OOP"
+	else if (ret == 4)
+		val = "WAIT"
+	else if (ret == 5)
+		val = "BAD"
+
+	if (val != "")
+		return sprintf("%d (TIME_%s)", ret, val)
+	else
+		return returnstr(1)
+}
+
+%{
+/*
+* Simple lookup functions for mapping values to names
+* using embedded C. Use these functions to create safe,
+* consistent lookups.
+*/
+
+/* Convenient macro to add defines to an array */
+#define V(a) {a,#a}
+
+typedef struct {
+	long val;
+	char *name;
+} _stp_val_array;
+
+static void _stp_lookup_str(const _stp_val_array * const array, long val, char *ptr, int len)
+{
+	int i = 0, slen;
+	while (array[i].name) {
+		if (array[i].val == val) {
+			strlcat (ptr, array[i].name, len);
+			return;
+		}
+		i++;
+	}
+	slen = strlen(ptr);
+	_stp_snprintf(ptr + slen, len - slen, "0x%lx", val);
+}
+static void _stp_lookup_or_str(const _stp_val_array * const array, long val, char *ptr, int len)
+{
+	int i = 0, flag = 0, slen;
+
+	if (val == 0) {
+		_stp_lookup_str(array, val, ptr, len);
+		return;
+	}
+
+	while (array[i].name) {
+		if (array[i].val & val) {
+			if (flag)
+				strlcat(ptr, "|", len);
+			strlcat(ptr, array[i].name, len);
+			val &= (~array[i].val);
+			flag = 1;
+		}
+		i++;
+	}
+	if (val) {
+		if (flag)
+			strlcat(ptr, "|", len);
+		slen = strlen(ptr);
+		_stp_snprintf(ptr + slen, len - slen, "0x%lx", val);
+	}
+}
+%}
+
+%{
+static const _stp_val_array const _stp_signal_list[] = {
+	{0, "SIG_0"},
+	V(SIGHUP),
+	V(SIGINT),
+	V(SIGQUIT),
+	V(SIGILL),
+	V(SIGTRAP),
+	V(SIGABRT),
+	V(SIGBUS),
+	V(SIGFPE),
+	V(SIGKILL),
+	V(SIGUSR1),
+	V(SIGSEGV),
+	V(SIGPIPE),
+	V(SIGUSR2),
+	V(SIGALRM),
+	V(SIGTERM),
+	V(SIGCHLD),
+	V(SIGCONT),
+	V(SIGSTOP),
+	V(SIGTSTP),
+	V(SIGTTIN),
+	V(SIGTTOU),
+	V(SIGURG),
+	V(SIGPROF),
+	V(SIGWINCH),
+	V(SIGVTALRM),
+	{SIGIO,"SIGIO/SIGPOLL"},
+	V(SIGPWR),
+	{0, NULL}
+};
+
+static void _stp_sigset_str(sigset_t *mask, char *ptr, int len)
+{
+	const _stp_val_array * const array = _stp_signal_list;
+	int i = 0, flag = 0;
+	while (array[i].name) {
+		if (array[i].val && sigismember(mask, array[i].val)) {
+			if (flag)
+				strlcat(ptr, "|", len);
+			strlcat(ptr, array[i].name, len);
+			flag = 1;
+		}
+		i++;
+	}
+	if (flag == 0)
+		strlcat(ptr, "EMPTY", len);
+}
+%}
+
+function _signal_name:string(sig:long)
+%{ /* pure */
+	_stp_lookup_str(_stp_signal_list, THIS->sig, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+%{
+static const _stp_val_array const _stp_semctl_list[] = {
+	V(IPC_INFO),
+	V(SEM_INFO),
+	V(SEM_STAT),
+	V(GETALL),
+	V(GETVAL),
+	V(GETPID),
+	V(GETNCNT),
+	V(GETZCNT),
+	V(IPC_STAT),
+	V(SETVAL),
+	V(SETALL),
+	V(IPC_RMID),
+	V(IPC_SET),
+	{0, NULL}
+};
+%}
+
+function _semctl_cmd:string(cmd:long)
+%{ /* pure */
+	_stp_lookup_str(_stp_semctl_list, THIS->cmd, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+function _stp_sigset_u:string(setptr:long)
+%{ /* pure */
+	char *ptr = (char *)(unsigned long)THIS->setptr;
+	sigset_t set;
+
+	if (ptr == NULL)
+		strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+	else {
+		if(_stp_copy_from_user((char*)&set,ptr,sizeof(sigset_t)) == 0)
+			_stp_sigset_str(&set, THIS->__retvalue, MAXSTRINGLEN);			
+		else
+			strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+	}
+%}
+
+%{
+static const _stp_val_array const _stp_fork_list[] = {
+	V(CLONE_VM),
+	V(CLONE_FS),
+	V(CLONE_FILES),
+	V(CLONE_SIGHAND),
+	V(CLONE_PTRACE),
+	V(CLONE_VFORK),
+	V(CLONE_PARENT),
+	V(CLONE_THREAD),
+	V(CLONE_NEWNS),
+	V(CLONE_SYSVSEM),
+	V(CLONE_SETTLS),
+	V(CLONE_PARENT_SETTID),
+	V(CLONE_CHILD_CLEARTID),
+	V(CLONE_DETACHED),
+	V(CLONE_UNTRACED),
+	V(CLONE_CHILD_SETTID),
+	V(CLONE_STOPPED),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
+	V(CLONE_NEWUTS),
+	V(CLONE_NEWIPC),
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
+	V(CLONE_NEWUSER),
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
+	V(CLONE_NEWPID),
+	V(CLONE_NEWNET),
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25)
+	V(CLONE_IO),
+#endif
+	{0, NULL}
+};
+%}
+
+function __fork_flags:string(flags:long)
+%{ /* pure */
+	_stp_lookup_or_str(_stp_fork_list, THIS->flags & ~0xff, THIS->__retvalue, MAXSTRINGLEN);
+	if ( THIS->flags & 0xff ) {
+		/* flags contains the termination signal */
+		if (*THIS->__retvalue)
+			strlcat(THIS->__retvalue, "|", MAXSTRINGLEN);
+		_stp_lookup_str(_stp_signal_list, THIS->flags & 0xff, THIS->__retvalue, MAXSTRINGLEN);
+	}
+%}
+
+%{
+static const _stp_val_array const _stp_atflag_list[] = {
+#ifdef AT_SYMLINK_NOFOLLOW
+	V(AT_SYMLINK_NOFOLLOW),
+#endif
+#ifdef AT_REMOVEDIR
+	V(AT_REMOVEDIR),
+#endif
+#ifdef AT_SYMLINK_FOLLOW
+	V(AT_SYMLINK_FOLLOW),
+#endif
+	{0, NULL}
+};
+%}
+
+function _at_flag_str:string(f:long)
+%{ /* pure */
+	_stp_lookup_str(_stp_atflag_list, THIS->f, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+%{
+#include <linux/eventpoll.h>
+%}
+function _epoll_create1_flag_str:string(f:long)
+%{ /* pure */
+#ifdef EPOLL_CLOEXEC
+	if (THIS->f == EPOLL_CLOEXEC)
+		strlcpy (THIS->__retvalue, "EPOLL_CLOEXEC", MAXSTRINGLEN);
+#endif
+%}
+
+%{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
+#include <linux/eventfd.h>
+#endif
+%}
+function _eventfd2_flag_str:string(f:long)
+%{ /* pure */
+  long flags = THIS->f;
+  char *str = THIS->__retvalue;
+  int len;
+
+#if defined(EFD_CLOEXEC) && defined(EFD_NONBLOCK)
+  if (flags & EFD_NONBLOCK)
+    strlcat(str, "EFD_NONBLOCK|", MAXSTRINGLEN);
+  if (flags & EFD_CLOEXEC)
+    strlcat(str, "EFD_CLOEXEC|", MAXSTRINGLEN);
+#endif
+
+  len = strlen(str);
+  if (len)
+    str[strlen(str)-1] = 0;
+%}
+
+%{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
+#include <linux/signalfd.h>
+#endif
+%}
+function _signalfd4_flags_str:string(f:long)
+%{ /* pure */
+  long flags = THIS->f;
+  char *str = THIS->__retvalue;
+  int len;
+
+#if defined(SFD_CLOEXEC) && defined(SFD_NONBLOCK)
+  if (flags & SFD_NONBLOCK)
+    strlcat(str, "SFD_NONBLOCK|", MAXSTRINGLEN);
+  if (flags & SFD_CLOEXEC)
+    strlcat(str, "SFD_CLOEXEC|", MAXSTRINGLEN);
+#endif
+
+  len = strlen(str);
+  if (len)
+    str[strlen(str)-1] = 0;
+%}
+
+%{
+#ifdef CONFIG_INOTIFY
+#include <linux/inotify.h>
+#endif
+%}
+function _inotify_init1_flag_str:string(f:long)
+%{ /* pure */
+  long flags = THIS->f;
+  char *str = THIS->__retvalue;
+  int len;
+
+#if defined(IN_CLOEXEC) && defined(IN_NONBLOCK)
+  if (flags & IN_NONBLOCK)
+    strlcat(str, "IN_NONBLOCK|", MAXSTRINGLEN);
+  if (flags & IN_CLOEXEC)
+    strlcat(str, "IN_CLOEXEC|", MAXSTRINGLEN);
+#endif
+
+  len = strlen(str);
+  if (len)
+    str[strlen(str)-1] = 0;
+%}
+
+function _dup3_flag_str:string(f:long)
+%{ /* pure */
+#ifdef O_CLOEXEC
+	if (THIS->f == O_CLOEXEC)
+		strlcpy (THIS->__retvalue, "O_CLOEXEC", MAXSTRINGLEN);
+	else
+#endif
+		strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+%}
+
+%{
+#include <linux/shm.h>
+static const _stp_val_array const _stp_shmat_list[] = {
+	V(SHM_RDONLY),
+	V(SHM_RND),
+	V(SHM_REMAP),
+	V(SHM_EXEC),
+	{0, NULL}
+};
+%}
+
+function _shmat_flags_str:string(f:long)
+%{ /* pure */
+	_stp_lookup_or_str(_stp_shmat_list, THIS->f, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+
+%{
+#include <linux/mman.h>
+static const _stp_val_array const _stp_mprotect_list[] = {
+	{0, "PROT_NONE"},
+	V(PROT_READ),
+	V(PROT_WRITE),
+	V(PROT_EXEC),
+	V(PROT_SEM),
+	{0, NULL}
+};
+%}
+
+function _mprotect_prot_str:string(prot:long) 
+%{ /* pure */
+	_stp_lookup_or_str(_stp_mprotect_list, THIS->prot, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+%{
+#include <linux/mman.h>
+static const _stp_val_array const _stp_mmap_list[] = {
+	V(MAP_SHARED),
+	V(MAP_PRIVATE),
+	V(MAP_FIXED),
+	V(MAP_ANONYMOUS),
+	V(MAP_GROWSDOWN),
+	V(MAP_DENYWRITE),
+	V(MAP_EXECUTABLE),
+	V(MAP_LOCKED),
+	V(MAP_NORESERVE),
+	V(MAP_POPULATE),
+	V(MAP_NONBLOCK),
+	{0, NULL}
+};
+%}
+
+function _mmap_flags:string(flags:long) 
+%{ /* pure */
+	_stp_lookup_or_str(_stp_mmap_list, THIS->flags, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+# old mmap functions passed in a struct like this.
+#
+function get_mmap_args:string (args:long)
+%{ /* pure */
+#if defined (__x86_64__) || defined (__ia64__)
+	struct mmap_arg_struct {
+		unsigned int addr;
+		unsigned int len;
+		unsigned int prot;
+		unsigned int flags;
+		int fd;
+		unsigned int offset;
+	} a;
+#else
+	struct mmap_arg_struct {
+		unsigned long addr;
+		unsigned long len;
+		unsigned long prot;
+		unsigned long flags;
+		long fd;
+		unsigned long offset;
+	} a;
+#endif
+
+	if(_stp_copy_from_user((char *)&a,(char *)(unsigned long)THIS->args, sizeof(a))== 0) {
+		int len;
+		_stp_snprintf(THIS->__retvalue, MAXSTRINGLEN, "0x%lx, %ld, ", (long)a.addr, (long)a.len);
+		_stp_lookup_or_str(_stp_mprotect_list, a.prot, THIS->__retvalue, MAXSTRINGLEN);
+		strlcat (THIS->__retvalue, ", ", MAXSTRINGLEN);
+		_stp_lookup_or_str(_stp_mmap_list, a.flags, THIS->__retvalue, MAXSTRINGLEN);
+		strlcat (THIS->__retvalue, ", ", MAXSTRINGLEN);
+		len = strlen(THIS->__retvalue);
+		_stp_snprintf(THIS->__retvalue + len, MAXSTRINGLEN - len, "%ld, %ld", (long)a.fd, (long)a.offset);
+	} else
+		strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+%}
+
+
+function _sighandler_str:string(uaddr:long)
+%{ /* pure */
+	static const _stp_val_array const _stp_sa_handler_list[] = {
+		{0, "SIG_DFL"},
+		{1, "SIG_IGN"},
+		{0, NULL}
+	};
+	_stp_lookup_str(_stp_sa_handler_list, (long)THIS->uaddr, THIS->__retvalue, MAXSTRINGLEN);
+%}
+
+%{
+static void _stp_sigaction_str(struct sigaction *act, char *ptr, int len)
+{
+  static const _stp_val_array const _stp_sa_handler_list[] = {
+    {0, "SIG_DFL"},
+    {1, "SIG_IGN"},
+    {0, NULL}
+  };
+
+  static const _stp_val_array const _stp_sa_flags_list[] = {
+    V(SA_NOCLDSTOP),
+    V(SA_NOCLDWAIT),
+    V(SA_RESETHAND),
+    V(SA_ONSTACK),
+    V(SA_RESTART),
+    V(SA_NODEFER),
+    V(SA_SIGINFO),
+    V(SA_RESTORER),
+    {0, NULL}
+  };
+  
+  int slen;
+  _stp_lookup_str(_stp_sa_handler_list, (long)act->sa_handler,
+		  ptr, len);
+  if (act->sa_handler != SIG_IGN && act->sa_handler != SIG_DFL)
+    {
+      strlcat (ptr, ", ", len);
+      _stp_lookup_or_str(_stp_sa_flags_list, act->sa_flags, ptr, len);
+      strlcat (ptr, ", ", len);
+#if !defined (__ia64__)
+      slen = strlen(ptr);
+      _stp_snprintf(ptr + slen, len - slen,
+		    "0x%lx, [", (long)act->sa_restorer);
+#else
+      strlcat (ptr, "[", len);
+#endif
+      _stp_sigset_str(&act->sa_mask, ptr, len);
+      strlcat (ptr, "]", len);
+    }
+}
+%}
+
+function _struct_sigaction_u:string(uaddr:long)
+%{ /* pure */
+  struct sigaction act;
+  char *ptr = (char *)(unsigned long)THIS->uaddr;
+  
+  if (ptr == NULL)
+    strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+  else
+    {
+      if(_stp_copy_from_user((char*)&act, ptr,
+			     sizeof(struct sigaction)) == 0)
+	_stp_sigaction_str(&act, THIS->__retvalue, MAXSTRINGLEN);
+      else
+	strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+    }
+%}
+
+function _struct_sigaction32_u:string(uaddr:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+#include <linux/compat.h>
+  
+  // There seems to be no public cross arch header that defines this.
+  // For x86, you can find it in asm/ia32.h.  For s390x, it is defined
+  // in a private header.
+  struct sigaction32 {
+    compat_uptr_t  sa_handler;
+    unsigned int sa_flags;
+    unsigned int sa_restorer;       /* Another 32 bit pointer */
+    compat_sigset_t sa_mask;        /* A 32 bit mask */
+  };
+  
+  struct sigaction32 act32;
+  char *ptr = (char *)(unsigned long)THIS->uaddr;
+  
+  if (ptr == NULL)
+    strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+  else
+    {
+      if(_stp_copy_from_user((char*)&act32, ptr,
+			     sizeof(struct sigaction32)) == 0)
+	{
+	  struct sigaction act;
+
+	  act.sa_handler = (void *)compat_ptr(act32.sa_handler);
+	  act.sa_flags = (unsigned long)act32.sa_flags;
+	  act.sa_restorer = (void *)compat_ptr(act32.sa_restorer);
+
+	  /* swap words around to get right endian order. */
+	  switch (_NSIG_WORDS)
+	    {
+	    case 4: act.sa_mask.sig[3] = act32.sa_mask.sig[6]
+		| (((long)act32.sa_mask.sig[7]) << 32);
+	    case 3: act.sa_mask.sig[2] = act32.sa_mask.sig[4]
+		| (((long)act32.sa_mask.sig[5]) << 32);
+	    case 2: act.sa_mask.sig[1] = act32.sa_mask.sig[2]
+		| (((long)act32.sa_mask.sig[3]) << 32);
+	    case 1: act.sa_mask.sig[0] = act32.sa_mask.sig[0]
+		| (((long)act32.sa_mask.sig[1]) << 32);
+	    }
+
+	  _stp_sigaction_str(&act, THIS->__retvalue, MAXSTRINGLEN);	  
+	}
+      else
+	strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+    }
+#endif
+%}
+
+function _struct_old_sigaction32_u:string(uaddr:long)
+%{ /* pure */
+#ifdef CONFIG_COMPAT
+#include <linux/compat.h>
+
+  // There seems to be no public cross arch header that defines this.
+  // For x86, you can find it in asm/ia32.h.  For s390x, it is defined
+  // in a private header.
+  struct old_sigaction32 {
+    compat_uptr_t  sa_handler;
+    compat_old_sigset_t sa_mask;    /* A 32 bit mask */
+    unsigned int sa_flags;
+    unsigned int sa_restorer;       /* Another 32 bit pointer */
+  };
+
+  struct old_sigaction32 act32;
+  char *ptr = (char *)(unsigned long)THIS->uaddr;
+  
+  if (ptr == NULL)
+    strlcpy (THIS->__retvalue, "NULL", MAXSTRINGLEN);
+  else
+    {
+      if(_stp_copy_from_user((char*)&act32, ptr,
+			     sizeof(struct old_sigaction32)) == 0)
+	{
+	  struct sigaction act;
+
+	  act.sa_handler = (void *)compat_ptr(act32.sa_handler);
+	  act.sa_restorer = (void *)compat_ptr(act32.sa_restorer);
+	  act.sa_flags = (unsigned long)act32.sa_flags;
+	  siginitset(&act.sa_mask, act32.sa_mask);
+	  _stp_sigaction_str(&act, THIS->__retvalue, MAXSTRINGLEN);	  
+	}
+      else
+	strlcpy (THIS->__retvalue, "UNKNOWN", MAXSTRINGLEN);
+    }
+#endif
+%}
+
+/*
+ * Function irqflags_str :
+ * 	Returns the symbolic string representation of the IRQ flags.
+ *
+ */
+
+%{
+#include <linux/interrupt.h>
+#ifndef IRQF_ONESHOT
+#define IRQF_ONESHOT 0x00002000
+#endif
+static const _stp_val_array const _stp_irq_list[] = {
+#ifdef IRQF_DISABLED
+	V(IRQF_DISABLED),
+#endif
+#ifdef IRQF_SAMPLE_RANDOM
+	V(IRQF_SAMPLE_RANDOM),
+#endif
+#ifdef IRQF_SHARED
+	V(IRQF_SHARED),
+#endif
+#ifdef IRQF_PROBE_SHARED
+	V(IRQF_PROBE_SHARED),
+#endif
+#ifdef IRQF_TIMER
+	V(IRQF_TIMER),
+#endif
+#ifdef IRQF_PERCPU
+	V(IRQF_PERCPU),
+#endif
+#ifdef IRQF_NOBALANCING
+	V(IRQF_NOBALANCING),
+#endif
+#ifdef IRQF_IRQPOLL
+	V(IRQF_IRQPOLL),
+#endif
+	V(IRQF_ONESHOT),
+	{0, NULL}
+};
+%}
+
+function irqflags_str:string(f:long)
+%{ /* pure */
+	_stp_lookup_or_str(_stp_irq_list, THIS->f, THIS->__retvalue, MAXSTRINGLEN);
+%}

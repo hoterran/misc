@@ -1,0 +1,6 @@
+global count=0
+
+probe timer.ms(1000) {
+	count++
+	printf("sys_sync called %d times\n", count);
+}

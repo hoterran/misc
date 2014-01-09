@@ -1,0 +1,13 @@
+diff --git a/Makefile.am b/Makefile.am
+index a7603fb..0de78ad 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -184,7 +184,7 @@ install-exec-hook:
+ # make install, and have "sudo stap ...." or "sudo staprun ...." work later.
+ 
+ 
+-CLEANFILES +=  $(pkglibexec_PROGRAMS) $(pkglibexec_SCRIPTS)
++CLEANFILES +=  $(pkglibexec_PROGRAMS)
+ 
+ if BUILD_TRANSLATOR
+ if HAVE_NSS

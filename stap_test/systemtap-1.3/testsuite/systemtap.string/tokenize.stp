@@ -1,0 +1,30 @@
+function tokprint(str, delim)
+{
+	println("-")
+
+	tok = tokenize(str, delim)
+	while (tok != "") {
+		println(tok)
+		tok = tokenize("", delim)
+	}
+}
+
+probe begin
+{
+	teststr1 = "one|two|three|four|five|six|seven|eight|nine|ten"
+	teststr2 = "a,b,c,d,e,f,g"
+	teststr3 = "1,,2,3, ,4"
+	teststr4 = ""
+	teststr5 = "this is a string with no delimiters"
+	teststr6 = "this is a string, which has two delimiters"
+
+	tokprint(teststr1, "|")
+	tokprint(teststr1, ",")
+	tokprint(teststr2, ",")
+	tokprint(teststr3, ",")
+	tokprint(teststr4, ",")
+	tokprint(teststr5, ",")
+	tokprint(teststr6, ", ")
+
+	exit()
+}

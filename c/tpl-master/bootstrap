@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# THIS SCRIPT IS FOR PROJECT MAINTAINER ONLY
+# It is executed only to generate "configure"
+
+set -x
+mkdir config
+aclocal -I config
+autoheader
+libtoolize --copy --force
+automake --foreign --add-missing --copy
+autoconf

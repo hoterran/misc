@@ -1,0 +1,60 @@
+set test "onoffprobe"
+if {![installtest_p]} { untested $test; return }
+
+spawn stap $srcdir/$subdir/$test.stp
+set pid $spawn_id
+set ok 0
+
+proc advance {} {
+    global test
+    global expect_out
+    global ok
+    global modname
+    set procfs_file "/proc/systemtap/$modname/switch"
+
+    pass "$test $expect_out(1,string)"
+
+    # If this is the first time, wait until the procfs file exists
+    # (for up to 10 seconds).
+    if {$ok == 0} {
+	set i 0
+	while {![file exists $procfs_file]} {
+	    sleep 1
+	    incr i
+	    if {$i >= 10} { break }
+	}
+	# If the procfs file still doesn't exist, fail.
+	if {![file exists $procfs_file]} {
+	    fail "$test (missing procfs file)"
+	}
+    }
+
+    incr ok
+    if {[file exists $procfs_file]} { exec echo $ok > $procfs_file }
+    exec echo dummy > /dev/null
+    exp_continue
+}
+
+expect {
+  -timeout 240
+  -re {(begin1 probed): ([^\r\n]+)\r\n}
+	{ set modname "$expect_out(2,string)"; advance }
+  -re "^(function return probed)\r\n" { advance }
+  -re "^(function entry probed)\r\n" { advance }
+  -re "^(timer probed)\r\n" { advance }
+  -re "^(profile probed)\r\n" { advance }
+  -re "^(alias\.one\.a and alias\.one and alias\.\* probed)\r\n" { advance }
+  -re "^(alias\.one\.b and alias\.one and alias\.\* probed)\r\n" { advance }
+  -re "^(alias\.two and alias\.\* probed)\r\n" {
+      pass "$test $expect_out(1,string)"
+      incr ok
+  }
+  timeout { fail "$test (timeout)" }
+  eof { }
+}
+exec kill -INT -[exp_pid]
+#FIXME does not handle case of hanging pfaults.stp correctly
+wait
+exec rm -f $test.ko
+if {$ok != 8} {fail "conditional probes ($ok)"}
+

@@ -1,0 +1,40 @@
+#! stap -p2
+
+global entry_time, my_count, my_fd, read_times
+
+# future built-ins
+function trace (s) { return 0 }
+
+global tid
+
+probe begin /* kernel.function("read") */ {
+      count=0 timestamp=0 fd=0
+      tid=1
+
+      entry_time[tid] = timestamp # "macro" variable
+      my_count[tid] = count # function argument
+      my_fd[tid] = fd # function argument
+      trace ("my_count = " . sprint(my_count[tid]) .
+             "my_fd = " . sprint(my_fd[tid]))
+}
+
+probe end /* kernel.function("read").return */ {
+      syscall_name="" retvalue=0
+      tid=1
+
+      if (entry_time[tid]) {
+         read_times[syscall_name]    # variable from provider alias
+            += timestamp - entry_time[tid]
+      }
+      trace ("syscall " . (syscall_name) .
+             " return value = " .
+             sprintf ("0x%x", retvalue))  # function pseudo-argument
+}
+
+probe end {
+      foreach (syscall in read_times) {
+          trace ("syscall " . syscall .
+                 " total-time=" . sprint (read_times[syscall]))
+      }
+}
+

@@ -1,0 +1,18 @@
+Source: latencytop
+Section: utils
+Priority: extra
+Maintainer: Giacomo Catenazzi <cate@debian.org>
+Build-Depends: cdbs, debhelper (>= 5), pkg-config, libncursesw5-dev,
+  libglib2.0-dev, libgtk2.0-dev
+Standards-Version: 3.8.2
+Homepage: http://www.latencytop.org/
+
+Package: latencytop
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A tool for developers to visualize system latencies
+ LatencyTOP is a Linux tool for software developers (both kernel
+ and userspace), aimed at identifying where in the system latency
+ is happening, and what kind of operation/action is causing the
+ latency to happen so that the code can be changed to avoid the
+ worst latency hiccups.

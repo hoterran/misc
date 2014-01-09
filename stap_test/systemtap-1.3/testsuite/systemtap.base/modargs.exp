@@ -1,0 +1,27 @@
+# This test is to check that modargs work fine
+# Tests initialized and uninitialized global variables, string/number
+
+set test "modargs"
+
+# precompile the script module
+set compile { exec stap $srcdir/$subdir/$test.stp -p4 -w }
+if { [catch { set module [eval $compile] } msg ] } {
+    fail "$test compilation: $msg"
+    untested "$test module arguments"
+    continue
+} else {
+    pass "$test compilation"
+}
+
+set test "modargs execution"
+if {! [installtest_p]} { untested $test; return }
+
+set ::result_string {initializedname=foo initializednumber=999 name=charley number=-1}
+set res [ exec staprun $module $::result_string ]
+
+if {[string compare $res $::result_string] == 0} {
+    pass "$test"
+} else {
+    fail "$test, result: $res"
+}
+

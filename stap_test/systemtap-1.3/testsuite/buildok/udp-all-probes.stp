@@ -1,0 +1,6 @@
+#! stap -wp4
+
+// Tests if all probes in the udp tapset are resolvable.
+
+probe udp.*,
+      udp.*.* {}

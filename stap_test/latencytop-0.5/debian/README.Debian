@@ -1,0 +1,8 @@
+latencytop for Debian
+---------------------
+
+To use latencytop, you need a kernel 2.6.25 (or newer), configured
+with CONFIG_LATENCYTOP ( Kernel hacking -> Latency measuring infrastructure ).
+Further documentation is in http://www.latencytop.org/
+
+ -- Giacomo Catenazzi <cate@debian.org>  Tue, 12 Feb 2008 22:36:39 +0100

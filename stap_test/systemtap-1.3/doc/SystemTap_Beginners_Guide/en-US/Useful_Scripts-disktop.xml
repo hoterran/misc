@@ -1,0 +1,217 @@
+<?xml version='1.0'?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+
+
+	<section id="disktop">
+		<title>Summarizing Disk Read/Write Traffic</title>
+<indexterm>
+<primary>script examples</primary>
+<secondary>summarizing disk I/O traffic</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>summarizing disk I/O traffic</secondary>
+</indexterm>
+
+<indexterm>
+<primary>summarizing disk I/O traffic</primary>
+<secondary>script examples</secondary>
+</indexterm>		
+		
+		<remark>
+			NO ENTRY IN WAR STORIES: Summarize Disk Read/Write Traffic
+			http://sourceware.org/systemtap/examples/io/disktop.stp
+		</remark>
+
+<indexterm>
+<primary>disk I/O traffic, summarizing</primary>
+<secondary>script examples</secondary>
+</indexterm>
+<!-- next 2 indexterms for I/O traffic, summarizing -->
+
+<indexterm>
+<primary>I/O traffic, summarizing</primary>
+<secondary>script examples</secondary>
+</indexterm>
+
+<!-- next 2 indexterms for heaviest disk reads/writes, identifying -->
+
+<indexterm>
+<primary>heaviest disk reads/writes, identifying</primary>
+<secondary>script examples</secondary>
+</indexterm>
+
+
+<!-- next 2 indexterms for summarizing disk I/O traffic -->
+
+<indexterm>
+<primary>summarizing disk I/O traffic</primary>
+<secondary>script examples</secondary>
+</indexterm>
+
+
+<!-- next 2 indexterms for identifying heaviest disk reads/writes -->
+
+<indexterm>
+<primary>identifying heaviest disk reads/writes</primary>
+<secondary>script examples</secondary>
+</indexterm>
+	
+	<para>This section describes how to identify which processes are performing the heaviest disk reads/writes to the system.</para>
+	
+<formalpara id="scriptdisktop">
+	<title>disktop.stp</title>
+<para>
+<programlisting>
+<xi:include parse="text" href="../testsuite/systemtap.examples/io/disktop.stp" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</programlisting>
+</para>
+</formalpara>		
+
+<para><xref linkend="scriptdisktop"/> outputs the top ten processes responsible for the heaviest reads/writes to disk. <xref linkend="disktopoutput"/> displays a sample output for this script, and includes the following data per listed process:</para>
+
+<itemizedlist>
+	<listitem><para><computeroutput>UID</computeroutput> &mdash; user ID. A user ID of <computeroutput>0</computeroutput> refers to the root user.</para></listitem>
+	
+	<listitem><para><computeroutput>PID</computeroutput> &mdash; the ID of the listed process.</para></listitem>
+	
+	<listitem><para><computeroutput>PPID</computeroutput> &mdash; the process ID of the listed process's <emphasis>parent process</emphasis>.</para></listitem>
+	
+	<listitem><para><computeroutput>CMD</computeroutput> &mdash; the name of the listed process.</para></listitem>
+	
+	<listitem><para><computeroutput>DEVICE</computeroutput> &mdash; which storage device the listed process is reading from or writing to.</para></listitem>
+	
+	<listitem><para><computeroutput>T</computeroutput> &mdash; the type of action performed by the listed process; <computeroutput>W</computeroutput> refers to write, while <computeroutput>R</computeroutput> refers to read.</para></listitem>
+	
+	<listitem><para><computeroutput>BYTES</computeroutput> &mdash; the amount of data read to or written from disk.</para></listitem>
+</itemizedlist>	
+<!-- next 2 indexterms for ctime(), example of usage -->
+
+<indexterm>
+<primary>script examples</primary>
+<secondary>ctime(), example of usage</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>ctime(), example of usage</secondary>
+</indexterm>
+
+<indexterm>
+<primary>ctime(), example of usage</primary>
+<secondary>script examples</secondary>
+</indexterm>
+
+
+	
+<para>The time and date in the output of <xref linkend="scriptdisktop"/> is returned by the functions <command>ctime()</command> and <command>gettimeofday_s()</command>. <command>ctime()</command> derives calendar time in terms of seconds passed since the Unix epoch (January 1, 1970). <command>gettimeofday_s()</command> counts the <emphasis>actual</emphasis> number of seconds since Unix epoch, which gives a fairly accurate human-readable timestamp for the output.</para>
+<!-- next 3 indexterms for $return -->
+<indexterm>
+	<primary>local variables</primary>
+	<secondary>sample usage</secondary>
+	<tertiary>$return</tertiary>
+</indexterm>
+
+<indexterm>
+	<primary>variables (local)</primary>
+	<secondary>sample usage</secondary>
+	<tertiary>$return</tertiary>
+</indexterm>
+
+<indexterm>
+	<primary>$return</primary>
+	<secondary>sample usage</secondary>
+	<tertiary>local variables</tertiary>
+</indexterm>	
+<para>
+	In this script, the <command>$return</command> is a local variable that stores the
+	actual number of bytes each process reads or writes from the virtual file system. 
+	<command>$return</command> can only be used in return probes (e.g. 
+	<command>vfs.read.return</command> and <command>vfs.read.return</command>).
+</para>
+	
+<!--<remark>needinfo: what does $return do?</remark> 	-->
+<example id="disktopoutput">
+	<title><xref linkend="scriptdisktop"/> Sample Output</title>
+<screen>
+[...]
+Mon Sep 29 03:38:28 2008 , Average:  19Kb/sec, Read: 7Kb, Write: 89Kb
+
+UID      PID     PPID                       CMD   DEVICE    T    BYTES
+0    26319    26294                   firefox     sda5    W        90229
+0     2758     2757           pam_timestamp_c     sda5    R         8064
+0     2885        1                     cupsd     sda5    W         1678
+
+Mon Sep 29 03:38:38 2008 , Average:   1Kb/sec, Read: 7Kb, Write: 1Kb
+
+UID      PID     PPID                       CMD   DEVICE    T    BYTES
+0     2758     2757           pam_timestamp_c     sda5    R         8064
+0     2885        1                     cupsd     sda5    W         1678
+</screen>
+</example>
+
+<!--
+<programlisting>
+global io_stat,device
+global read_bytes,write_bytes
+
+probe kernel.function("vfs_read").return {
+	if ($return>0) {
+		dev = __file_dev($file)
+		devname = __find_bdevname(dev,__file_bdev($file))
+
+		if (devname!="N/A") {/*skip read from cache*/
+			io_stat[pid(),execname(),uid(),ppid(),"R"] += $return
+			device[pid(),execname(),uid(),ppid(),"R"] = devname
+			read_bytes += $return
+		}
+	}
+}
+
+probe kernel.function("vfs_write").return {
+	if ($return>0) {
+		dev = __file_dev($file)
+		devname = __find_bdevname(dev,__file_bdev($file))
+
+		if (devname!="N/A") { /*skip update cache*/
+			io_stat[pid(),execname(),uid(),ppid(),"W"] += $return
+			device[pid(),execname(),uid(),ppid(),"W"] = devname
+			write_bytes += $return
+		}
+	}
+}
+
+probe timer.ms(5000) {
+	/* skip non-read/write disk */
+	if (read_bytes+write_bytes) {
+
+		printf("\n%-25s, %-8s%4dKb/sec, %-7s%6dKb, %-7s%6dKb\n\n",ctime(gettimeofday_s()),"Average:",
+      		((read_bytes+write_bytes)/1024)/5,"Read:",read_bytes/1024,"Write:",write_bytes/1024)
+
+		/* print header */
+		printf("%8s %8s %8s %25s %8s %4s %12s\n","UID","PID","PPID","CMD","DEVICE","T","BYTES")
+	}
+	/* print top ten I/O */
+	foreach ([process,cmd,userid,parent,action] in io_stat- limit 10)
+	  printf("%8d %8d %8d %25s %8s %4s %12d\n",userid,process,parent,cmd,device[process,cmd,userid,parent,action], action,io_stat[process,cmd,userid,parent,action])
+
+	/* clear data */
+	delete io_stat
+	delete device
+	read_bytes = 0
+	write_bytes = 0	
+}
+
+probe end{
+	delete io_stat
+	delete device
+	delete read_bytes
+	delete write_bytes	
+}
+</programlisting>
+-->
+
+	</section>
+

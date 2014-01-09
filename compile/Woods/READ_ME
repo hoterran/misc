@@ -1,0 +1,4 @@
+This is the context-sensitive parser described in William A. Woods,
+Context-sensitive parsing, Commun. ACM, Vol. 13, #7, July 1970, 437-445.
+
+Interpreter; obtains grammar and input as C code.

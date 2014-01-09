@@ -1,0 +1,702 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BUF_SIZE	tests/test115.c	8;"	d	file:
+CDATA	lang/perl/tplxml	/^         format CDATA #REQUIRED$/;"	f
+CFLAGS	tests/Makefile	/^CFLAGS = -I$(TPLSRC) -g$/;"	m
+CFLAGS	tests/threads/Makefile	/^CFLAGS = -I$(TPLSRC) -g -pthread$/;"	m
+COUNT	tests/test115.c	7;"	d	file:
+CPPFLAGS	tests/other/Makefile	/^CPPFLAGS = -I$(SRCDIR)$/;"	m
+DEBUG	tests/test26.c	9;"	d	file:
+DEBUG	tests/test51.c	12;"	d	file:
+DEBUG	tests/test54.c	12;"	d	file:
+DEBUG	tests/test55.c	9;"	d	file:
+DL_ADD	src/tpl.c	72;"	d	file:
+ERR_FLEN_MISMATCH	src/tpl.c	121;"	d	file:
+ERR_FMT_INVALID	src/tpl.c	118;"	d	file:
+ERR_FMT_MISMATCH	src/tpl.c	120;"	d	file:
+ERR_FMT_MISSING_NUL	src/tpl.c	119;"	d	file:
+ERR_INCONSISTENT_SZ	src/tpl.c	117;"	d	file:
+ERR_INCONSISTENT_SZ2	src/tpl.c	122;"	d	file:
+ERR_INCONSISTENT_SZ3	src/tpl.c	123;"	d	file:
+ERR_INCONSISTENT_SZ4	src/tpl.c	124;"	d	file:
+ERR_MAGIC_MISMATCH	src/tpl.c	116;"	d	file:
+ERR_NOT_MINSIZE	src/tpl.c	115;"	d	file:
+ERR_UNSUPPORTED_FLAGS	src/tpl.c	125;"	d	file:
+F1_LEN	tests/test74.c	5;"	d	file:
+F2_LEN	tests/test74.c	6;"	d	file:
+FILE_BUFLEN	tests/test51.c	13;"	d	file:
+FILE_BUFLEN	tests/test54.c	13;"	d	file:
+FLEN	tests/test118.c	7;"	d	file:
+FLEN	tests/test82.c	6;"	d	file:
+FLEN	tests/test83.c	6;"	d	file:
+FLEN	tests/test84.c	6;"	d	file:
+HTML	doc/Makefile	/^HTML=$(patsubst %.txt,%.html,$(wildcard *.txt))$/;"	m
+ILEN	tests/test118.c	5;"	d	file:
+ILEN	tests/test80.c	4;"	d	file:
+ILEN	tests/test81.c	4;"	d	file:
+ILEN	tests/test82.c	4;"	d	file:
+ILEN	tests/test83.c	4;"	d	file:
+ILEN	tests/test84.c	4;"	d	file:
+KLEN	tests/test118.c	6;"	d	file:
+KLEN	tests/test82.c	5;"	d	file:
+KLEN	tests/test83.c	5;"	d	file:
+KLEN	tests/test84.c	5;"	d	file:
+LEN	tests/test124.c	4;"	d	file:
+MAP_COPY	src/win/mman.h	13;"	d
+MAP_FAILED	src/win/mman.h	23;"	d
+MAP_FIXED	src/win/mman.h	14;"	d
+MAP_HASSEMAPHORE	src/win/mman.h	19;"	d
+MAP_INHERIT	src/win/mman.h	17;"	d
+MAP_NOEXTEND	src/win/mman.h	18;"	d
+MAP_NORESERVE	src/win/mman.h	16;"	d
+MAP_PRIVATE	src/win/mman.h	12;"	d
+MAP_RENAME	src/win/mman.h	15;"	d
+MAP_SHARED	src/win/mman.h	11;"	d
+MAP_STACK	src/win/mman.h	20;"	d
+MS_ASYNC	src/win/mman.h	26;"	d
+MS_COUNT	tests/test106.c	12;"	d	file:
+MS_INVALIDATE	src/win/mman.h	28;"	d
+MS_SYNC	src/win/mman.h	27;"	d
+NUM	tests/test111.c	8;"	d	file:
+NUM	tests/test112.c	8;"	d	file:
+NUM	tests/test113.c	8;"	d	file:
+NUM	tests/test119.c	8;"	d	file:
+NUM_ELMT	tests/test117.c	7;"	d	file:
+NUM_STRS	tests/test116.c	4;"	d	file:
+NUM_STRS	tests/test117.c	6;"	d	file:
+PROGS	tests/Makefile	/^PROGS = test1 test2 test3 test4 test5 test6 test7 test8 \\$/;"	m
+PROGS	tests/other/Makefile	/^PROGS = other1$/;"	m
+PROGS	tests/threads/Makefile	/^PROGS = test1$/;"	m
+PROT_EXEC	src/win/mman.h	8;"	d
+PROT_NONE	src/win/mman.h	5;"	d
+PROT_READ	src/win/mman.h	6;"	d
+PROT_WRITE	src/win/mman.h	7;"	d
+S1_LEN	tests/test56.c	6;"	d	file:
+S1_LEN	tests/test57.c	6;"	d	file:
+S1_LEN	tests/test58.c	6;"	d	file:
+S1_LEN	tests/test59.c	6;"	d	file:
+S2_LEN	tests/test56.c	7;"	d	file:
+S2_LEN	tests/test57.c	7;"	d	file:
+S2_LEN	tests/test58.c	7;"	d	file:
+S2_LEN	tests/test59.c	7;"	d	file:
+S2_LEN	tests/test75.c	5;"	d	file:
+S2_LEN	tests/test76.c	5;"	d	file:
+S2_LEN	tests/test77.c	5;"	d	file:
+SLEN	tests/test117.c	9;"	d	file:
+SRCDIR	tests/other/Makefile	/^SRCDIR=..\/..\/src$/;"	m
+STR	tests/test117.c	8;"	d	file:
+SUM_LENGTH	tests/test106.c	11;"	d	file:
+S_IRGRP	src/win/mman.h	33;"	d
+S_IROTH	src/win/mman.h	34;"	d
+S_ISREG	src/tpl.c	57;"	d	file:
+S_IWGRP	src/win/mman.h	32;"	d
+TAG	lang/perl/tplxml	/^    TAG: while (@next) {$/;"	l
+TARGET	tests/Makefile	/^  TARGET=$(PROGS) run_tests$/;"	m
+TARGET	tests/Makefile	/^  TARGET=alt$/;"	m
+TESTS	tests/Makefile	/^  TESTS=.\/do_tests$/;"	m
+TESTS	tests/Makefile	/^  TESTS=.\/do_tests.cygwin$/;"	m
+TEST_LEN	tests/test65.c	5;"	d	file:
+TEST_LEN1	tests/test66.c	5;"	d	file:
+TEST_LEN1	tests/test67.c	5;"	d	file:
+TEST_LEN1	tests/test68.c	5;"	d	file:
+TEST_LEN1	tests/test69.c	5;"	d	file:
+TEST_LEN2	tests/test66.c	6;"	d	file:
+TEST_LEN2	tests/test67.c	6;"	d	file:
+TEST_LEN2	tests/test68.c	6;"	d	file:
+TEST_LEN2	tests/test69.c	6;"	d	file:
+TMP	doc/Makefile	/^TMP=\/tmp\/tpl-gh-pages$/;"	m
+TPLSRC	tests/Makefile	/^TPLSRC = ..\/src$/;"	m
+TPLSRC	tests/threads/Makefile	/^TPLSRC = ..\/..\/src$/;"	m
+TPL_API	src/tpl.h	47;"	d
+TPL_API	src/tpl.h	50;"	d
+TPL_API	src/tpl.h	52;"	d
+TPL_API	src/tpl.h	56;"	d
+TPL_DATAPEEK	src/tpl.h	66;"	d
+TPL_EXCESS_OK	src/tpl.h	63;"	d
+TPL_FD	src/tpl.h	64;"	d
+TPL_FILE	src/tpl.h	60;"	d
+TPL_FL_BIGENDIAN	src/tpl.c	96;"	d	file:
+TPL_FL_NULLSTRINGS	src/tpl.c	97;"	d	file:
+TPL_FXLENS	src/tpl.h	67;"	d
+TPL_GATHER_BLOCKING	src/tpl.h	72;"	d
+TPL_GATHER_BUFLEN	src/tpl.c	68;"	d	file:
+TPL_GATHER_MEM	src/tpl.h	74;"	d
+TPL_GATHER_NONBLOCKING	src/tpl.h	73;"	d
+TPL_GETSIZE	src/tpl.h	68;"	d
+TPL_H	src/tpl.h	25;"	d
+TPL_MAGIC	src/tpl.c	69;"	d	file:
+TPL_MEM	src/tpl.h	61;"	d
+TPL_OLD_STRING_FMT	src/tpl.c	92;"	d	file:
+TPL_PREALLOCD	src/tpl.h	62;"	d
+TPL_RDONLY	src/tpl.c	90;"	d	file:
+TPL_SUPPORTED_BITFLAGS	src/tpl.c	95;"	d	file:
+TPL_TYPE_ARY	src/tpl.c	105;"	d	file:
+TPL_TYPE_BIN	src/tpl.c	106;"	d	file:
+TPL_TYPE_BYTE	src/tpl.c	103;"	d	file:
+TPL_TYPE_DOUBLE	src/tpl.c	107;"	d	file:
+TPL_TYPE_INT16	src/tpl.c	110;"	d	file:
+TPL_TYPE_INT32	src/tpl.c	101;"	d	file:
+TPL_TYPE_INT64	src/tpl.c	108;"	d	file:
+TPL_TYPE_POUND	src/tpl.c	112;"	d	file:
+TPL_TYPE_ROOT	src/tpl.c	100;"	d	file:
+TPL_TYPE_STR	src/tpl.c	104;"	d	file:
+TPL_TYPE_UINT16	src/tpl.c	111;"	d	file:
+TPL_TYPE_UINT32	src/tpl.c	102;"	d	file:
+TPL_TYPE_UINT64	src/tpl.c	109;"	d	file:
+TPL_UFREE	src/tpl.h	65;"	d
+TPL_VERSION	src/tpl.c	24;"	d	file:
+TPL_WRONLY	src/tpl.c	89;"	d	file:
+TPL_XENDIAN	src/tpl.c	91;"	d	file:
+Test	tests/test125.c	/^struct Test {$/;"	s	file:
+TocEntry	doc/ChangeLog.html	/^  function TocEntry(el, text, toclevel) {$/;"	f
+TocEntry	doc/compiling.html	/^  function TocEntry(el, text, toclevel) {$/;"	f
+TocEntry	doc/examples.html	/^  function TocEntry(el, text, toclevel) {$/;"	f
+TocEntry	doc/perl.html	/^  function TocEntry(el, text, toclevel) {$/;"	f
+TocEntry	doc/userguide.html	/^  function TocEntry(el, text, toclevel) {$/;"	f
+Tpl	lang/perl/Tpl.pm	/^package Tpl;$/;"	p
+WinMain	tests/mgwtest.c	/^int WINAPI WinMain (HINSTANCE hInstance, $/;"	f
+WinMain	tests/test1-mingw.c	/^int WINAPI WinMain (HINSTANCE hInstance, $/;"	f
+XDIM	tests/test114.c	5;"	d	file:
+YDIM	tests/test114.c	6;"	d	file:
+_MMAN_H_	src/win/mman.h	2;"	d
+a	src/tpl.c	/^    char a;$/;"	m	struct:tpl_double_alignment_detector	file:
+a	tests/malign.c	/^        char a;$/;"	m	struct:s_t	file:
+a	tests/test56.c	/^    char a;$/;"	m	struct:has_strings	file:
+a	tests/test57.c	/^    char a;$/;"	m	struct:has_strings	file:
+a	tests/test58.c	/^    char a;$/;"	m	struct:has_strings	file:
+a	tests/test59.c	/^    char a;$/;"	m	struct:has_strings	file:
+ac_fn_c_try_compile	configure	/^ac_fn_c_try_compile ()$/;"	f
+addr	src/tpl.h	/^    void *addr;$/;"	m	struct:tpl_bin
+addr	src/tpl.h	/^    void *addr;$/;"	m	struct:tpl_node
+as_fn_append	configure	/^  as_fn_append ()$/;"	f
+as_fn_arith	configure	/^  as_fn_arith ()$/;"	f
+as_fn_error	configure	/^as_fn_error ()$/;"	f
+as_fn_exit	configure	/^as_fn_exit ()$/;"	f
+as_fn_failure	configure	/^as_fn_failure () { as_fn_return 1; }$/;"	f
+as_fn_mkdir_p	configure	/^as_fn_mkdir_p ()$/;"	f
+as_fn_ret_failure	configure	/^as_fn_ret_failure () { return 1; }$/;"	f
+as_fn_ret_success	configure	/^as_fn_ret_success () { return 0; }$/;"	f
+as_fn_set_status	configure	/^as_fn_set_status ()$/;"	f
+as_fn_success	configure	/^as_fn_success () { as_fn_return 0; }$/;"	f
+as_fn_unset	configure	/^as_fn_unset ()$/;"	f
+b	tests/test59.c	/^    char b;$/;"	m	struct:has_strings	file:
+bb	src/tpl.c	/^    struct tpl_backbone *bb,*bbtail; $/;"	m	struct:tpl_atyp	typeref:struct:tpl_atyp::tpl_backbone	file:
+bbtail	src/tpl.c	/^    struct tpl_backbone *bb,*bbtail; $/;"	m	struct:tpl_atyp	typeref:struct:tpl_atyp::	file:
+big_endian	lang/perl/Tpl.pm	/^sub big_endian {$/;"	s
+blength	tests/test106.c	/^    int blength; $/;"	m	struct:sum_struct	file:
+buffer	tests/test125.c	/^char buffer[5000]; \/* this doesn't matter- just a place to dump to *\/$/;"	v
+c	src/tpl.c	/^    char c;$/;"	m	struct:tpl_type_t	file:
+c	tests/test107.c	/^  char c[4];$/;"	m	struct:__anon5	file:
+c	tests/test108.c	/^  char c[4];$/;"	m	struct:__anon6	file:
+c	tests/test109.c	/^  char c;$/;"	m	struct:__anon10	file:
+c	tests/test111.c	/^  char c;$/;"	m	struct:st	file:
+c	tests/test112.c	/^  char c[8];$/;"	m	struct:st	file:
+c	tests/test113.c	/^  char c[8];$/;"	m	struct:st	file:
+c	tests/test115.c	/^   char c[BUF_SIZE];$/;"	m	struct:__anon4	file:
+c	tests/test118.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test119.c	/^  char c;$/;"	m	struct:st	file:
+c	tests/test122.c	/^    char c[3];$/;"	m	struct:__anon9	file:
+c	tests/test122.c	/^  char c;$/;"	m	struct:__anon8	file:
+c	tests/test70.c	/^    char c;$/;"	m	struct:ms_t	file:
+c	tests/test72.c	/^    char c;$/;"	m	struct:ms_t	file:
+c	tests/test73.c	/^    char c;$/;"	m	struct:ms_t	file:
+c	tests/test80.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test81.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test82.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test83.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test84.c	/^    char c;$/;"	m	struct:st	file:
+c	tests/test88.c	/^    char c[3];$/;"	m	struct:ms_t	file:
+c	tests/test89.c	/^    char c[3];$/;"	m	struct:ms_t	file:
+calc_field_addr	src/tpl.c	/^char *calc_field_addr(tpl_node *parent, int type,char *struct_addr, int ordinal) {$/;"	f
+catch_oops	tests/test123.c	/^int catch_oops(const char *fmt, ...) {$/;"	f
+chain	tests/test106.c	/^    int chain; $/;"	m	struct:sum_buf	file:
+children	src/tpl.h	/^    struct tpl_node *children;   \/* my children; linked-list *\/$/;"	m	struct:tpl_node	typeref:struct:tpl_node::tpl_node
+count	tests/test106.c	/^    int count; $/;"	m	struct:sum_struct	file:
+cur	src/tpl.c	/^    void *cur;                       $/;"	m	struct:tpl_atyp	file:
+d	src/tpl.c	/^    double d;  \/* some platforms align this on +4, others on +8 *\/$/;"	m	struct:tpl_double_alignment_detector	file:
+d	tests/malign.c	/^        double d;$/;"	m	struct:s_t	file:
+d	tests/test109.c	/^  char d;$/;"	m	struct:__anon10	file:
+d	tests/test70.c	/^    double d;$/;"	m	struct:ms_t	file:
+d	tests/test71.c	/^    double d;$/;"	m	struct:ms_t	file:
+d	tests/test72.c	/^    double d;$/;"	m	struct:ms_t	file:
+d	tests/test73.c	/^    double d;$/;"	m	struct:ms_t	file:
+data	src/tpl.c	/^    char *data;  $/;"	m	struct:tpl_backbone	file:
+data	src/tpl.c	/^    char data[];$/;"	m	struct:tpl_backbone	file:
+data	src/tpl.h	/^    void *data;                  \/* r:tpl_root_data*. A:tpl_atyp*. ow:szof type *\/$/;"	m	struct:tpl_node
+env	tests/test123.c	/^jmp_buf env;$/;"	v
+example	tests/test75.c	/^struct example {$/;"	s	file:
+example	tests/test76.c	/^struct example {$/;"	s	file:
+example	tests/test77.c	/^struct example {$/;"	s	file:
+f	tests/test111.c	/^  double f;$/;"	m	struct:st	file:
+f	tests/test112.c	/^  double f;$/;"	m	struct:st	file:
+f	tests/test113.c	/^  double f;$/;"	m	struct:st	file:
+f	tests/test118.c	/^    double f[FLEN];$/;"	m	struct:st	file:
+f	tests/test119.c	/^  double f;$/;"	m	struct:st	file:
+f	tests/test122.c	/^    double f;$/;"	m	struct:__anon9	file:
+f	tests/test82.c	/^    double f[FLEN];$/;"	m	struct:st	file:
+f	tests/test83.c	/^    double f[FLEN];$/;"	m	struct:st	file:
+f	tests/test84.c	/^    double f[FLEN];$/;"	m	struct:st	file:
+f	tests/test88.c	/^    double f;$/;"	m	struct:ms_t	file:
+f	tests/test89.c	/^    double f;$/;"	m	struct:ms_t	file:
+f1	tests/test74.c	/^    double f1[F1_LEN];$/;"	m	struct:ms_t	file:
+f2	tests/test74.c	/^    double f2[F2_LEN];$/;"	m	struct:ms_t	file:
+fatal	src/tpl.h	/^    tpl_fatal_fcn *fatal;$/;"	m	struct:tpl_hook_t
+fatal_oom	src/tpl.c	86;"	d	file:
+fd	src/tpl.c	/^    int fd;$/;"	m	struct:tpl_mmap_rec	file:
+fd	tests/threads/test1.c	/^int fd[2];$/;"	v
+filename	tests/test100.c	/^const char *filename = "\/tmp\/test100.tpl";$/;"	v
+filename	tests/test101.c	/^const char *filename = "\/tmp\/test101.tpl";$/;"	v
+filename	tests/test102.c	/^const char *filename = "\/tmp\/test102.tpl";$/;"	v
+filename	tests/test103.c	/^const char *filename = "\/tmp\/test103.tpl";$/;"	v
+filename	tests/test104.c	/^const char *filename = "\/tmp\/test104.tpl";$/;"	v
+filename	tests/test105.c	/^const char *filename = "\/tmp\/test105.tpl";$/;"	v
+filename	tests/test106.c	/^const char *filename =  "\/tmp\/test106.tpl"; $/;"	v
+filename	tests/test107.c	/^const char *filename = "\/tmp\/test107.tpl";$/;"	v
+filename	tests/test108.c	/^const char *filename = "\/tmp\/test108.tpl";$/;"	v
+filename	tests/test109.c	/^const char *filename = "\/tmp\/test109.tpl";$/;"	v
+filename	tests/test110.c	/^const char *filename = "\/tmp\/test110.tpl";$/;"	v
+filename	tests/test111.c	/^const char *filename = "\/tmp\/test111.tpl";$/;"	v
+filename	tests/test112.c	/^const char *filename = "\/tmp\/test112.tpl";$/;"	v
+filename	tests/test113.c	/^const char *filename = "\/tmp\/test113.tpl";$/;"	v
+filename	tests/test114.c	/^const char *filename = "\/tmp\/test114.tpl";$/;"	v
+filename	tests/test115.c	/^const char *filename = "\/tmp\/test115.tpl";$/;"	v
+filename	tests/test116.c	/^const char *filename = "\/tmp\/test116.tpl";$/;"	v
+filename	tests/test117.c	/^const char *filename = "\/tmp\/test117.tpl";$/;"	v
+filename	tests/test118.c	/^const char *filename = "\/tmp\/test118.tpl";$/;"	v
+filename	tests/test119.c	/^const char *filename = "\/tmp\/test119.tpl";$/;"	v
+filename	tests/test121.c	/^const char *filename = "\/tmp\/test121.tpl";$/;"	v
+filename	tests/test122.c	/^const char *filename = "\/tmp\/test122.tpl";$/;"	v
+filename	tests/test124.c	/^const char *filename = "\/tmp\/test124.tpl";$/;"	v
+filename	tests/test93.c	/^const char *filename="\/tmp\/test93.tpl";$/;"	v
+filename	tests/test94.c	/^const char *filename="\/tmp\/test94.tpl";$/;"	v
+filename	tests/test95.c	/^const char *filename="\/tmp\/test95.tpl";$/;"	v
+filename	tests/test96.c	/^const char *filename="\/tmp\/test96.tpl";$/;"	v
+filename	tests/test97.c	/^const char *filename = "\/tmp\/test97.tpl";$/;"	v
+filename	tests/test98.c	/^const char *filename = "\/tmp\/test98.tpl";$/;"	v
+flags	src/tpl.c	/^    int flags;$/;"	m	struct:tpl_root_data	file:
+flags	tests/test106.c	/^    uint16_t flags; $/;"	m	struct:sum_buf	file:
+flength	tests/test106.c	/^    int64_t flength;$/;"	m	struct:sum_struct	file:
+fmt	src/tpl.c	/^    char *fmt;$/;"	m	struct:tpl_root_data	file:
+free	src/tpl.h	/^    tpl_free_fcn *free;$/;"	m	struct:tpl_hook_t
+ftruncate	src/tpl.c	38;"	d	file:
+fxlens	src/tpl.c	/^    int *fxlens, num_fxlens;$/;"	m	struct:tpl_root_data	file:
+gather_max	src/tpl.h	/^    size_t gather_max;$/;"	m	struct:tpl_hook_t
+getText	doc/ChangeLog.html	/^  function getText(el) {$/;"	f
+getText	doc/compiling.html	/^  function getText(el) {$/;"	f
+getText	doc/examples.html	/^  function getText(el) {$/;"	f
+getText	doc/perl.html	/^  function getText(el) {$/;"	f
+getText	doc/userguide.html	/^  function getText(el) {$/;"	f
+h	tests/test108.c	/^  int16_t h;$/;"	m	struct:__anon6	file:
+handle_client	lang/perl/tests/server.pl	/^sub handle_client {$/;"	s
+has_strings	tests/test56.c	/^struct has_strings {$/;"	s	file:
+has_strings	tests/test57.c	/^struct has_strings {$/;"	s	file:
+has_strings	tests/test58.c	/^struct has_strings {$/;"	s	file:
+has_strings	tests/test59.c	/^struct has_strings {$/;"	s	file:
+hex_chars	lang/perl/tplxml	/^sub hex_chars {$/;"	s
+hw	tests/test115.c	/^const char hw[]="hello, world!";$/;"	v
+i	src/tpl.c	/^    int i;$/;"	m	struct:tpl_int64_alignment_detector	file:
+i	tests/int64_align.c	/^        int i;$/;"	m	struct:s_t	file:
+i	tests/test107.c	/^  int i;$/;"	m	struct:__anon5	file:
+i	tests/test108.c	/^  int i;$/;"	m	struct:__anon6	file:
+i	tests/test109.c	/^  uint32_t i;$/;"	m	struct:__anon10	file:
+i	tests/test111.c	/^  int i;$/;"	m	struct:st	file:
+i	tests/test112.c	/^  int i;$/;"	m	struct:st	file:
+i	tests/test113.c	/^  int i;$/;"	m	struct:st	file:
+i	tests/test115.c	/^   int i;$/;"	m	struct:__anon3	file:
+i	tests/test115.c	/^   int i;$/;"	m	struct:__anon4	file:
+i	tests/test119.c	/^  int i;$/;"	m	struct:st	file:
+i	tests/test122.c	/^    int i;$/;"	m	struct:__anon9	file:
+i	tests/test122.c	/^  int i;$/;"	m	struct:__anon8	file:
+i	tests/test70.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test71.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test72.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test73.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test74.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test80.c	/^    int i[ILEN];$/;"	m	struct:st	file:
+i	tests/test81.c	/^    int i[ILEN];$/;"	m	struct:st	file:
+i	tests/test88.c	/^    int i;$/;"	m	struct:ms_t	file:
+i	tests/test89.c	/^    int i;$/;"	m	struct:ms_t	file:
+id	src/tpl.c	/^static const char id[]="$Id: tpl.c 192 2009-04-24 10:35:30Z thanson $";$/;"	v	file:
+id	src/win/mmap.c	/^static const char id[]="$Id: tpl.c 107 2007-04-20 17:11:29Z thanson $";$/;"	v	file:
+img	src/tpl.h	/^    char *img;$/;"	m	struct:tpl_gather_t
+inner	tests/test122.c	/^    inner_t inner;$/;"	m	struct:__anon9	file:
+inner_t	tests/test122.c	/^} inner_t;$/;"	t	typeref:struct:__anon8	file:
+int16_t	src/tpl.c	/^typedef __int16 int16_t;$/;"	t	file:
+int32_t	src/tpl.c	/^typedef __int32 int32_t;$/;"	t	file:
+int64_t	src/tpl.c	/^typedef __int64 int64_t;$/;"	t	file:
+inter_elt_len	src/tpl.c	/^  size_t inter_elt_len; \/* padded inter-element len; i.e. &a[1].field - &a[0].field *\/$/;"	m	struct:__anon1	file:
+iter_start_node	src/tpl.c	/^  tpl_node *iter_start_node; \/* node to jump back to, as we start each new iteration *\/$/;"	m	struct:__anon1	file:
+iternum	src/tpl.c	/^  size_t iternum; \/* current iteration number (total req'd. iter's in n->num) *\/$/;"	m	struct:__anon1	file:
+j	src/tpl.c	/^    int64_t j;  \/* some platforms align this on +4, others on +8 *\/$/;"	m	struct:tpl_int64_alignment_detector	file:
+j	tests/int64_align.c	/^        int64_t j;$/;"	m	struct:s_t	file:
+j	tests/test108.c	/^  int64_t j;$/;"	m	struct:__anon6	file:
+j	tests/test109.c	/^  uint16_t j;$/;"	m	struct:__anon10	file:
+l1	tests/test108.c	/^  int l1;$/;"	m	struct:__anon6	file:
+l2	tests/test108.c	/^  unsigned l2;$/;"	m	struct:__anon6	file:
+len	src/tpl.h	/^    int len;$/;"	m	struct:tpl_gather_t
+len	tests/test106.c	/^    int len;  $/;"	m	struct:sum_buf	file:
+main	tests/int64_align.c	/^int main() {$/;"	f
+main	tests/malign.c	/^int main() {$/;"	f
+main	tests/other/other1.cpp	/^main() {$/;"	f
+main	tests/test1.c	/^int main() {$/;"	f
+main	tests/test10.c	/^int main() {$/;"	f
+main	tests/test100.c	/^int main() {$/;"	f
+main	tests/test101.c	/^int main() {$/;"	f
+main	tests/test102.c	/^int main() {$/;"	f
+main	tests/test103.c	/^int main() {$/;"	f
+main	tests/test104.c	/^int main() {$/;"	f
+main	tests/test105.c	/^int main() {$/;"	f
+main	tests/test106.c	/^int main() {$/;"	f
+main	tests/test107.c	/^int main() {$/;"	f
+main	tests/test108.c	/^int main() {$/;"	f
+main	tests/test109.c	/^int main() {$/;"	f
+main	tests/test11.c	/^int main() {$/;"	f
+main	tests/test110.c	/^int main() {$/;"	f
+main	tests/test111.c	/^int main() {$/;"	f
+main	tests/test112.c	/^int main() {$/;"	f
+main	tests/test113.c	/^int main() {$/;"	f
+main	tests/test114.c	/^int main() {$/;"	f
+main	tests/test115.c	/^int main ()$/;"	f
+main	tests/test116.c	/^int main() {$/;"	f
+main	tests/test117.c	/^int main() {$/;"	f
+main	tests/test118.c	/^int main() {$/;"	f
+main	tests/test119.c	/^int main() {$/;"	f
+main	tests/test12.c	/^int main() {$/;"	f
+main	tests/test120.c	/^int main() {$/;"	f
+main	tests/test121.c	/^int main() {$/;"	f
+main	tests/test122.c	/^int main() {$/;"	f
+main	tests/test123.c	/^int main() {$/;"	f
+main	tests/test124.c	/^int main() {$/;"	f
+main	tests/test125.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test13.c	/^int main() {$/;"	f
+main	tests/test14.c	/^int main() {$/;"	f
+main	tests/test15.c	/^int main() {$/;"	f
+main	tests/test16.c	/^int main() {$/;"	f
+main	tests/test17.c	/^int main() {$/;"	f
+main	tests/test18.c	/^int main() {$/;"	f
+main	tests/test19.c	/^int main() {$/;"	f
+main	tests/test2.c	/^int main() {$/;"	f
+main	tests/test20.c	/^int main() {$/;"	f
+main	tests/test21.c	/^int main() {$/;"	f
+main	tests/test22.c	/^int main() {$/;"	f
+main	tests/test23.c	/^int main() {$/;"	f
+main	tests/test24.c	/^int main() {$/;"	f
+main	tests/test25.c	/^int main() {$/;"	f
+main	tests/test26.c	/^int main() {$/;"	f
+main	tests/test27.c	/^int main() {$/;"	f
+main	tests/test28.c	/^int main() {$/;"	f
+main	tests/test29.c	/^int main() {$/;"	f
+main	tests/test3.c	/^int main() {$/;"	f
+main	tests/test30.c	/^int main(int argc, char*argv[]) {$/;"	f
+main	tests/test31.c	/^int main(int argc, char*argv[]) {$/;"	f
+main	tests/test32.c	/^int main(int argc, char*argv[]) {$/;"	f
+main	tests/test33.c	/^int main() {$/;"	f
+main	tests/test34.c	/^int main() {$/;"	f
+main	tests/test35.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test36.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test37.c	/^int main() {$/;"	f
+main	tests/test38.c	/^int main() {$/;"	f
+main	tests/test39.c	/^int main() {$/;"	f
+main	tests/test4.c	/^int main() {$/;"	f
+main	tests/test40.c	/^int main() {$/;"	f
+main	tests/test41.c	/^int main() {$/;"	f
+main	tests/test42.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test43.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test44.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test45.c	/^int main() {$/;"	f
+main	tests/test46.c	/^int main() {$/;"	f
+main	tests/test47.c	/^int main() {$/;"	f
+main	tests/test48.c	/^int main() {$/;"	f
+main	tests/test49.c	/^    int main() {$/;"	f
+main	tests/test5.c	/^int main() {$/;"	f
+main	tests/test50.c	/^    int main() {$/;"	f
+main	tests/test51.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test52.c	/^int main() {$/;"	f
+main	tests/test53.c	/^int main() {$/;"	f
+main	tests/test54.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	tests/test55.c	/^int main() {$/;"	f
+main	tests/test56.c	/^int main(int argc,char*argv[]) {$/;"	f
+main	tests/test57.c	/^int main(int argc,char*argv[]) {$/;"	f
+main	tests/test58.c	/^int main(int argc,char*argv[]) {$/;"	f
+main	tests/test59.c	/^int main(int argc,char*argv[]) {$/;"	f
+main	tests/test6.c	/^int main() {$/;"	f
+main	tests/test60.c	/^int main() {$/;"	f
+main	tests/test61.c	/^int main() {$/;"	f
+main	tests/test62.c	/^int main() {$/;"	f
+main	tests/test63.c	/^int main() {$/;"	f
+main	tests/test64.c	/^int main() {$/;"	f
+main	tests/test65.c	/^int main() {$/;"	f
+main	tests/test66.c	/^int main() {$/;"	f
+main	tests/test67.c	/^int main() {$/;"	f
+main	tests/test68.c	/^int main() {$/;"	f
+main	tests/test69.c	/^int main() {$/;"	f
+main	tests/test7.c	/^int main() {$/;"	f
+main	tests/test70.c	/^int main() {$/;"	f
+main	tests/test71.c	/^int main() {$/;"	f
+main	tests/test72.c	/^int main() {$/;"	f
+main	tests/test73.c	/^int main() {$/;"	f
+main	tests/test74.c	/^int main() {$/;"	f
+main	tests/test75.c	/^int main() {$/;"	f
+main	tests/test76.c	/^int main() {$/;"	f
+main	tests/test77.c	/^int main() {$/;"	f
+main	tests/test78.c	/^int main() {$/;"	f
+main	tests/test79.c	/^int main() {$/;"	f
+main	tests/test8.c	/^int main() {$/;"	f
+main	tests/test80.c	/^int main() {$/;"	f
+main	tests/test81.c	/^int main() {$/;"	f
+main	tests/test82.c	/^int main() {$/;"	f
+main	tests/test83.c	/^int main() {$/;"	f
+main	tests/test84.c	/^int main() {$/;"	f
+main	tests/test85.c	/^int main() {$/;"	f
+main	tests/test86.c	/^int main() {$/;"	f
+main	tests/test87.c	/^int main() {$/;"	f
+main	tests/test88.c	/^int main() {$/;"	f
+main	tests/test89.c	/^int main() {$/;"	f
+main	tests/test9.c	/^int main() {$/;"	f
+main	tests/test90.c	/^int main ( int n , char* a [ ] )$/;"	f
+main	tests/test91.c	/^int main ( int n , char* a [ ] )$/;"	f
+main	tests/test92.c	/^int main ( int n , char* a [ ] )$/;"	f
+main	tests/test93.c	/^int main() {$/;"	f
+main	tests/test94.c	/^int main() {$/;"	f
+main	tests/test95.c	/^int main() {$/;"	f
+main	tests/test96.c	/^int main() {$/;"	f
+main	tests/test97.c	/^int main() {$/;"	f
+main	tests/test98.c	/^int main() {$/;"	f
+main	tests/test99.c	/^int main() {$/;"	f
+main	tests/threads/test1.c	/^int main() {$/;"	f
+malloc	src/tpl.h	/^    tpl_malloc_fcn *malloc;$/;"	m	struct:tpl_hook_t
+mmap	src/tpl.c	/^    tpl_mmap_rec mmap;$/;"	m	struct:tpl_root_data	file:
+mmap	src/win/mmap.c	/^void *mmap(void *addr, unsigned int len, int prot, int flags, int fd, unsigned int offset)$/;"	f
+ms_t	tests/test70.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test71.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test72.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test73.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test74.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test88.c	/^struct ms_t {$/;"	s	file:
+ms_t	tests/test89.c	/^struct ms_t {$/;"	s	file:
+msync	src/win/mmap.c	/^int msync(char *addr, int len, int flags) $/;"	f
+munmap	src/win/mmap.c	/^int munmap(void *addr, int len) $/;"	f
+name	tests/test124.c	/^  char name[LEN];$/;"	m	struct:__anon7	file:
+next	src/tpl.c	/^    struct tpl_backbone *next;$/;"	m	struct:tpl_backbone	typeref:struct:tpl_backbone::tpl_backbone	file:
+next	src/tpl.c	/^    struct tpl_pidx *next,*prev;$/;"	m	struct:tpl_pidx	typeref:struct:tpl_pidx::tpl_pidx	file:
+next	src/tpl.h	/^    struct tpl_node *next,*prev; \/* my siblings (next child of my parent) *\/$/;"	m	struct:tpl_node	typeref:struct:tpl_node::tpl_node
+node	src/tpl.c	/^    struct tpl_node *node;$/;"	m	struct:tpl_pidx	typeref:struct:tpl_pidx::tpl_node	file:
+nstrcmp	tests/test110.c	/^int nstrcmp(const char *a, const char *b) {$/;"	f
+num	src/tpl.c	/^    uint32_t num;    \/* num elements *\/$/;"	m	struct:tpl_atyp	file:
+num	src/tpl.h	/^    int num;                     \/* length of type if its a C array *\/$/;"	m	struct:tpl_node
+num_fxlens	src/tpl.c	/^    int *fxlens, num_fxlens;$/;"	m	struct:tpl_root_data	file:
+num_tpls	tests/test26.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+num_tpls	tests/test51.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+num_tpls	tests/test54.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+num_tpls	tests/test55.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+o	tests/test70.c	/^    char o;$/;"	m	struct:ms_t	file:
+o	tests/test71.c	/^    char o;$/;"	m	struct:ms_t	file:
+o	tests/test72.c	/^    char o;$/;"	m	struct:ms_t	file:
+o	tests/test73.c	/^    char o;$/;"	m	struct:ms_t	file:
+offset	tests/test106.c	/^    int64_t offset;$/;"	m	struct:sum_buf	file:
+oops	src/tpl.h	/^    tpl_print_fcn *oops;$/;"	m	struct:tpl_hook_t
+outer	tests/test122.c	/^} outer;$/;"	t	typeref:struct:__anon9	file:
+pack	tests/test106.c	/^int pack(int use_fd)  $/;"	f
+parent	src/tpl.h	/^    struct tpl_node *parent;     \/* my parent *\/$/;"	m	struct:tpl_node	typeref:struct:tpl_node::tpl_node
+peek_fmt	lang/perl/tplfmt	/^sub peek_fmt {$/;"	s
+peek_fmt	lang/perl/tplxml	/^sub peek_fmt {$/;"	s
+pidx	src/tpl.c	/^    tpl_pidx *pidx;$/;"	m	struct:tpl_root_data	file:
+prev	src/tpl.c	/^    struct tpl_pidx *next,*prev;$/;"	m	struct:tpl_pidx	typeref:struct:tpl_pidx::	file:
+prev	src/tpl.h	/^    struct tpl_node *next,*prev; \/* my siblings (next child of my parent) *\/$/;"	m	struct:tpl_node	typeref:struct:tpl_node::
+prototypes	configure	/^   function prototypes and stuff, but not '\\xHH' hex character constants.$/;"	f
+quote_chars	lang/perl/tplxml	/^sub quote_chars {$/;"	s
+realloc	src/tpl.h	/^    tpl_realloc_fcn *realloc;$/;"	m	struct:tpl_hook_t
+reinstall	doc/ChangeLog.html	/^  function reinstall() {$/;"	f
+reinstall	doc/compiling.html	/^  function reinstall() {$/;"	f
+reinstall	doc/examples.html	/^  function reinstall() {$/;"	f
+reinstall	doc/perl.html	/^  function reinstall() {$/;"	f
+reinstall	doc/userguide.html	/^  function reinstall() {$/;"	f
+reinstallAndRemoveTimer	doc/ChangeLog.html	/^  function reinstallAndRemoveTimer() {$/;"	f
+reinstallAndRemoveTimer	doc/compiling.html	/^  function reinstallAndRemoveTimer() {$/;"	f
+reinstallAndRemoveTimer	doc/examples.html	/^  function reinstallAndRemoveTimer() {$/;"	f
+reinstallAndRemoveTimer	doc/perl.html	/^  function reinstallAndRemoveTimer() {$/;"	f
+reinstallAndRemoveTimer	doc/userguide.html	/^  function reinstallAndRemoveTimer() {$/;"	f
+remainder	tests/test106.c	/^    int remainder;$/;"	m	struct:sum_struct	file:
+reversi	lang/perl/Tpl.pm	/^sub reversi {$/;"	s
+s	tests/int64_align.c	/^} s;$/;"	v	typeref:struct:s_t	file:
+s	tests/malign.c	/^} s;$/;"	v	typeref:struct:s_t	file:
+s	tests/test115.c	/^   char* s;$/;"	m	struct:__anon2	file:
+s	tests/test115.c	/^   char* s;$/;"	m	struct:__anon3	file:
+s	tests/test115.c	/^   char* s;$/;"	m	struct:__anon4	file:
+s	tests/test70.c	/^    char s[2];$/;"	m	struct:ms_t	file:
+s	tests/test71.c	/^    char s[2];$/;"	m	struct:ms_t	file:
+s	tests/test72.c	/^    char s[2];$/;"	m	struct:ms_t	file:
+s	tests/test73.c	/^    char s[2];$/;"	m	struct:ms_t	file:
+s1	tests/test56.c	/^    char s1[S1_LEN];$/;"	m	struct:has_strings	file:
+s1	tests/test57.c	/^    char s1[S1_LEN];$/;"	m	struct:has_strings	file:
+s1	tests/test58.c	/^    char s1[S1_LEN];$/;"	m	struct:has_strings	file:
+s1	tests/test59.c	/^    char s1[S1_LEN];$/;"	m	struct:has_strings	file:
+s1	tests/test75.c	/^    char *s1;         \/* s1 is a pointer *\/$/;"	m	struct:example	file:
+s1	tests/test76.c	/^    char *s1;         \/* s1 is a pointer *\/$/;"	m	struct:example	file:
+s1	tests/test77.c	/^    char *s1;         \/* s1 is a pointer *\/$/;"	m	struct:example	file:
+s1_t	tests/test115.c	/^} s1_t;$/;"	t	typeref:struct:__anon2	file:
+s2	tests/test56.c	/^    char s2[S2_LEN];$/;"	m	struct:has_strings	file:
+s2	tests/test57.c	/^    char s2[S2_LEN];$/;"	m	struct:has_strings	file:
+s2	tests/test58.c	/^    char s2[S2_LEN];$/;"	m	struct:has_strings	file:
+s2	tests/test59.c	/^    char s2[S2_LEN];$/;"	m	struct:has_strings	file:
+s2	tests/test75.c	/^    char s2[S2_LEN];  \/* s2 is a byte array *\/$/;"	m	struct:example	file:
+s2	tests/test76.c	/^    char s2[S2_LEN];  \/* s2 is a byte array *\/$/;"	m	struct:example	file:
+s2	tests/test77.c	/^    char s2[S2_LEN];  \/* s2 is a byte array *\/$/;"	m	struct:example	file:
+s2_t	tests/test115.c	/^} s2_t;$/;"	t	typeref:struct:__anon3	file:
+s2length	tests/test106.c	/^    int s2length;  $/;"	m	struct:sum_struct	file:
+s3_t	tests/test115.c	/^} s3_t;$/;"	t	typeref:struct:__anon4	file:
+s_t	tests/int64_align.c	/^static const struct s_t {$/;"	s	file:
+s_t	tests/malign.c	/^static const struct s_t {$/;"	s	file:
+ser_osz	src/tpl.h	/^    size_t ser_osz;              \/* serialization output size for subtree *\/$/;"	m	struct:tpl_node
+serlen	lang/perl/Tpl.pm	/^sub serlen {$/;"	s
+spad	tests/test109.c	/^} spad;$/;"	t	typeref:struct:__anon10	file:
+st	tests/test111.c	/^struct st {$/;"	s	file:
+st	tests/test112.c	/^struct st {$/;"	s	file:
+st	tests/test113.c	/^struct st {$/;"	s	file:
+st	tests/test118.c	/^struct st {$/;"	s	file:
+st	tests/test119.c	/^struct st {$/;"	s	file:
+st	tests/test80.c	/^struct st {$/;"	s	file:
+st	tests/test81.c	/^struct st {$/;"	s	file:
+st	tests/test82.c	/^struct st {$/;"	s	file:
+st	tests/test83.c	/^struct st {$/;"	s	file:
+st	tests/test84.c	/^struct st {$/;"	s	file:
+str	tests/test64.c	/^    char str[10];$/;"	m	struct:str_holder	file:
+str_holder	tests/test64.c	/^struct str_holder {$/;"	s	file:
+string	tests/test125.c	/^  char *string;$/;"	m	struct:Test	file:
+sum1	tests/test106.c	/^    uint32_t sum1;       $/;"	m	struct:sum_buf	file:
+sum2	tests/test106.c	/^    char sum2[SUM_LENGTH]; $/;"	m	struct:sum_buf	file:
+sum_buf	tests/test106.c	/^struct sum_buf {$/;"	s	file:
+sum_struct	tests/test106.c	/^struct sum_struct {$/;"	s	file:
+sum_tpls	tests/test26.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+sum_tpls	tests/test51.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+sum_tpls	tests/test54.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+sum_tpls	tests/test55.c	/^int num_tpls = 0, sum_tpls = 0;$/;"	v
+sums	tests/test106.c	/^    struct sum_buf *sums; $/;"	m	struct:sum_struct	typeref:struct:sum_struct::sum_buf	file:
+sz	src/tpl.c	/^    int sz;$/;"	m	struct:tpl_type_t	file:
+sz	src/tpl.c	/^    size_t sz;       \/* size of each backbone's datum *\/$/;"	m	struct:tpl_atyp	file:
+sz	src/tpl.h	/^    uint32_t sz;$/;"	m	struct:tpl_bin
+test_t	tests/test107.c	/^} test_t;$/;"	t	typeref:struct:__anon5	file:
+test_t	tests/test108.c	/^} test_t;$/;"	t	typeref:struct:__anon6	file:
+test_t	tests/test124.c	/^} test_t;$/;"	t	typeref:struct:__anon7	file:
+tests	tests/test125.c	/^struct Test tests[] = {{"first"}, {"second"},{"third"}};$/;"	v	typeref:struct:Test
+text	src/tpl.c	/^    void *text;$/;"	m	struct:tpl_mmap_rec	file:
+text_sz	src/tpl.c	/^    size_t text_sz;$/;"	m	struct:tpl_mmap_rec	file:
+thread_routine	tests/threads/test1.c	/^void *thread_routine( void *arg ) {$/;"	f
+tocEntries	doc/ChangeLog.html	/^  function tocEntries(el, toclevels) {$/;"	f
+tocEntries	doc/compiling.html	/^  function tocEntries(el, toclevels) {$/;"	f
+tocEntries	doc/examples.html	/^  function tocEntries(el, toclevels) {$/;"	f
+tocEntries	doc/perl.html	/^  function tocEntries(el, toclevels) {$/;"	f
+tocEntries	doc/userguide.html	/^  function tocEntries(el, toclevels) {$/;"	f
+tpl2xml	lang/perl/tplxml	/^sub tpl2xml {$/;"	s
+tpl2xml_node	lang/perl/tplxml	/^sub tpl2xml_node {$/;"	s
+tpl_Alen	src/tpl.c	/^TPL_API int tpl_Alen(tpl_node *r, int i) {$/;"	f
+tpl_S_fmt_chars	src/tpl.c	/^static const char tpl_S_fmt_chars[] = "iucsfIUjv#$()"; \/* valid within S(...) *\/$/;"	v	file:
+tpl_atyp	src/tpl.c	/^typedef struct tpl_atyp {$/;"	s	file:
+tpl_atyp	src/tpl.c	/^} tpl_atyp;$/;"	t	typeref:struct:tpl_atyp	file:
+tpl_backbone	src/tpl.c	/^typedef struct tpl_backbone {$/;"	s	file:
+tpl_backbone	src/tpl.c	/^} tpl_backbone;$/;"	t	typeref:struct:tpl_backbone	file:
+tpl_bin	src/tpl.h	/^typedef struct tpl_bin {$/;"	s
+tpl_bin	src/tpl.h	/^} tpl_bin;$/;"	t	typeref:struct:tpl_bin
+tpl_byteswap	src/tpl.c	/^static void tpl_byteswap(void *word, int len) {$/;"	f	file:
+tpl_cb	tests/test26.c	/^int tpl_cb(void *tpl, size_t tpllen, void*data) {$/;"	f
+tpl_cb	tests/test51.c	/^int tpl_cb(void *tpl, size_t tpllen, void*data) {$/;"	f
+tpl_cb	tests/test54.c	/^int tpl_cb(void *tpl, size_t tpllen, void*data) {$/;"	f
+tpl_cb	tests/test55.c	/^int tpl_cb(void *tpl, size_t tpllen, void*data) {$/;"	f
+tpl_cpu_bigendian	src/tpl.c	/^static int tpl_cpu_bigendian() {$/;"	f	file:
+tpl_cpv	src/tpl.c	/^static void *tpl_cpv(void *datav, const void *data, size_t sz) {$/;"	f	file:
+tpl_datapeek_ok_chars	src/tpl.c	/^static const char tpl_datapeek_ok_chars[] = "iucsfIUjv"; \/* valid in datapeek *\/$/;"	v	file:
+tpl_double_alignment_detector	src/tpl.c	/^struct tpl_double_alignment_detector {$/;"	s	file:
+tpl_dump	lang/perl/Tpl.pm	/^sub tpl_dump {$/;"	s
+tpl_dump	src/tpl.c	/^TPL_API int tpl_dump(tpl_node *r, int mode, ...) {$/;"	f
+tpl_dump_atyp	src/tpl.c	/^static void *tpl_dump_atyp(tpl_node *n, tpl_atyp* at, void *dv) {$/;"	f	file:
+tpl_dump_to_mem	src/tpl.c	/^static int tpl_dump_to_mem(tpl_node *r,void *addr,size_t sz) {$/;"	f	file:
+tpl_extend_backbone	src/tpl.c	/^static void *tpl_extend_backbone(tpl_node *n) {$/;"	f	file:
+tpl_fatal	src/tpl.c	/^static void tpl_fatal(const char *fmt, ...) {$/;"	f	file:
+tpl_fatal_fcn	src/tpl.h	/^typedef void (tpl_fatal_fcn)(const char *fmt, ...);$/;"	t
+tpl_find_data_start	src/tpl.c	/^static void *tpl_find_data_start(void *d) {$/;"	f	file:
+tpl_find_i	src/tpl.c	/^static tpl_node *tpl_find_i(tpl_node *n, int i) {$/;"	f	file:
+tpl_fmt	src/tpl.c	/^static char *tpl_fmt(tpl_node *r) {$/;"	f	file:
+tpl_fmt_chars	src/tpl.c	/^static const char tpl_fmt_chars[] = "AS($)BiucsfIUjv#"; \/* valid format chars *\/$/;"	v	file:
+tpl_format	lang/perl/Tpl.pm	/^sub tpl_format {$/;"	s
+tpl_free	src/tpl.c	/^TPL_API void tpl_free(tpl_node *r) {$/;"	f
+tpl_free_atyp	src/tpl.c	/^static void tpl_free_atyp(tpl_node *n, tpl_atyp *atyp) {$/;"	f	file:
+tpl_free_fcn	src/tpl.h	/^typedef void (tpl_free_fcn)(void *ptr);$/;"	t
+tpl_free_keep_map	src/tpl.c	/^static void tpl_free_keep_map(tpl_node *r) {$/;"	f	file:
+tpl_fxlens	src/tpl.c	/^static int *tpl_fxlens(tpl_node *r, int *num_fxlens) {$/;"	f	file:
+tpl_gather	src/tpl.c	/^TPL_API int tpl_gather(int mode, ...) {$/;"	f
+tpl_gather_blocking	src/tpl.c	/^static int tpl_gather_blocking(int fd, void **img, size_t *sz) {$/;"	f	file:
+tpl_gather_cb	src/tpl.h	/^typedef int (tpl_gather_cb)(void *img, size_t sz, void *data);$/;"	t
+tpl_gather_mem	src/tpl.c	/^static int tpl_gather_mem( char *buf, size_t len, tpl_gather_t **gs, tpl_gather_cb *cb, void *data) {$/;"	f	file:
+tpl_gather_nonblocking	src/tpl.c	/^static int tpl_gather_nonblocking( int fd, tpl_gather_t **gs, tpl_gather_cb *cb, void *data) {$/;"	f	file:
+tpl_gather_t	src/tpl.h	/^typedef struct tpl_gather_t {$/;"	s
+tpl_gather_t	src/tpl.h	/^} tpl_gather_t;$/;"	t	typeref:struct:tpl_gather_t
+tpl_hook	src/tpl.c	/^tpl_hook_t tpl_hook = {$/;"	v
+tpl_hook_t	src/tpl.h	/^typedef struct tpl_hook_t {$/;"	s
+tpl_hook_t	src/tpl.h	/^} tpl_hook_t;$/;"	t	typeref:struct:tpl_hook_t
+tpl_int64_alignment_detector	src/tpl.c	/^struct tpl_int64_alignment_detector {$/;"	s	file:
+tpl_jot	src/tpl.c	/^TPL_API int tpl_jot(int mode, ...) {$/;"	f
+tpl_load	lang/perl/Tpl.pm	/^sub tpl_load {$/;"	s
+tpl_load	src/tpl.c	/^TPL_API int tpl_load(tpl_node *r, int mode, ...) {$/;"	f
+tpl_malloc_fcn	src/tpl.h	/^typedef void *(tpl_malloc_fcn)(size_t sz);$/;"	t
+tpl_map	lang/perl/Tpl.pm	/^sub tpl_map {$/;"	s
+tpl_map	src/tpl.c	/^TPL_API tpl_node *tpl_map(char *fmt,...) {$/;"	f
+tpl_map_va	src/tpl.c	/^TPL_API tpl_node *tpl_map_va(char *fmt, va_list ap) {$/;"	f
+tpl_mmap_file	src/tpl.c	/^static int tpl_mmap_file(char *filename, tpl_mmap_rec *mr) {$/;"	f	file:
+tpl_mmap_output_file	src/tpl.c	/^static int tpl_mmap_output_file(char *filename, size_t sz, void **text_out) {$/;"	f	file:
+tpl_mmap_rec	src/tpl.c	/^typedef struct tpl_mmap_rec {$/;"	s	file:
+tpl_mmap_rec	src/tpl.c	/^} tpl_mmap_rec;$/;"	t	typeref:struct:tpl_mmap_rec	file:
+tpl_needs_endian_swap	src/tpl.c	/^static int tpl_needs_endian_swap(void *d) {$/;"	f	file:
+tpl_node	src/tpl.h	/^typedef struct tpl_node {$/;"	s
+tpl_node	src/tpl.h	/^} tpl_node;$/;"	t	typeref:struct:tpl_node
+tpl_node_new	src/tpl.c	/^static tpl_node *tpl_node_new(tpl_node *parent) {$/;"	f	file:
+tpl_nonempty	src/win/nonempty.c	/^int tpl_nonempty(int i) {$/;"	f
+tpl_oops	src/tpl.c	/^static int tpl_oops(const char *fmt, ...) {$/;"	f	file:
+tpl_pack	lang/perl/Tpl.pm	/^sub tpl_pack {$/;"	s
+tpl_pack	src/tpl.c	/^TPL_API int tpl_pack(tpl_node *r, int i) {$/;"	f
+tpl_peek	lang/perl/Tpl.pm	/^sub tpl_peek {$/;"	s
+tpl_peek	src/tpl.c	/^TPL_API char* tpl_peek(int mode, ...) {$/;"	f
+tpl_pidx	src/tpl.c	/^typedef struct tpl_pidx {$/;"	s	file:
+tpl_pidx	src/tpl.c	/^} tpl_pidx;$/;"	t	typeref:struct:tpl_pidx	file:
+tpl_pound_data	src/tpl.c	/^} tpl_pound_data;$/;"	t	typeref:struct:__anon1	file:
+tpl_print_fcn	src/tpl.h	/^typedef int (tpl_print_fcn)(const char *fmt, ...);$/;"	t
+tpl_realloc_fcn	src/tpl.h	/^typedef void *(tpl_realloc_fcn)(void *ptr, size_t sz);$/;"	t
+tpl_root_data	src/tpl.c	/^typedef struct tpl_root_data {$/;"	s	file:
+tpl_root_data	src/tpl.c	/^} tpl_root_data;$/;"	t	typeref:struct:tpl_root_data	file:
+tpl_sanity	src/tpl.c	/^static int tpl_sanity(tpl_node *r, int excess_ok) {$/;"	f	file:
+tpl_ser_osz	src/tpl.c	/^static size_t tpl_ser_osz(tpl_node *n) {$/;"	f	file:
+tpl_serlen	src/tpl.c	/^static int tpl_serlen(tpl_node *r, tpl_node *n, void *dv, size_t *serlen) {$/;"	f	file:
+tpl_size_for	src/tpl.c	/^static size_t tpl_size_for(char c) {$/;"	f	file:
+tpl_type_t	src/tpl.c	/^struct tpl_type_t {$/;"	s	file:
+tpl_types	src/tpl.c	/^static const struct tpl_type_t tpl_types[] = {$/;"	v	typeref:struct:tpl_type_t	file:
+tpl_unmap_file	src/tpl.c	/^static int tpl_unmap_file( tpl_mmap_rec *mr) {$/;"	f	file:
+tpl_unpack	lang/perl/Tpl.pm	/^sub tpl_unpack {$/;"	s
+tpl_unpack	src/tpl.c	/^TPL_API int tpl_unpack(tpl_node *r, int i) {$/;"	f
+tpl_unpackA0	src/tpl.c	/^static int tpl_unpackA0(tpl_node *r) {$/;"	f	file:
+type	src/tpl.h	/^    int type;$/;"	m	struct:tpl_node
+uint16_t	src/tpl.c	/^typedef unsigned __int16 uint16_t;$/;"	t	file:
+uint32_t	src/tpl.c	/^typedef unsigned __int32 uint32_t;$/;"	t	file:
+uint32_t	src/tpl.h	/^typedef unsigned int uint32_t;$/;"	t
+uint64_t	src/tpl.c	/^typedef unsigned __int64 uint64_t;$/;"	t	file:
+unhex_chars	lang/perl/tplxml	/^sub unhex_chars {$/;"	s
+unpack	tests/test106.c	/^int unpack(int use_fd) {$/;"	f
+unpackA0	lang/perl/Tpl.pm	/^sub unpackA0 {$/;"	s
+unquote_chars	lang/perl/tplxml	/^sub unquote_chars {$/;"	s
+ushort	src/tpl.c	/^typedef unsigned short ushort;$/;"	t	file:
+v	tests/test111.c	/^  uint16_t v[2];$/;"	m	struct:st	file:
+v	tests/test112.c	/^  uint16_t v[2];$/;"	m	struct:st	file:
+v	tests/test113.c	/^  uint16_t v[2];$/;"	m	struct:st	file:
+v	tests/test119.c	/^  uint16_t v[2];$/;"	m	struct:st	file:
+x	tests/test70.c	/^    char *x;$/;"	m	struct:ms_t	file:
+x	tests/test71.c	/^    char *x;$/;"	m	struct:ms_t	file:
+x	tests/test72.c	/^    char *x;$/;"	m	struct:ms_t	file:
+x	tests/test73.c	/^    char *x;$/;"	m	struct:ms_t	file:
+xml2tpl	lang/perl/tplxml	/^sub xml2tpl {$/;"	s
+xml2tpl_dfs	lang/perl/tplxml	/^sub xml2tpl_dfs {$/;"	s
+y	tests/test70.c	/^    char y;$/;"	m	struct:ms_t	file:
+y	tests/test71.c	/^    char y;$/;"	m	struct:ms_t	file:
+y	tests/test72.c	/^    char y;$/;"	m	struct:ms_t	file:
+y	tests/test73.c	/^    char y[3];$/;"	m	struct:ms_t	file:

@@ -1,0 +1,4 @@
+probe syscall.open
+{ 
+	exit()
+}

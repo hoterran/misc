@@ -1,0 +1,4 @@
+probe process("/bin/ls").function("*").call
+{
+	printf("=>%s(%s)\n", probefunc(), $$parms);
+}

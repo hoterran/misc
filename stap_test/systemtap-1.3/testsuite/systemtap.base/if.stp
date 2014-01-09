@@ -1,0 +1,22 @@
+/*
+ * if.stp
+ *
+ * Check the systemtap if statement works
+ */
+
+probe begin { println("systemtap starting probe") }
+
+probe end
+{
+	println("systemtap ending probe")
+	if (1) {
+		println("systemtap test success");
+	} else {
+		println("systemtap test failure");
+	}
+	if (0) {
+		println("systemtap test failure");
+	} else {
+		println("systemtap test success");
+	}
+}

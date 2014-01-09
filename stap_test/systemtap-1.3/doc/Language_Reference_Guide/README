@@ -1,0 +1,28 @@
+This is an automated source build of the Language Reference Guide, 
+used to build it in Publican.
+
+To build the source, run:
+
+	bash publicanize-langref.sh
+
+This will copy the LaTeX source of the Language Reference Guide and
+convert it to DocBook XML. You can now build it in pdf, html, etc 
+using Publican. 
+
+The main source of the Language Reference Guide is in:
+	../langref.tex 
+
+As such, any revisions to this document should be applied to ../langref.tex, 
+not to the source in this directory.
+
+IMPORTANT: 
+The publicanize-langref.sh script uses latexml to create the raw XML files
+from langref.tex first before cleaning it up for Publican. You will need 
+LaTeXML along with all its required perl modules to use publicanize-langref.sh.
+
+For more information on building from source, downloading, and installing LaTeXML, 
+refer to the following URLs:
+
+http://dlmf.nist.gov/LaTeXML/download.html
+http://dlmf.nist.gov/LaTeXML/install.html
+

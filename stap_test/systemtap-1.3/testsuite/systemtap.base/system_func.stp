@@ -1,0 +1,35 @@
+#! stap
+
+# test the system() function
+
+global saw_echo, did_cat
+
+probe kernel.function("do_sys_open") {
+  if (!saw_echo) {
+    # very inefficient. Testing only. DO NOT DO THIS
+    msg="echo do_sys_open"
+    system(msg)
+    saw_echo = 1
+  }
+}
+
+probe timer.ms(100) {
+  # should fail	
+  system("cat __xyzzy123ABC__")
+  did_cat = 1
+}
+
+probe timer.ms(150) { 
+	if (saw_echo && did_cat)
+		exit() 
+}
+
+probe begin {
+  # should succeed
+  system("whoami")
+}
+
+probe end {
+  # should succeed
+  system("echo DONE")
+}

@@ -1,0 +1,10 @@
+#! stap -p2
+
+function bar ()
+{
+  return 0
+}
+
+probe begin {
+  bar (1, 2)  # arg count mismatch
+}

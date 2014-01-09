@@ -1,0 +1,22 @@
+set test "system_func"
+if {![installtest_p]} { untested $test; return }
+spawn stap $srcdir/$subdir/system_func.stp
+set open 0
+set done 0
+set saw_user 0
+set user [exec whoami]
+expect {
+    -timeout 30
+    -re "($user|sys_open|DONE)\r" {
+	switch $expect_out(1,string) {
+	    sys_open {incr open}
+	    DONE     {incr done}
+	    default  {incr saw_user}
+	}
+	exp_continue
+    }
+    timeout { fail "$test (timeout)" }
+    eof { }
+}
+catch {close}; wait
+if {$open == 1 && $saw_user == 1 && $done == 1 } { pass "$test" } { fail "$test ($open,$saw_user,$done)" }

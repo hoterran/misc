@@ -1,0 +1,12 @@
+#! stap -p4
+
+// build-test the logging tapset functions
+
+probe begin {
+      log("log")
+      warn("warn")
+      exit()
+      error("error")
+      stp_print_binary(1, 0, 0, 0, 0)
+      ftrace("ftrace")
+}

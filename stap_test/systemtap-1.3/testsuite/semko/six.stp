@@ -1,0 +1,7 @@
+#! stap -p2
+
+global bar
+probe begin {
+  bar[1] = 2;
+  bar[1, 2] = 3;  # inconsistent array dimensions
+}

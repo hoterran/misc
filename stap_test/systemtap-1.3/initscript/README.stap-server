@@ -1,0 +1,354 @@
+stap-server initscript
+Version 0.1.1
+
+INDEX
+=====
+1. Introduction
+2. Usage
+3. Files
+4. Configuration Format
+5. Usage Examples
+
+1. Introduction
+===============
+The stap-server init script aims to provide
+- management of systemtap compile servers as a service.
+- convenient control over configured servers and individual (ad-hoc) servers.
+
+2. Usage
+========
+2.1 Synopsis
+------------
+  /sbin/service stap-server {start|stop|restart|condrestart|try-restart|force-reload|status} [options]
+
+2.2 Actions
+-----------
+One of the actions below must be specified.
+
+2.2.1 start
+ Start server(s). If a specified server is already started, this action will
+ be ignored for that server. If any server fails to start, this action fails.
+ If no server is specified, the configured servers are started. If no servers
+ are configured, a server for the kernel release and architecture of the host
+ is started.
+
+2.2.2 stop
+ Stop server(s). If a specified server is already stopped, this action
+ will be successful for that server. If a server fails to stop, this action
+ fails. If no server is specified, all currently running servers are stopped.
+
+2.2.3 restart
+ Stop and start servers again. The specified servers are stopped and restarted.
+ If no server is specified, all currently running servers are stopped and
+ restarted. If no servers are running this action behaves like 'start'.
+
+2.2.4 condrestart
+ Stop and start servers again. The specified servers are stopped and restarted.
+ If a specified server is not running, it is not started. If no server is
+ specified, all currently running servers are stopped and restarted.  If no
+ servers are running, none will be started.
+
+2.2.5 try-restart
+ This action is identical to condrestart.
+
+2.2.6 force-reload
+ Stop all running servers, reload config files and restart the service as if
+ 'start' was specified.
+
+2.2.7 status
+ Print information about running servers. Information about the specified
+ server(s) will be printed. If no server is specified, information about all
+ running servers will be printed.
+
+2.3 Options
+-----------
+The following options may be used to provide additional configuration and
+to specify servers to be managed.
+
+2.3.1 -c configfile
+ This option specifies a configuration file in addition to those described
+ in section 4 below. This file will be processed after the default
+ configuration file. If the -c option is specified more than once, the last
+ configuration file specified will be used.
+
+2.3.2 -a architecture
+ This option specifies the target architecture of the server and is
+ analogous to the -a option of 'stap'. See stap(1) for more details.
+ The default architecture is the architecture of the host.
+
+2.3.3 -r kernel-release
+ This option specifies the target kernel release of the server and is
+ analogous to the -r option of 'stap'. See stap(1) for more details.
+ The default release is that of the currently running kernel.
+
+2.3.4 -u user-name
+ Each stap-server instance is normally run by the user name 'stap-server',
+ unless otherwise configured (see 3.2 Configuation Files). This option
+ specifies the user name used to run the server(s). The user name specified
+ must be a member of the group 'stap-server'.
+
+2.3.5 -I path
+ This option specifies an additional path to be searched by the server for
+ tapsets and is analogous to the -I option of 'stap'. See stap(1) for more
+ details.
+
+2.3.6 -R path
+ This option specifies the location of the systemtap runtime to be user by the
+ server and is analogous to the -R option of 'stap'. See stap(1) for more
+ details.
+
+2.3.7 -B options
+ This option specifies options to be passed to 'make' when building systemtap
+ modules and is analogous to the -B option of 'stap'. See stap(1) for more
+ details.
+
+2.3.8 -i
+ This option is a shortcut which specifies one server for each kernel
+ release installed in /lib/modules/. Previous -I, -R, -B and -u options will be
+ applied to each server, however previous -a options are ignored and the default
+ architecture is used.
+
+2.3.9 -n nickname
+ This option allows the specification of a server configuration by nickname.
+ When -n is specified, a currently running server with the given nickname will
+ be searched for. If no currently running server with the given nickname is
+ found, a server configuration with the given nickname will be searched for in
+ /etc/stap-server/conf.d/*.conf. If a server configuration for the given
+ nickname is found, the -a, -r, -I, -R, -B and -u options for that server will
+ be used as if they were specified on the command line. If no configuration with
+ the given nickname is found, and the action is 'start' (or an action behaving
+ like 'start' (see below), the server will be started with the given nickname.
+ If no configuration with the given nickname is found, and the action is not
+ 'start' (or an action behaving like 'start', it is an error. If a nickname is
+ not specified for a server, its nickname will be its process id.
+
+2.3.10 -p pid
+ This option allows the specification of a server configuration by process id.
+ When -p is specified, a currently running server with the given process id will
+ be searched for. If no such server is found, it is an error. If a server with
+ the given process id is found, the -a, -r, -I, -R, -B and -u options for that
+ server will be used as if they were specified on the command line.
+
+3. Files
+========
+3.1 stap-server
+---------------
+/etc/init.d/stap-server
+
+This is the stap-server initscript.
+
+3.2 Configuration files
+-----------------------
+Configuration files are written in bash script.
+
+3.2.1 Global config file
+ /etc/sysconfig/stap-server
+
+ This config file is for global configuration (see section 4.1).
+
+3.2.2 Server config files
+ /etc/stap-server/conf.d/*.conf
+
+ The config files under this directory are for each server to be started by
+ default (see section see 4.2).
+
+3.3 Message Log
+---------------
+/var/log/stap-server/log
+
+All messages including server errors and detailed messages are sent
+to this file.
+Some error and warning messages are also sent to console and syslogd (syslog
+output is optional, because this service may start before syslog).
+
+3.4 Status files
+----------------
+/var/run/stap-server/<server_pid>
+
+4. Configuration Format
+=======================
+Configuration files allow us to
+  - specify global configuration of logging, server configuration files, status
+    files and other global parameters.
+  - specify which servers are to be started by default.
+
+4.1 Global Configuration file (/etc/sysconfig/stap-server)
+----------------------------------------------------------
+The global configuration file may contain settings for the following
+variables.
+
+4.1.1 CONFIG_PATH
+ Specify the absolute path of the directory containing the default server
+ configurations.
+ (default: /etc/stap-server/conf.d)
+
+4.1.2 STAT_PATH
+ Specify the absolute path of the running server status directory.
+ (default: /var/run/stap-server)
+
+4.1.3 LOG_FILE
+ Specify the absolute path of the log file
+ (default: /var/log/stap-server/log)
+
+4.1.4 STAP_USER
+ Specify the userid which will be used to run the server(s).
+ (default: stap-server)
+
+4.2 Individual server configuration (/etc/stap-server/conf.d/*.conf)
+--------------------------------------------------------------------
+Each server configuration file configures a server to be started when no
+server is specified for the 'start' action. The configuration file is a
+bash script fragment. The following variables may be set.
+
+4.2.1 ARCH
+ Specify the target architecture for this server. If ARCH is not set, the
+ architecture of the host will be used.
+
+4.2.2 RELEASE
+ Specify the kernel release for this server. If RELEASE is not set, the release
+ of the kernel running on the host will be used.
+ 
+4.2.3 BUILD
+ Specify options to be passed to the 'make' process used to build kernel
+ modules.
+ 
+4.2.4 INCLUDE
+ Specify a list of directories to be searched by the server for tapsets.
+
+4.2.5 RUNTIME
+ Specify the directory which contains the systemtap runtime code to be used
+ by this server.
+
+4.2.6 USER
+ Specify the user name to be used to run this server. The specified user must
+ be a member of the group 'stap-server'.
+
+4.2.6 NICKNAME
+ Specify the nickname to be used to refer to this server.
+
+4.3 Configuration Example
+-------------------------
+
+4.3.1 Global Config Example (/etc/sysconfig/stap-server)
+ ---
+ CONFIG_PATH=~<user>/my-stap-server-configs
+ LOG_FILE=/tmp/stap-server/log
+ ---
+
+4.3.2 Server Config Examples (/etc/stap-server/conf.d/*.conf)
+ --- file1.conf
+ ARCH=i386
+ RELEASE=2.6.18-128.el5
+ ---
+
+ --- file2.conf
+ USER=serveruser
+ RELEASE=/kernels/2.6.18-92.1.18.el5/build
+ INCLUDE="/mytapsets /yourtapsets"
+ BUILD='VARIABLE1=VALUE1 VARIABLE2=VALUE2'
+ RUNTIME=/myruntime
+ NICKNAME=my-server
+ ---
+
+5. Usage Eamples
+================
+
+5.1 Package Installation
+------------------------
+After installing the systemtap package, install the systemtap-server package.
+# yum install systemtap-server
+This package will include the initscript and default configuration files.
+
+5.2 Testing
+-----------
+See if the default service operates correctly.
+ # service stap-server start
+ # service stap-server status
+ # service stap-server restart
+ # service stap-server status
+ # service stap-server condrestart
+ # service stap-server status
+ # service stap-server force-reload
+ # service stap-server status
+ # service stap-server stop
+ # service stap-server status
+ # service stap-server condrestart
+ # service stap-server status       # <---no server should be running
+
+If there are no errors, the service is correctly installed.
+
+5.3 Service Enabling
+--------------------
+After all test have passed, enable the stap-server initscript.
+# chkconfig stap-server on
+
+5.4 Starting Specific Servers
+-----------------------------
+5.4.1 Starting a server for an installed kernel release
+
+  # service stap-server start -r <release>
+   
+  where <release> refers to a kernel installed in /lib/modules
+
+5.4.2 Starting servers for all installed kernel releases
+
+  # service stap-server start -i
+
+5.4.3 Starting a server for a kernel release not installed (cross compiling)
+
+  # service stap-server start -a <arch> -r /<builddir>
+   
+  where <arch> is the target architecture and
+        <buildder> is the absolute path to the kernel's build tree.
+
+5.5 Managing Specific Servers
+-----------------------------
+For all other actions, specifying a server configuration will act on
+that server alone (if it is running). For example
+
+  # service stap-server status -r 2.6.18-128.el5
+  # service stap-server restart -a i386 -r 2.6.18-92.1.18.el5
+  # service stap-server stop -a powerpc -r /kernels/2.6.18-92.1.18.el5/build
+
+5.6 Configuring Default Servers
+-------------------------------
+5.6.1 Create Server Config Files
+ Each file in /etc/stap-server/conf.d/*.conf represents a server to be started
+ by default if no servers are specified on the 'start' action. Each such
+ config file may set variables which correspond to the command line options.
+
+ # vi /etc/stap-server/conf.d/2.6.18-128.el5.conf
+ ARCH=     # default arch
+ USER=serveruser
+ RELEASE=2.6.18-128.el5
+ NICKNAME=2.6.18-128.el5
+
+ # vi /etc/stap-server/conf.d/powerpc.conf
+ ARCH=powerpc
+ USER=     # default user
+ RELEASE=  #default release
+ NICKNAME=powerpc
+
+ # vi /etc/stap-server/conf.d/native.conf
+ ARCH=     #default arch
+ USER=     # default user
+ RELEASE=  #default release
+ NICKNAME=native
+
+5.6.2 Starting Default Servers
+
+ # service stap-server start
+
+5.6.2 Restarting After Changing the Configuration
+
+ To restart the service after global configuration changes and/or when default
+ servers have been added, changed or removed:
+
+ # service stap-server force-reload
+
+5.7 Stopping the stap-server Service
+------------------------------------
+
+ To stop all running servers:
+
+ # service stap-server stop

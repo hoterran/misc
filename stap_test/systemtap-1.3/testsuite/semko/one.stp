@@ -1,0 +1,8 @@
+#! stap -up2
+
+function stamp (syscall)
+{
+  # no return expression => unknown function type
+}
+
+probe begin { a = stamp ("read"); }

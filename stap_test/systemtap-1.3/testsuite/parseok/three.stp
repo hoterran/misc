@@ -1,0 +1,8 @@
+#! stap -p1
+
+probe syscall ("foo")
+{
+  $a = a$a = a$a$ = 0;
+  str = "a" . $a . "b";
+}
+

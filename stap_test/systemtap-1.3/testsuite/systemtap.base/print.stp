@@ -1,0 +1,40 @@
+/*
+ * print.stp
+ *
+ * Test that all the print statements work
+ */
+
+global s1, s2, s3
+
+probe begin
+{
+	println("systemtap starting probe")
+	s1 = "systemtap"
+	s2 = "test"
+	s3 = "success"
+}
+
+probe end
+{
+	println("systemtap ending probe")
+
+	print(s1, " ", s2, " ", s3, "\n")
+	print(sprint(s1, " ", s2, " ", s3, "\n"))
+
+	println(s1, " ", s2, " ", s3)
+	print(sprintln(s1, " ", s2, " ", s3))
+
+	printd(" ", s1, s2, s3 . "\n")
+	print(sprintd(" ", s1, s2, s3 . "\n"))
+
+	printdln(" ", s1, s2, s3)
+	print(sprintdln(" ", s1, s2, s3))
+
+	// Check that formatting characters get escaped correctly 
+	// in the delimiter.
+	s = sprintd("%% % \\ \"", 1, 2, 3)
+	if (s == "1%% % \\ \"2%% % \\ \"3")
+		println("systemtap test success")
+	else
+		println("systemtap test failure")
+}

@@ -1,0 +1,193 @@
+# x86_64-specific system calls
+
+# arch_prctl _________________________________________________
+# long sys_arch_prctl(int code, unsigned long addr)
+#
+# NOTE: x86_64 only.
+#
+probe syscall.arch_prctl = kernel.function("sys_arch_prctl")
+{
+	name = "arch_prctl"
+	code = $code
+	addr = $addr
+	argstr = sprintf("%d, %p", $code, $addr)
+}
+probe syscall.arch_prctl.return = kernel.function("sys_arch_prctl").return
+{
+	name = "arch_prctl"
+	retstr = returnstr(1)
+}
+
+# iopl _______________________________________________________
+# long sys_iopl(unsigned int level, struct pt_regs *regs);
+# NOTE. This function is only in i386 and x86_64 and its args vary
+# between those two archs.
+#
+probe syscall.iopl = kernel.function("sys_iopl")
+{
+	name = "iopl"
+	level = (@defined($level) ? $level : $new_iopl)
+	argstr = sprint(level)
+}
+probe syscall.iopl.return = kernel.function("sys_iopl").return
+{
+	name = "iopl"
+	retstr = returnstr(1)
+}
+
+# sigaltstack ________________________________________________
+# long sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss,
+#		struct pt_regs *regs)
+#
+# NOTE: args vary between archs.
+#
+probe syscall.sigaltstack = kernel.function("sys_sigaltstack")
+{
+	name = "sigaltstack"
+	uss_uaddr = $uss
+	uoss_uaddr = $uoss
+	regs_uaddr = $regs
+	argstr = sprintf("%p, %p", $uss, $uoss)
+}
+probe syscall.sigaltstack.return = kernel.function("sys_sigaltstack").return
+{
+	name = "sigaltstack"
+	retstr = returnstr(1)
+}
+
+# sysctl _____________________________________________________
+#
+# long sys32_sysctl(struct sysctl_ia32 __user *args32)
+#
+probe syscall.sysctl32 = kernel.function("sys32_sysctl") ?
+{
+	name = "sysctl"
+	argstr = sprintf("%p", $args32)
+}
+probe syscall.sysctl32.return = kernel.function("sys32_sysctl").return ?
+{
+	name = "sysctl"
+	retstr = returnstr(1)
+}
+
+# mmap
+# long sys_mmap(unsigned long addr, unsigned long len,
+#          unsigned long prot, unsigned long flags,
+#          unsigned long fd, unsigned long off)
+probe syscall.mmap = kernel.function("sys_mmap") ?,
+	kernel.function("sys_mmap_pgoff") ?
+{
+	name = "mmap"
+	start = $addr
+	len = $len
+	prot = $prot
+	flags = $flags
+	# Although the kernel gets an unsigned long fd, on the
+	# user-side it is a signed int.  Fix this.
+	fd = __int32($fd)
+	offset = (@defined($pgoff) ? $pgoff : $off)
+	argstr = sprintf("%p, %d, %s, %s, %d, %d", $addr, $len,
+		_mprotect_prot_str($prot), _mmap_flags($flags),
+		__int32($fd), (@defined($pgoff) ? $pgoff : $off))
+}
+
+probe syscall.mmap.return = kernel.function("sys_mmap").return ?,
+      kernel.function("sys_mmap_pgoff").return ?
+{
+	name = "mmap"
+	retstr = returnstr(2)
+}
+#
+# sys32_mmap(struct mmap_arg_struct __user *arg)
+#
+probe syscall.mmap32 = kernel.function("sys32_mmap")
+{
+	name = "mmap"
+	argstr = get_mmap_args($arg)
+}
+
+probe syscall.mmap32.return = kernel.function("sys32_mmap").return
+{
+        name = "mmap"
+        retstr = returnstr(2)
+}
+
+# sys32_mmap2(unsigned long addr, unsigned long len,
+#	unsigned long prot, unsigned long flags,
+#	unsigned long fd, unsigned long pgoff)
+# The function is removed since 2.6.33
+probe syscall.mmap2 = kernel.function("sys32_mmap2") ?
+{
+	name = "mmap2"
+	argstr = sprintf("%p, %d, %s, %s, %d, %d", $addr, $len,
+		_mprotect_prot_str($prot), _mmap_flags($flags),
+		__int32($fd), $pgoff)
+}
+
+probe syscall.mmap2.return = kernel.function("sys32_mmap2").return ?
+{
+	name = "mmap2"
+	retstr = returnstr(2)
+}
+
+# vm86_warning _____________________________________________________
+#
+# long sys32_vm86_warning(void)
+#
+probe syscall.vm86_warning = kernel.function("sys32_vm86_warning")
+{
+	name = "vm86_warning"
+	argstr = ""
+}
+probe syscall.vm86_warning.return = kernel.function("sys32_vm86_warning").return
+{
+	name = "wm86_warning"
+	retstr = returnstr(1)
+}
+# pipe _______________________________________________________
+#
+# long sys32_pipe(int __user *fd)
+# Not available in newer kernels.
+probe syscall.pipe32 = kernel.function("sys32_pipe")?
+{
+	name = "pipe"
+	flags = 0;
+	if (@defined($fd)) {
+		fildes_uaddr = $fd
+		if (fildes_uaddr == 0) {
+			pipe0 = 0;
+			pipe1 = 0;
+			argstr = "NULL"
+		} else {
+			pipe0 = user_int(&$fd[0]);
+			pipe1 = user_int(&$fd[1]);
+			argstr = sprintf("[%d, %d]", pipe0, pipe1);
+		}
+	} else {
+		fildes_uaddr = 0;
+		pipe0 = 0;
+		pipe1 = 0;
+		argstr = "[0, 0]";
+	}
+	argstr = sprintf("[%d, %d]", pipe0, pipe1)
+}
+probe syscall.pipe32.return = kernel.function("sys32_pipe").return?
+{
+	name = "pipe"
+	flags = 0;
+	if (@defined($fd)) {
+		fildes_uaddr = $fd
+		if (fildes_uaddr == 0) {
+			pipe0 = 0;
+			pipe1 = 0;
+		} else {
+			pipe0 = user_int(&$fd[0]);
+			pipe1 = user_int(&$fd[1]);
+		}
+	} else {
+		fildes_uaddr = 0;
+		pipe0 = 0;
+		pipe1 = 0;
+	}
+	retstr = returnstr(1)
+}

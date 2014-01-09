@@ -1,0 +1,84 @@
+set test "sdt"
+set ::result_string {1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+1 2 3 4 5 6
+1 2 3 4 5 6 7
+1 2 3 4 5 6 7 8
+1 2 3 4 5 6 7 8 9
+1 2 3 4 5 6 7 8 9 10}
+
+set extra_flags {{""} {additional_flags=-std=gnu89} {additional_flags=-ansi} {additional_flags=-pedantic} {additional_flags=-ansi additional_flags=-pedantic} {additional_flags=-O2} {additional_flags="-O3"}}
+
+set pbtype_flags {{""} {additional_flags=-DEXPERIMENTAL_KPROBE_SDT}}
+set pbtype_mssgs {{uprobe} {kprobe}}
+
+# Iterate pbtype_flags
+for {set p 0} {$p < [llength $pbtype_flags]} {incr p} {
+set pbtype_flag [lindex $pbtype_flags $p]
+set pbtype_mssg [lindex $pbtype_mssgs $p]
+
+# Iterate extra_flags, trying each with C and C++
+for {set i 0} {$i < [llength $extra_flags]} {incr i} {
+set extra_flag [lindex $extra_flags $i]
+set testprog "sdt.c.exe.$i"
+
+# C
+set test_flags "additional_flags=-g"
+set test_flags "$test_flags additional_flags=-I$srcdir/../includes"
+set test_flags "$test_flags additional_flags=-Wall"
+set test_flags "$test_flags additional_flags=-Wextra"
+set test_flags "$test_flags additional_flags=-Werror $pbtype_flag"
+
+set saveidx 0
+
+set res [target_compile $srcdir/$subdir/$test.c $testprog executable "$test_flags $extra_flag"]
+if { $res != "" } {
+    verbose "target_compile failed: $res" 2
+    fail "compiling $test.c $extra_flag $pbtype_mssg"
+    untested "$test $extra_flag $pbtype_mssg"
+    continue
+} else {
+    pass "compiling $test.c $extra_flag $pbtype_mssg"
+}
+
+if {[installtest_p] && [utrace_p] && [uprobes_p]} {
+  stap_run3 "$test $extra_flag $pbtype_mssg" -w $srcdir/$subdir/$test.stp $testprog -c ./$testprog
+} else {
+  untested "$test $extra_flag $pbtype_mssg"
+}
+catch {exec rm -f $testprog}
+
+# C++
+set testprog "sdt.cxx.exe.$i"
+
+set test_flags "additional_flags=-g"
+set test_flags "$test_flags additional_flags=-I$srcdir/../includes"
+set test_flags "$test_flags additional_flags=-Wall"
+set test_flags "$test_flags additional_flags=-Werror"
+set test_flags "$test_flags additional_flags=-x additional_flags=c++ $pbtype_flag"
+
+set res [target_compile $srcdir/$subdir/$test.c $testprog executable "$test_flags $extra_flag"]
+if { $res != "" } {
+    verbose "target_compile failed: $res" 2
+    fail "compiling $test.c c++ $extra_flag $pbtype_mssg"
+    untested "$test $extra_flag $pbtype_mssg"
+    continue
+} else {
+    pass "compiling $test.c c++ $extra_flag $pbtype_mssg"
+}
+
+if {[installtest_p] && [utrace_p] && [uprobes_p]} {
+  stap_run3 "$test c++ $extra_flag $pbtype_mssg" -w $srcdir/$subdir/$test.stp $testprog -c ./$testprog
+} else {
+  untested "$test c++ $extra_flag $pbtype_mssg $pbtype_mssg"
+}
+catch {exec rm -f $testprog}
+
+# for {set i 0} {$i < [llength $extra_flags]}
+}
+
+# for {set i 0} {$i < [llength $pbtype_flags]}
+}

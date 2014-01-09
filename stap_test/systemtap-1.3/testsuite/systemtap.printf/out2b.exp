@@ -1,0 +1,41 @@
+set test "$srcdir/$subdir/out2.stp"
+set TEST_NAME "$subdir/out2b"
+
+if {![installtest_p]} { untested $TEST_NAME; return }
+
+set stap_merge_path "$srcdir/$subdir/stap_merge.tcl"
+if (![file executable $stap_merge_path]) {
+    fail "$TEST_NAME : could not find stap_merge"
+    return
+}
+
+if {[catch {exec mktemp -t staptestXXXXXX} tmpfile]} {
+    puts stderr "Failed to create temporary file: $tmpfile"
+    untested "$TEST_NAME : failed to create temporary file"
+    return
+}
+
+if {[catch {exec stap -b -o $tmpfile $test} res]} {
+    fail $TEST_NAME
+    puts "stap failed: $res"
+    eval [list exec /bin/rm -f] [glob "${tmpfile}*"]
+    return
+}
+
+if {[catch {eval [list exec $stap_merge_path -o $tmpfile] [glob "${tmpfile}_*"]} res]} {
+    puts "merge failed: $res"
+    fail $TEST_NAME
+    eval [list exec /bin/rm -f] [glob "${tmpfile}*"]
+    return
+}
+
+if {[catch {exec cmp $tmpfile $srcdir/$subdir/large_output} res]} {
+    puts "$res"
+    fail $TEST_NAME
+    eval [list exec /bin/rm -f] [glob "${tmpfile}*"]
+    return
+}
+
+pass $TEST_NAME
+eval [list exec /bin/rm -f] [glob "${tmpfile}*"]
+

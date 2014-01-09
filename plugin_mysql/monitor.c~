@@ -1,0 +1,67 @@
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <plugin.h>
+#include <mysql_version.h>
+#include <my_global.h>
+#include <my_sys.h>
+#include <pthread.h>
+
+extern ulong		thread_id;
+extern uint		thread_count;
+extern ulong		max_connections;
+
+static pthread_t	G_thread;
+
+pthread_handler_t func(void *p)
+{
+	while(1) {
+		sleep(5);
+		fprintf(stderr, "Thread id [%ld] Thread_count: %u Max_connections:%lu\n",
+			thread_id, thread_count, max_connections);
+	}
+}
+
+static int monitor_plugin_init(void *p) 
+{
+	if (pthread_create(&G_thread, NULL, func, NULL) != 0) {
+		fprintf(stderr, "Monitor plugin init failure");
+		return 1;
+	}
+
+	fprintf(stderr, "%s", "Monitor plugin init\n");
+
+	return 0;
+}
+
+static int monitor_plugin_deinit(void *p)
+{
+	pthread_cancel(thread);
+	pthread_join(G_thread, NULL);
+	fprintf(stderr, "%s", "Monitor_plugin deinit\n");
+
+	return 0;
+}
+
+struct st_mysql_daemon monitor_plugin = 
+{
+	MYSQL_DAEMON_INTERFACE_VERSION
+};
+
+mysql_declare_plugin(monitor_plugin)
+{
+	MYSQL_DAEMON_PLUGIN,
+	&monitor_plugin,
+	"monitor",
+	"hoterran",
+	"test",
+	PLUGIN_LICENSE_GPL,
+	monitor_plugin_init,
+	monitor_plugin_deinit,
+	0x0100,
+	NULL,
+	NULL,
+	NULL,
+}
+mysql_declare_plugin_end;
+

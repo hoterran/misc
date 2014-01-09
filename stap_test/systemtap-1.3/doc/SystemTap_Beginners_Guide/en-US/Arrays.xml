@@ -1,0 +1,239 @@
+<?xml version='1.0'?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+
+<section id="associativearrays">
+	<title>Associative Arrays</title>
+<indexterm>
+<primary>arrays</primary>
+<seealso>associative arrays</seealso>
+</indexterm>
+
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+</indexterm>	
+
+<para>SystemTap also supports the use of associative arrays. While an ordinary variable represents a single value, associative arrays can represent a collection of values. Simply put, an associative array is a collection of unique keys; each key in the array has a value associated with it.</para>
+
+<!--<para>SystemTap also supports the use of associative arrays. While an ordinary variable represents a single value, associative arrays can represent a list of values. Simply put, an associative array is a collection of unique keys; each key in the array has a value associated with it. Illustrating this visually would be similar to creating a two-column table: the first column would have the unique key, while the second column would have each key's associated value. Each unique key and its associated value is referred to as a <emphasis>key pair</emphasis>.</para>-->
+
+<!-- next 2 indexterms for key pairs -->
+
+<!--
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>key pairs</tertiary>
+</indexterm>
+-->
+
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>key pairs</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>key pairs</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+<!-- next 2 indexterms for unique keys 
+
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>unique keys</tertiary>
+</indexterm>
+-->
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>unique keys</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>unique keys</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+<!-- next 2 indexterms for associated values 
+
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>associated values</tertiary>
+</indexterm>
+-->
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>associated values</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>associated values</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+<!-- next 2 indexterms for index expression 
+
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>index expression</tertiary>
+</indexterm>
+-->
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>index expression</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>index expression</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+<para>Since associative arrays are normally processed in multiple probes (as we will demonstrate later), they should be declared as <command>global</command> variables in the SystemTap script. The syntax for accessing an element in an associative array is similar to that of <command>awk</command>, and is as follows:</para>
+<!-- next 3 indexterms for syntax 
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>syntax</tertiary>
+</indexterm>
+-->
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>syntax</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>syntax</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>format</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+
+
+<screen>
+<replaceable>array_name</replaceable>[<replaceable>index_expression</replaceable>]
+</screen>
+
+<para>Here, the <command><replaceable>array_name</replaceable></command> is any arbitrary name the array uses. The <command><replaceable>index_expression</replaceable></command> is used to refer to a specific unique key in the array. To illustrate, let us try to build an array named <command>foo</command> that specifies the ages of three people (i.e. the unique keys): <command>tom</command>, <command>dick</command>, and <command>harry</command>. To assign them the ages (i.e. associated values) of 23, 24, and 25 respectively, we'd use the following array statements:</para> 
+
+<!-- next 2 indexterms for example 
+
+<indexterm>
+<primary>arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>example</tertiary>
+</indexterm>
+-->
+<indexterm>
+<primary>associative arrays</primary>
+<secondary>introduction</secondary>
+<tertiary>example</tertiary>
+</indexterm>
+
+<indexterm>
+<primary>example</primary>
+<secondary>introduction</secondary>
+<tertiary>arrays</tertiary>
+</indexterm>
+<example id="arraysimplestexample">
+	<title>Basic Array Statements</title>
+<screen>
+foo["tom"] = 23
+foo["dick"] = 24
+foo["harry"] = 25
+</screen>
+</example>
+
+<para>You can specify up to nine index expressons in an array statement, each one delimited by a comma (<command>,</command>). This is useful if you wish to have a key that contains multiple pieces of information. The following line from <xref linkend="scriptdisktop"/> uses 5 elements for the key: process ID, executable name, user ID, parent process ID, and string "W". It associates the value of <command>devname</command> with that key.</para>
+
+<screen>
+device[pid(),execname(),uid(),ppid(),"W"] = devname
+</screen>
+
+<important>
+	<title>Important</title>
+	<para>All associate arrays must be declared as <command>global</command>, regardless of whether the associate array is used in one or multiple probes. </para>
+</important>
+
+
+
+<!--	
+<varlistentry>
+	<term></term>
+	<listitem>
+		<para></para>
+	</listitem>	
+</varlistentry>
+-->	
+
+	
+	
+	
+	
+<!-- 
+	
+<para>SystemTap supports numerous ways to manipulate associative arrays (i.e. <command><replaceable>operation</replaceable></command> in the syntax format). For the purposes of this book, we will only cover the most common examples of manipulating associative arrays, all of which appear in <xref linkend="useful-systemtap-scripts"/>.</para>
+
+<formalpara id="aaexamplesimple">
+	<title>Incrementing Associated Values of Unique Keys</title>
+<para>The simplest form of data manipulation in associative arrays is incrementing the associated value of a unique key in the array. The syntax for this operation is as follows:</para>
+</formalpara>
+<screen>
+<replaceable>array_name</replaceable>[<replaceable>index_expression</replaceable>"] ++
+</screen>
+
+<para>Here, the <command>++</command> operation instructs SystemTap to increment the associated value of <command><replaceable>unique_key</replaceable></command> by <command><replaceable>value</replaceable></command>. For example, to increase the associated value of unique key <command>hello</command> in array <command>foo</command> by 4, use:</para>
+
+<formalpara id="aaexamplesimple-example">
+	<title>explicit-incrementing-in-arrays.stp</title>
+<para>
+<programlisting>
+probe begin {	foo[4,"hello"] ++ }
+</programlisting>
+</para>
+</formalpara>
+
+<formalpara id="aaexampleupdatecounting">
+	<title>Incrementing Associated Values of Unique Keys (By Variable)</title>
+	
+<para>One of the most common uses of associative arrays is to tally events per unique key. To do this, use the operator <command>+= $count</command>, as in:</para>
+</formalpara>
+
+<screen>
+<replaceable>array_name</replaceable>[<replaceable>unique_key</replaceable>] += $count	
+</screen>
+
+<para>You can also use a handler function in as the <command><replaceable>unique_key</replaceable></command>. Doing so creates an associate array that uses the values returned by the handler function as the unique keys. The first time that a probe using this array returns a string value, that value is set as a unique key with an initial value of 0. The next time that the probe returns the same string value, it increments the associated value of the unique key by 1.</para>
+
+<para>For example, let's say you need to tally how many times each process performs a read to the virtual file system (VFS). To do this, probe the VFS read opeartion, use the handler <command>execname()</command> to identify which processes performed the VFS read, and tally the reads of each process using the associative array named <command>reads</command>, as in</para>
+
+<formalpara id="aaexamplesimplevfsreads">
+	<title>tallying-in-arrays.stp</title>
+<para>
+<programlisting>
+probe vfs.read
+{ reads[execname()] += $count }
+</programlisting>
+</para>
+</formalpara>
+
+<para>In <xref linkend="aaexamplesimplevfsreads"/>, the first time that the probe returns the process name <command>gnome-terminal</command> (i.e. the first time <command>gnome-terminal</command> performs a VFS read), that process name is set as a unique key. The next time that the probe returns the process name <command>gnome-terminal</command>, SystemTap increments the associated value of <command>gnome-terminal</command> by 1. SystemTap performs this operation for <emphasis>all</emphasis> process names as the probe returns them.</para>
+-->
+</section>

@@ -1,0 +1,10 @@
+#! stap -p2
+
+global bar, baz
+
+probe begin
+{
+ tid=0 pid=0
+ bar[tid] = 4;
+ baz[pid] = "5";
+}

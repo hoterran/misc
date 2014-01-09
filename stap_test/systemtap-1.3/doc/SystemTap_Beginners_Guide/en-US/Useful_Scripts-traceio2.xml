@@ -1,0 +1,159 @@
+<?xml version='1.0'?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+
+	<section id="traceio2sect">
+		<title>I/O Monitoring (By Device)</title>
+<indexterm>
+<primary>script examples</primary>
+<secondary>monitoring device I/O</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>monitoring device I/O</secondary>
+</indexterm>
+
+<indexterm>
+<primary>monitoring device I/O</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>		
+
+<indexterm>
+<primary>I/O monitoring (by device)</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>
+		
+<indexterm>
+<primary>device I/O, monitoring</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>
+
+
+
+
+
+<remark>
+			example from http://sourceware.org/systemtap/examples/io/traceio2.stp, but error
+		</remark>
+		
+		<remark>
+			WAR STORY: http://sourceware.org/systemtap/wiki/WSDeviceMonitor?highlight=((WarStories)), but script errored
+		</remark>	
+		
+		<remark>
+			was able to correct script through http://sourceware.org/systemtap/wiki/WSFileMonitor?highlight=((WarStories))
+		</remark>	
+		
+		<para>
+			This section describes how to monitor I/O activity on a specific device.
+		</para>
+		
+<formalpara id="traceio2">
+	<title>traceio2.stp</title>
+<para>
+<programlisting>
+<xi:include parse="text" href="../testsuite/systemtap.examples/io/traceio2.stp" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</programlisting>
+</para>
+</formalpara>
+
+<!-- <remark>in new SystemTap, returned a warning, but ran ok.</remark> 
+
+<para condition="fedora">For some kernel versions (e.g. <filename>2.6.21-1.3194.fc7</filename>), you may need to revise <xref linkend="traceio2"/> accordingly. SystemTap will output the following error if you need to do so:</para>
+
+<screen condition="fedora">
+semantic error: field 'f_dentry' not found
+</screen>
+
+<para condition="fedora">If this is the case, revise <xref linkend="traceio2"/> by deleting the following lines in the script:</para>
+
+<programlisting condition="fedora">
+	dev_nr = $file->f_dentry->d_inode->i_sb->s_dev
+        inode_nr = $file->f_dentry->d_inode->i_ino
+</programlisting>
+
+<para condition="fedora">Replace those lines with:</para>
+
+<programlisting condition="fedora">
+	dev_nr = $file->f_path->dentry->d_inode->i_sb->s_dev
+	inode_nr = $file->f_path->dentry->d_inode->i_ino
+			</programlisting>-->
+<indexterm>
+<primary>script examples</primary>
+<secondary>stat -c, determining whole device number</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>stat -c, determining whole device number</secondary>
+</indexterm>
+
+<indexterm>
+<primary>stat -c, determining whole device number</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>
+
+<indexterm>
+<primary>script examples</primary>
+<secondary>whole device number (usage as a command-line argument)</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>whole device number (usage as a command-line argument)</secondary>
+</indexterm>
+
+<indexterm>
+<primary>whole device number (usage as a command-line argument)</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>
+<para><xref linkend="traceio2"/> takes 1 argument: the whole device number. To get this number, use <command>stat -c "0x%D" <replaceable>directory</replaceable></command>, where <command><replaceable>directory</replaceable></command> is located in the device you wish to monitor.</para>
+<indexterm>
+<primary>script examples</primary>
+<secondary>usrdev2kerndev()</secondary>
+</indexterm>
+
+<indexterm>
+<primary>examples of SystemTap scripts</primary>
+<secondary>usrdev2kerndev()</secondary>
+</indexterm>
+
+<indexterm>
+<primary>usrdev2kerndev()</primary>
+<secondary>examples of SystemTap scripts</secondary>
+</indexterm>	
+<para>The <command>usrdev2kerndev()</command> function converts the whole device number into the format understood by the kernel. The output produced by <command>usrdev2kerndev()</command> is used in conjunction with the <command>MKDEV()</command>, <command>MINOR()</command>, and <command>MAJOR()</command> functions to determine the major and minor numbers of a specific device.</para>
+
+<para>The output of <xref linkend="traceio2"/> includes the name and ID of any process performing a read/write, the function it is performing (i.e. <command>vfs_read</command> or <command>vfs_write</command>), and the kernel device number.</para>
+<!--
+<remark>please verify if "0x800005" is "device number (in hex format)", and why it needs to be stated buy </remark>-->
+
+<para>The following example is an excerpt from the full output of <command>stap traceio2.stp 0x805</command>, where <literal>0x805</literal> is the whole device number of <filename>/home</filename>. <filename>/home</filename> resides in <filename>/dev/sda5</filename>, which is the device we wish to monitor.</para>
+
+<example id="traceio2output">
+	<title><xref linkend="traceio2"/> Sample Output</title>
+<screen>
+[...]
+synergyc(3722) vfs_read 0x800005
+synergyc(3722) vfs_read 0x800005
+cupsd(2889) vfs_write 0x800005
+cupsd(2889) vfs_write 0x800005
+cupsd(2889) vfs_write 0x800005
+[...]
+</screen>
+</example>
+<!--
+probe kernel.function ("vfs_write"),
+kernel.function ("vfs_read")
+{
+dev_nr = $file->f_dentry->d_inode->i_sb->s_dev
+inode_nr = $file->f_dentry->d_inode->i_ino
+if (dev_nr == ($1 &lt;&lt; 20 | $2))
+printf ("%s(%d) %s 0x%x\n", execname(), pid(), probefunc(), dev_nr)
+}-->
+
+
+	</section>
+
+

@@ -1,0 +1,17 @@
+#! stap -p1
+
+probe syscall (231)
+{
+  array[idx] <<< value;
+  if (gbl > 5) { gbl -- } else ;
+}
+
+function foo () {
+  delete array[4];
+  return 0;
+}
+
+probe end
+{
+  foo ("value", 4+8);
+}

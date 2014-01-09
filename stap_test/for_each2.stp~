@@ -1,0 +1,13 @@
+global reads
+
+probe kernel.function("vfs_write")
+{
+	reads[execname()]++
+}
+
+probe timer.s(3)
+{
+	foreach (count in reads)
+	printf("%s : %d \n", count, reads[count])
+}
+

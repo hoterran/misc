@@ -1,0 +1,543 @@
+// context tapset
+// Copyright (C) 2005-2010 Red Hat Inc.
+// Copyright (C) 2006 Intel Corporation.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+// <tapsetdescription>
+// Context functions provide additional information about where an event occurred. These functions can
+//provide information such as a backtrace to where the event occurred and the current register values for the
+//processor.
+// </tapsetdescription>
+
+/**
+ * sfunction print_regs - Print a register dump.
+ * 
+ * General Syntax: print_regs()
+ *
+ * Description: This function prints a register dump.
+ */
+function print_regs ()
+%{
+	if (CONTEXT->regs) {
+		_stp_print_regs (CONTEXT->regs);
+	}
+%}
+
+/**
+ * sfunction execname - Returns the execname of a target process (or group of processes).
+ * 
+ * General Syntax: execname:string()
+ * 
+ * Description: Returns the execname of a target process (or group of processes).
+ */
+function execname:string ()
+%{ /* pure */ /* unprivileged */
+	strlcpy (THIS->__retvalue, current->comm, MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction pid - Returns the ID of a target process.
+ * 
+ * General Syntax: pid:long()
+ * 
+ * Description: This function returns the ID of a targer process.
+ */
+function pid:long ()
+%{ /* pure */ /* unprivileged */
+	THIS->__retvalue = current->tgid;
+%}
+
+/**
+ * sfunction tid - Returns the thread ID of a target process.
+ * 
+ * General Syntax: tid:long()
+ *
+ * Description: This function returns the thread ID of the target process.
+ */
+function tid:long ()
+%{ /* pure */ /* unprivileged */
+	THIS->__retvalue = current->pid;
+%}
+
+/**
+ * sfunction ppid - Returns the process ID of a target process's parent process.
+ *
+ * General Syntax: ppid:long()
+ *
+ * Description: This function return the process ID of the target proccess's parent process.
+ */
+function ppid:long()
+%{ /* pure */ /* unprivileged */
+#if defined(STAPCONF_REAL_PARENT)
+	THIS->__retvalue = current->real_parent->tgid;
+#else
+	THIS->__retvalue = current->parent->tgid;
+#endif
+%}
+
+/**
+ * sfunction pgrp - Returns the process group ID of the current process.
+ *
+ * General Syntax: pgrp:long()
+ *
+ * Description: This function returns the process group ID of the
+ * current process.
+ */
+function pgrp:long ()
+%{ /* pure */ /* unprivileged */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24)
+	struct signal_struct *ss = kread( &(current->signal) );
+	THIS->__retvalue = kread ( &(ss->pgrp) );
+	CATCH_DEREF_FAULT();
+#else
+	THIS->__retvalue = task_pgrp_nr_ns(current, &init_pid_ns);
+#endif
+%}
+
+/**
+ * sfunction sid - Returns the session ID of the current process.
+ *
+ * General Syntax: sid:long()
+ *
+ * Description: The session ID of a process is the process group ID
+ * of the session leader. Session ID is stored in the signal_struct
+ *  since Kernel 2.6.0.
+ */
+function sid:long ()
+%{ /* pure */ /* unprivileged */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 24)
+	struct signal_struct *ss = kread( &(current->signal) );
+	THIS->__retvalue = kread ( &(ss->session) );
+	CATCH_DEREF_FAULT();
+#else
+	THIS->__retvalue = task_session_nr_ns(current, &init_pid_ns);
+#endif
+%}
+
+/**
+ * sfunction pexecname - Returns the execname of a target process's parent process.
+ * 
+ * General Syntax: pexecname:string()
+ * 
+ * Description: This function returns the execname of a target
+ * process's parent procces.
+ */
+function pexecname:string ()
+%{ /* pure */ /* unprivileged */
+#if defined(STAPCONF_REAL_PARENT)
+	strlcpy (THIS->__retvalue, current->real_parent->comm, MAXSTRINGLEN);
+#else
+	strlcpy (THIS->__retvalue, current->parent->comm, MAXSTRINGLEN);
+#endif
+%}
+
+/**
+ * sfunction gid - Returns the group ID of a target process.
+ * 
+ * General Syntax: gid:long()
+ * 
+ * Description: This function returns the group ID of a target process.
+ */
+function gid:long ()
+%{ /* pure */ /* unprivileged */
+#ifdef STAPCONF_TASK_UID
+	THIS->__retvalue = current->gid;
+#else
+	THIS->__retvalue = current_gid();
+#endif
+%}
+
+/**
+ * sfunction egid - Returns the effective gid of a target process.
+ * 
+ * General Syntax: egid:long()
+ *
+ * Description: This function returns the effective gid of a target process
+ */
+function egid:long ()
+%{ /* pure */ /* unprivileged */
+#ifdef STAPCONF_TASK_UID
+	THIS->__retvalue = current->egid;
+#else
+	THIS->__retvalue = current_egid();
+#endif
+%}
+
+/**
+ * sfunction uid - Returns the user ID of a target process.
+ * 
+ * General Syntax: uid:long()
+ * 
+ * Description: This function returns the user ID of the target process.
+ */
+function uid:long ()
+%{ /* pure */ /* unprivileged */
+#ifdef STAPCONF_TASK_UID
+	THIS->__retvalue = current->uid;
+#else
+	THIS->__retvalue = current_uid();
+#endif
+%}
+
+/**
+ * sfunction euid - Return the effective uid of a target process.
+ *
+ * General Syntax: euid:long()
+ *
+ * Description: Returns the effective user ID of the target process.
+ */
+function euid:long ()
+%{ /* pure */ /* unprivileged */
+#ifdef STAPCONF_TASK_UID
+	THIS->__retvalue = current->euid;
+#else
+	THIS->__retvalue = current_euid();
+#endif
+%}
+
+
+/**
+ * sfunction is_myproc - Determines if the current probe point has occurred in the user's own process.
+ *
+ * General Syntax: is_myproc:long()
+ * 
+ * Description: This function returns 1 if the current probe
+ * point has occurred in the user's own process.
+ */
+function is_myproc:long ()
+%{ /* pure */ /* unprivileged */
+        THIS->__retvalue = is_myproc();
+%}
+
+
+/*
+ * sfunction cpuid - Needs info
+ * 
+ * General Syntax: cpuid:long()
+ *
+ * Description: XXX needs a description
+ */
+function cpuid:long ()
+%{ /* pure */
+	THIS->__retvalue = smp_processor_id();
+%}
+
+/**
+ * sfunction cpu - Returns the current cpu number.
+ * 
+ * General Syntax: cpu:long()
+ *
+ * Description: This function returns the current cpu number.
+ */
+function cpu:long ()
+%{ /* pure */ /* unprivileged */
+	THIS->__retvalue = smp_processor_id();
+%}
+
+/**
+ * sfunction pp - Returns the active probe point.
+ *
+ * General Syntax: pp:string()
+ *
+ * Description: This function returns the fully-resolved probe point
+ * associated with a currently running probe handler, including alias
+ * and wild-card expansion effects. Context: The current probe point.
+ */
+function pp:string ()
+%{ /* pure */ /* unprivileged */
+	strlcpy (THIS->__retvalue, CONTEXT->probe_point, MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction registers_valid - Determines validity of register() and u_register() in current context.
+ *
+ * General Syntax: registers_valid:long()
+ *
+ * Description: This function returns 1 if register() and u_register()
+ * can be used in the current context, or 0 otherwise.
+ * For example, registers_valid() returns 0
+ * when called from a begin or end probe.
+ */
+function registers_valid:long ()
+%{ /* pure */ /* unprivileged */
+	THIS->__retvalue = (CONTEXT->regs != NULL);
+%}
+
+/**
+ * sfunction user_mode - Determines if probe point occurs in user-mode.
+ *
+ * General Syntax: user_mode:long()
+ *
+ * Return 1 if the probe point occurred in user-mode.
+ */
+function user_mode:long ()
+%{ /* pure */ /* unprivileged */
+  if (CONTEXT->regs && (CONTEXT->regflags & _STP_REGS_USER_FLAG)) {
+    THIS->__retvalue = 1;
+  } else {
+    THIS->__retvalue = 0;
+  }
+%}
+
+/**
+ * sfunction is_return - Whether the current probe context is a return probe.
+ * 
+ * General Syntax: is_return:long()
+ *
+ * Description: Returns 1 if the current probe context is a return probe,
+ * returns 0 otherwise.
+ */
+function is_return:long ()
+%{ /* pure */
+	if (CONTEXT->pi)
+		THIS->__retvalue = 1;
+	else
+		THIS->__retvalue = 0;
+%}
+
+/**
+ * sfunction target - Return the process ID of the target process.
+ * 
+ * General Syntax: target:long()
+ * 
+ * Description: This function returns the process ID of the target
+ * process.  This is useful in conjunction with the -x PID or
+ * -c CMD command-line options to stap. An example of its use is
+ * to create scripts that filter on a specific process.
+ *
+ * -x <pid>
+ * target() returns the pid specified by -x
+ * -c <command>
+ * target() returns the pid for the executed command specified by -c
+ */
+function target:long ()
+%{ /* pure */ /* unprivileged */
+        THIS->__retvalue = _stp_target;
+%}
+
+/**
+ * sfunction module_name - The module name of the current script.
+ * 
+ * General Syntax: module_name:string()
+ *
+ * Description: This function returns the name of the stap module.
+ * Either generated randomly (stap_[0-9a-f]+_[0-9a-f]+)
+ * or set by stap -m <module_name>.
+ */
+function module_name:string ()
+%{ /* pure */ /* unprivileged */
+	strlcpy(THIS->__retvalue, THIS_MODULE->name, MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction stp_pid - The process id of the stapio process.
+ *
+ * General Syntax: stp_pid:long()
+ *
+ * Description: This function returns the process id of the 
+ * stapio process that launched this script. There could be
+ * other SystemTap scripts and stapio processes running on
+ * the system.
+ */
+function stp_pid:long ()
+%{ /* pure */
+        THIS->__retvalue = _stp_pid;
+%}
+
+/**
+ * sfunction stack_size - Return the size of the kernel stack.
+ * 
+ * General Syntax: stack_size:long()
+ * 
+ * Description: This function returns the size of the kernel stack.
+ */
+function stack_size:long ()
+%{ /* pure */
+        THIS->__retvalue = THREAD_SIZE;
+%}
+
+/**
+ * sfunction stack_used - Returns the amount of kernel stack used.
+ *
+ * General Syntax: stack_used:long()
+ *
+ * Description: This function determines how many bytes are
+ * currently used in the kernel stack.
+ */
+function stack_used:long ()
+%{ /* pure */
+	char a;
+        THIS->__retvalue = THREAD_SIZE - ((long)&a & (THREAD_SIZE-1));
+%}
+
+/**
+ * sfunction stack_unused - Returns the amount of kernel stack currently available.
+ *
+ * General Syntax: stack_unused:long()
+ *
+ * Description: This function determines how many bytes are
+ * currently available in the kernel stack.
+ */
+function stack_unused:long ()
+%{ /* pure */
+	char a;
+        THIS->__retvalue = (long)&a & (THREAD_SIZE-1);
+%}
+
+/**
+ * sfunction uaddr - User space address of current running task. EXPERIMENTAL.
+ *
+ * General Syntax: uaddr:long()
+ *
+ * Description: Returns the address in userspace that the current
+ * task was at when the probe occurred. When the current running task
+ * isn't a user space thread, or the address cannot be found, zero
+ * is returned. Can be used to see where the current task is combined
+ * with usymname() or symdata(). Often the task will be in the VDSO
+ * where it entered the kernel. FIXME - need VDSO tracking support #10080.
+ */
+function uaddr:long ()
+%{ /* pure */ /* unprivileged */
+  int64_t addr = 0;
+  assert_is_myproc();
+  if (current->mm)
+    {
+      struct pt_regs *uregs;
+      uregs = task_pt_regs(current);
+      if (uregs)
+        addr = (int64_t) REG_IP(uregs);
+    }
+  THIS->__retvalue = addr;
+%}
+
+/**
+ * sfunction cmdline_args - Fetch command line arguments from current process
+ *
+ * General Syntax: cmdline_args:string(n:long, m:long, delim:string)
+ *
+ * @n: First argument to get (zero is the command itself)
+ * @m: Last argument to get (or minus one for all arguments after n)
+ * @delim: String to use to delimit arguments when more than one.
+ *
+ * Description: Returns arguments from the current process starting
+ * with argument number n, up to argument m. If there are less than n
+ * arguments, or the arguments cannot be retrieved from the current
+ * process, the empty string is returned. If m is smaller than n then
+ * all arguments starting from argument n are returned. Argument zero
+ * is traditionally the command itself.
+ */
+function cmdline_args:string(n:long, m:long, delim:string)
+{
+  args = "";
+  mm = @cast(task_current(), "task_struct", "kernel<linux/sched.h>")->mm;
+  if (mm)
+    {
+      arg_start = @cast(mm, "mm_struct", "kernel<linux/sched.h>")->arg_start;
+      arg_end = @cast(mm, "mm_struct", "kernel<linux/sched.h>")->arg_end;
+      if (arg_start != 0 && arg_end != 0)
+        {
+          nr = 0;
+          len = arg_end - arg_start;
+          arg = user_string2(arg_start, "");
+          while (arg != "" && len > 0)
+            {
+              if (nr == n)
+                args = arg;
+              else if (nr > n)
+                args .= delim . arg;
+
+              arg_len = strlen(arg);
+              arg_start += arg_len + 1;
+              len -= arg_len + 1;
+              if (len > 0 && nr != m)
+                arg = user_string2(arg_start, "");
+              else
+                arg = "";
+              nr++;
+            }
+        }
+    }
+  return args;
+}
+
+/**
+ * sfunction cmdline_arg - Fetch a command line argument.
+ *
+ * General Syntax: cmdline_arg:string(n:long)
+ *
+ * @n: Argument to get (zero is the command itself)
+ *
+ * Description: Returns argument the requested argument from the
+ * current process or the empty string when there are not that many
+ * arguments or there is a problem retrieving the argument. Argument
+ * zero is traditionally the command itself.
+ */
+function cmdline_arg:string(n:long)
+{
+  return cmdline_args(n, n, "");
+}
+
+/**
+ * sfunction cmdline_str - Fetch all command line arguments from current process
+ *
+ * General Syntax: cmdline_str:string()
+ *
+ * Description: Returns all arguments from the current process
+ * delimited by spaces. Returns the empty string when the arguments
+ * cannot be retrieved.
+ */
+function cmdline_str:string()
+{
+  return cmdline_args(0, -1, " ");
+}
+
+/**
+ * sfunction env_var - Fetch environment variable from current process
+ *
+ * General Syntax: evn_var:string(name:string)
+ *
+ * @name: Name of the environment variable to fetch
+ *
+ * Description: Returns the contents of the specified environment value
+ * for the current process. If the variable isn't set an empty string
+ * is returned.
+ */
+function env_var:string(name:string)
+{
+  if (name == "")
+    return ""
+
+  env_value = "";
+  mm = @cast(task_current(), "task_struct", "kernel<linux/sched.h>")->mm;
+  if (mm)
+    {
+      env_start = @cast(mm, "mm_struct", "kernel<linux/sched.h>")->env_start;
+      env_end = @cast(mm, "mm_struct", "kernel<linux/sched.h>")->env_end;
+      if (env_start != 0 && env_end != 0)
+        {
+          len = env_end - env_start;
+          cur = user_string2(env_start, "");
+          env_name = tokenize(cur, "=");
+          while (env_name != name && len > 0)
+            {
+              env_len = strlen(cur);
+              env_start += env_len + 1;
+              len -= env_len + 1;
+              if (len > 0)
+                {
+                  cur = user_string2(env_start, "");
+                  env_name = tokenize(cur, "=");
+                }
+              else
+                env_name = "";
+            }
+
+          if (len > 0)
+            env_value = tokenize("", "");
+        }
+    }
+  return env_value;
+}

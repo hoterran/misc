@@ -1,0 +1,8 @@
+#! stap -wp4
+
+probe syscall.*, syscall.*.return {
+	if (retstr != "")
+		printf("%s\n", retstr)
+	else
+		printf("%s: %s (%s) = ", execname(), name, argstr)
+}

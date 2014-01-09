@@ -1,0 +1,5 @@
+This is an implementation of the Do"mo"lki algorithm as described in
+J.B. Hext, P.S. Roberts, Syntax analysis by Dom\(:olki's algorithm,
+Computer J., Vol. 13, 3, Aug 1970, 263-271. 
+
+Interpreter; obtains grammar and input as C code.

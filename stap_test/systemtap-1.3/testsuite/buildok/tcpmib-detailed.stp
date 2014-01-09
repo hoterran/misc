@@ -1,0 +1,8 @@
+#! stap -wp4
+
+probe tcpmib.ActiveOpens, tcpmib.AttemptFails ?, tcpmib.CurrEstab ?,
+      tcpmib.EstabResets ?, tcpmib.OutRsts, tcpmib.OutSegs,
+      tcpmib.PassiveOpens, tcpmib.RetransSegs
+{
+	printf("%p %d\n", sk, op)
+}

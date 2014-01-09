@@ -1,0 +1,32 @@
+global stacks_count
+
+probe process(@1).function(@2)
+{
+ stacks_count[ubacktrace()]++;
+}
+
+function sprint_stackx(stack)
+{
+addr = tokenize(stack, " ");
+while(addr != "")
+{
+        fun= symname(strtol(addr, 16));
+        s = fun . "->" . s;
+        addr = tokenize("", " ");
+}
+return s;
+}
+
+function print_top_stack () {
+  printf ("%50s %10s\n", "STACK", "COUNT")
+  foreach (stack in stacks_count- limit 20) {
+    printf("%50s %10d\n", sprint_stackx(stack), stacks_count[stack])
+  }
+  delete stacks_count
+}
+
+probe timer.s(5) {
+  print_top_stack ()
+  printf("--------------------------------------------------------------\n")
+}
+

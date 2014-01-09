@@ -1,0 +1,24 @@
+/*
+ * neg.stp
+ *
+ * Check that systemtap negation works
+ */
+
+global x2, x1
+
+probe begin
+{
+	println("systemtap starting probe")
+	x1 = 0xaaaaaaaaaaaaaaaa
+}
+
+probe end
+{
+	println("systemtap ending probe")
+	x2 = ~x1
+	if ( x2 != 0x5555555555555555 ) {
+		println("systemtap test failure")
+	} else {
+		println("systemtap test success")
+	}
+}

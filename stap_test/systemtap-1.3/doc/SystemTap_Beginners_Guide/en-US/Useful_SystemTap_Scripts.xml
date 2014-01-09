@@ -1,0 +1,87 @@
+<?xml version='1.0'?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+
+<chapter id="useful-systemtap-scripts">
+	<title>Useful SystemTap Scripts</title>
+<indexterm>
+	<primary>SystemTap scripts</primary>
+	<secondary>useful examples</secondary>
+</indexterm>
+
+<indexterm>
+	<primary>examples of SystemTap scripts</primary>
+</indexterm>
+
+<indexterm>
+	<primary>useful examples of SystemTap scripts</primary>
+</indexterm>
+
+<indexterm>
+	<primary>systemtap-testsuite package</primary>
+	<secondary>sample scripts</secondary>
+</indexterm>
+
+	<para>This chapter enumerates several SystemTap scripts you can use to monitor and investigate different subsystems. All of these scripts are available at <filename>/usr/share/systemtap/testsuite/systemtap.examples/</filename> once you install the <filename>systemtap-testsuite</filename> RPM.</para>
+<!--	
+	<para><ulink url="http://sourceware.org/systemtap/examples/subsystem-index.html">http://sourceware.org/systemtap/examples/subsystem-index.html</ulink></para>
+		
+		-->
+	<remark>
+		short intro, reference to online source (http://sourceware.org/systemtap/examples/subsystem-index.html); "always updated"
+	</remark>
+	
+	<remark>short description of gnuplot (?) for better GUI of results</remark>
+	
+	<remark>case studies and more info on some scripts here - http://sourceware.org/systemtap/wiki/WarStories</remark>
+	
+<!-- 	<xi:include href="Useful_Scripts-Disk.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+<section id="mainsect-network">
+	<title>Network</title>
+	<para>The following sections showcase scripts that trace network-related functions and build a profile of network activity.</para>
+	<xi:include href="Useful_Scripts-nettop.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-sockettrace.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-tcp_connections.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include condition="fedora" href="Useful_Scripts-tcpdumplike.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-dropwatch.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>		
+<section id="mainsect-disk">
+	<title>Disk</title>
+	<para>The following sections showcase scripts that monitor disk and I/O activity.</para>
+	
+	<xi:include href="Useful_Scripts-disktop.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- 	<xi:include href="Useful_Scripts-IO.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+	<xi:include href="Useful_Scripts-iotime.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-traceio.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />	
+	<xi:include href="Useful_Scripts-traceio2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<!-- 	<xi:include href="Useful_Scripts-Kernel.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+	<xi:include href="Useful_Scripts-inodewatch.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-inodewatch2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include condition="fedora" href="Useful_Scripts-ioblktime.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>
+
+<section id="mainsect-profiling">
+	<title>Profiling</title>
+	<para>The following sections showcase scripts that profile kernel activity by monitoring function calls.</para>
+	<xi:include href="Useful_Scripts-functioncalls.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-paracallgraph.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-threadtimes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-timeout.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-topsys.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-syscallsbyprocpid.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>
+<!-- 	removed; handler function no longer working as expected
+	<xi:include href="Useful_Scripts-kernelprofiling.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+
+	
+<xi:include href="Useful_Scripts-futexes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<!--	<xi:include href="Useful_Scripts-Network.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-Signals.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-Syscalls.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="Useful_Scripts-Others.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />-->
+<!--	
+	<xi:include href="" xmlns:xi="http://www.w3.org/2001/XInclude" />	
+-->
+</chapter>
+

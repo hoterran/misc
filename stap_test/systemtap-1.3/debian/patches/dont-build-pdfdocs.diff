@@ -1,0 +1,36 @@
+don't build pdf docs
+Index: systemtap/configure.ac
+===================================================================
+--- systemtap.orig/configure.ac	2010-08-06 13:40:33.000000000 +0530
++++ systemtap/configure.ac	2010-08-06 13:40:59.674483272 +0530
+@@ -249,18 +249,18 @@
+ fi
+ AM_CONDITIONAL([XMLTO_STRINGPARAM], [test "$have_xmlto_stringparam" == "yes"])
+ 
+-if test "x${building_refdocs}" == "xyes"; then
+-AC_MSG_CHECKING([for xmlto pdf support])
+-   xmlto pdf conftest.xml >& /dev/null
+-   if test $? == 0; then
+-      have_xmlto_pdf="yes"
+-      AC_MSG_RESULT([yes])
+-   else
+-      AC_MSG_RESULT([no])
+-      AC_MSG_WARN([Not building reference documentation in PDF format])
+-   fi
+-   rm -f conftest.pdf
+-fi
++#if test "x${building_refdocs}" == "xyes"; then
++#AC_MSG_CHECKING([for xmlto pdf support])
++#   xmlto pdf conftest.xml >& /dev/null
++#   if test $? == 0; then
++#      have_xmlto_pdf="yes"
++#      AC_MSG_RESULT([yes])
++#   else
++#      AC_MSG_RESULT([no])
++#      AC_MSG_WARN([Not building reference documentation in PDF format])
++#   fi
++#   rm -f conftest.pdf
++#fi
+ AM_CONDITIONAL([BUILD_PDFREFDOCS], [test "$have_xmlto_pdf" == "yes"])
+ 
+ rm -f conftest.xml

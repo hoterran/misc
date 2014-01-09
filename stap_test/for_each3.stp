@@ -1,0 +1,23 @@
+global reads, totalreads
+
+probe vfs.read
+{
+	reads[execname()] ++
+	totalreads[execname()] ++
+}
+
+probe timer.s(3)
+{
+	printf("=======\n")
+	foreach (count in reads-)
+	printf("%s : %d \n", count, reads[count])
+	delete reads
+}
+
+probe end
+{
+	printf("TOTALS\n")
+	foreach (total in totalreads-)
+	printf("%s : %d \n", total, totalreads[total])
+}
+

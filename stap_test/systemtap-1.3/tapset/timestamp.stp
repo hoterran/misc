@@ -1,0 +1,30 @@
+// timestamp tapset
+// Copyright (C) 2005-2006 Red Hat Inc.
+// Copyright (C) 2006 Intel Corporation.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+// <tapsetdescription>
+// Each timestamp function returns a value to indicate when a function is executed. These 
+//returned values can then be used to indicate when an event occurred, provide an ordering for events, 
+//or compute the amount of time elapsed between two time stamps.
+// </tapsetdescription>
+/**
+ * sfunction get_cycles - Processor cycle count.
+ * 
+ * General Syntax: get_cycles:long()
+ *
+ * Description: This function returns the processor cycle counter value
+ * if available, else it returns zero. The cycle counter is free running
+ * and unsynchronized on each processor. Thus, the order of events cannot
+ * determined by comparing the results of the get_cycles function on 
+ * different processors.
+ */
+function get_cycles:long () %{ /* pure */ /* unprivileged */
+  cycles_t c = get_cycles();
+  THIS->__retvalue = (int64_t) c;
+%}
+
+// likewise jiffies, monotonic_clock ...

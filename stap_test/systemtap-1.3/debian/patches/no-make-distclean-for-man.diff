@@ -1,0 +1,12 @@
+don't clean man/
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -309,7 +309,7 @@ endif
+ 	(cd $(srcdir)/man; for f in *.3*; do rm -rf "$(DESTDIR)$(man3dir)/$$f"; done)
+ 
+ SUBDIRS = doc grapher
+-DIST_SUBDIRS = testsuite man $(SUBDIRS)
++DIST_SUBDIRS = testsuite $(SUBDIRS)
+ 
+ check-local:
+ 	SRCDIR=`cd $(srcdir); pwd`; \

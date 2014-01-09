@@ -1,0 +1,373 @@
+<?xml version='1.0'?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
+
+<chapter id="using-systemtap">
+	<title>Using SystemTap</title>
+	<remark>
+		short intro, contents of chapter
+	</remark>
+	<indexterm>
+		<primary>Using SystemTap</primary>
+	</indexterm>
+	
+
+	<para>
+		This chapter instructs users how to install SystemTap, and provides an introduction on how to run SystemTap scripts.
+	</para>	
+	<xi:include href="Installation.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="CrossInstrumenting.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />	
+	<section id="using-usage">
+		<title>Running SystemTap Scripts</title>
+		<remark>
+			- basic commands (e.g. stap), useful options per command (e.g. stap -vv), tool references (man pages, related kernel-doc), references within book (i.e. errors chapter)
+		</remark>
+		
+		<remark>
+			- running systemtap scripts
+		</remark>
+<!--		
+		<remark>- Tapsets: short intro on usage</remark>
+		-->
+<indexterm>
+<primary>Usage</primary>
+<secondary>running SystemTap scripts</secondary>
+</indexterm>
+
+<indexterm>
+<primary>running SystemTap scripts</primary>
+<secondary>Usage</secondary>
+</indexterm>
+
+<indexterm>
+	<primary>Usage</primary>
+	<secondary>stap</secondary>
+</indexterm>
+
+<indexterm>
+	<primary>stap</primary>
+	<secondary>Usage</secondary>
+</indexterm>
+<!-- next 2 indexterms for staprun -->
+
+<indexterm>
+	<primary>Usage</primary>
+	<secondary>staprun</secondary>
+</indexterm>
+
+<indexterm>
+	<primary>staprun</primary>
+	<secondary>Usage</secondary>
+</indexterm>
+		<para>
+			SystemTap scripts are run through the command <command>stap</command>. <command>stap</command> can run SystemTap scripts from standard input or from file.
+		</para>
+<!--		
+<important>
+	<title>Important</title>
+<para>Running SystemTap requires root privileges. As such, you need to either log in as root or configure <command>sudo</command> accordingly for specific users who need to run SystemTap (refer to <command>man sudo</command> or <command>man visudo</command> for more information.</para> 
+
+</important>
+		-->
+
+<!--<formalpara>
+	<title>stapdev and stapusr</title>-->
+
+<indexterm>
+<primary>SystemTap scripts, how to run</primary>
+</indexterm>
+	<para>Running <command>stap</command> and <command>staprun</command> requires elevated privileges to the system. However, not all users can be granted root access just to run SystemTap. In some cases, for instance, you may want to allow a non-privileged user to run SystemTap instrumentation on his machine.</para>
+<!-- </formalpara> -->
+
+<para>To allow ordinary users to run SystemTap without root access, add them to one of these user groups:</para>
+
+<variablelist>
+	
+<varlistentry>
+	<term>stapdev</term>
+	<listitem>
+<indexterm>
+<primary>Usage</primary>
+<secondary>stapdev</secondary>
+</indexterm>
+
+<indexterm>
+<primary>stapdev</primary>
+<secondary>Usage</secondary>
+</indexterm>
+<para>
+	Members of this group can use <command>stap</command> to run SystemTap scripts, or <command>staprun</command> to run SystemTap instrumentation modules. 
+</para>	
+	
+
+<para>
+	Running <command>stap</command> involves compiling SystemTap scripts into kernel modules and 
+	loading them into the kernel. This requires elevated privileges to the system, which are granted 
+	to <command>stapdev</command> members. Unfortunately, such privileges also grant effective root 
+	access to <command>stapdev</command> members. As such, you should only grant  
+	<command>stapdev</command> group membership to users whom you can trust root access.
+</para>
+	
+	</listitem>
+</varlistentry>
+
+<varlistentry>
+	<term>stapusr</term>
+	<listitem>
+<indexterm>
+<primary>Usage</primary>
+<secondary>stapusr</secondary>
+</indexterm>
+
+<indexterm>
+<primary>stapusr</primary>
+<secondary>Usage</secondary>
+</indexterm>
+<para>
+	Members of this group can only run <command>staprun</command> to run SystemTap instrumentation modules. In addition, they can only run those modules from <filename>/lib/modules/<replaceable>kernel_version</replaceable>/systemtap/</filename>. Note that this directory must be owned only by the root user, and must only be writable by the root user.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>		
+
+
+
+		<para> Below is a list of commonly used <command>stap</command> options: </para>
+<indexterm>
+<primary>Usage</primary>
+<secondary>options, stap</secondary>
+</indexterm>
+
+<indexterm>
+<primary>options, stap</primary>
+<secondary>Usage</secondary>
+</indexterm>		
+<variablelist>
+
+<indexterm>
+<primary>stap options</primary>
+</indexterm>
+
+<varlistentry>
+	<term>-v</term>
+	<listitem>
+		<para>Makes the output of the SystemTap session more
+		verbose. You can repeat this option (for example, <command>stap
+		-vvv script.stp</command>) to provide more details on the script's execution. This option is particularly useful if you encounter any errors in running the script.</para>
+		
+		<para>For more information about common SystemTap script errors, refer to <xref linkend="errors"/>.</para>
+	</listitem>	
+</varlistentry>	
+	
+<varlistentry>
+	<term>-o <replaceable>filename</replaceable></term>
+	<listitem>
+		<para>Sends the standard output to file (<replaceable>filename</replaceable>).</para>
+	</listitem>	
+</varlistentry>	
+
+<varlistentry>
+	<term>-S <replaceable>size</replaceable>,<replaceable>count</replaceable></term>
+	<listitem>
+	  <para>Limit files to <replaceable>size</replaceable> megabytes and
+	    limit the the number of files kept around to
+	    <replaceable>count</replaceable>. The file names will have a
+	    sequence number suffix. This option implements logrotate operations
+	    for SystemTap.</para>
+	</listitem>
+</varlistentry>
+
+<varlistentry>
+	<term>-x <replaceable>process ID</replaceable></term>
+	<listitem>
+		<para>Sets the SystemTap handler function <command>target()</command> to the specified process ID. For more information about <command>target()</command>, refer to <xref linkend="systemtapscript-functions"/>.</para>
+	</listitem>	
+</varlistentry>
+
+<varlistentry>
+	<term>-c <replaceable>command</replaceable></term>
+	<listitem>
+		<para>Sets the SystemTap handler function <command>target()</command> to the specified command. Note that you must use the full path to the specified command; for example, instead of specifying <command>cp</command>, use <command>/bin/cp</command> (as in <command>stap <replaceable>script</replaceable> -c /bin/cp</command>). For more information about <command>target()</command>, refer to <xref linkend="systemtapscript-functions"/>.</para>
+	</listitem>	
+</varlistentry>	
+<!--	
+<varlistentry>
+	<term></term>
+	<listitem>
+		<para></para>
+	</listitem>	
+</varlistentry>	
+			-->
+<varlistentry>
+	<term>-e '<replaceable>script</replaceable>'</term>
+	<listitem>
+	  <para>Use <command><replaceable>script</replaceable></command>
+	    string rather than a file as input for systemtap translator.</para>
+	</listitem>
+</varlistentry>
+
+<varlistentry>
+	<term>-F</term>
+	<listitem>
+	  <para>Use SystemTap's Flight recorder mode and make the script a
+	  background process. For more information about flight
+	  recorder mode, refer to <xref linkend="flight-recorder"/>.</para>
+	</listitem>
+</varlistentry>
+</variablelist>
+
+<para>You can also instruct <command>stap</command> to run scripts from standard input using the switch <command>-</command>. To illustrate:</para>
+<indexterm>
+	<primary>Usage</primary>
+	<secondary>standard input, running scripts from</secondary>
+</indexterm>
+
+<indexterm>
+	<primary>standard input, running scripts from</primary>
+	<secondary>Usage</secondary>
+</indexterm>
+<indexterm>
+	<primary>running scripts from standard input</primary>
+</indexterm>
+<example id="stdinstap">
+	<title>Running Scripts From Standard Input</title>
+<programlisting>
+echo "probe timer.s(1) {exit()}" | stap -
+</programlisting>
+</example>
+
+<para><xref linkend="stdinstap"/> instructs <command>stap</command> to run the script passed by <command>echo</command> to standard input. Any <command>stap</command> options you wish to use should be inserted before the <command>-</command> switch; for instance, to make the example in <xref linkend="stdinstap"/> more verbose, the command would be:</para>
+
+<para><command>echo "probe timer.s(1) {exit()}" | stap -v -</command></para>
+
+<remark>any other useful options worth noting here for beginners?</remark>
+
+<para>For more information about <command>stap</command>, refer to <command>man stap</command>.</para>
+
+<para>To run SystemTap instrumentation (i.e. the kernel module built from SystemTap scripts during a cross-instrumentation), use <command>staprun</command> instead. For more information about <command>staprun</command> and cross-instrumentation, refer to <xref linkend="cross-compiling"/>.</para>
+
+<note>
+	<title>Note</title>
+	<para>The <command>stap</command> options <command>-v</command> and <command>-o</command> also work for <command>staprun</command>. For more information about <command>staprun</command>, refer to <command>man staprun</command>.</para>
+</note>	
+
+<section id="flight-recorder">
+<title>SystemTap Flight Recorder Mode</title>
+<indexterm>
+<primary>flight recorder mode</primary>
+</indexterm>
+
+<para>
+SystemTap's flight recorder mode allows you to run a SystemTap script
+run for long periods and just focus on recent output. The flight
+recorder mode (the <command>-F</command> option) limits the amount of output
+generated. There are two variations of the flight recorder mode:
+in-memory and file mode. In both cases the SystemTap script runs as a
+background process.
+</para>
+
+<section id="memory-flight-recorder">
+<title>In-memory Flight Recorder</title>
+<indexterm>
+<primary>flight recorder mode</primary>
+<secondary>in-memory mode</secondary>
+</indexterm>
+
+<para>
+When flight recorder mode (the <command>-F</command> option) is used without a
+file name SystemTap uses a buffer in kernel memory to store the output of the
+script. The SystemTap instrumentation module will load and the probes start
+running, the instrumentation will then detach and be put in the background. When
+the interesting event occurs, you can reattach to the instrumentation and see
+the recent output in the memory buffer and any continuing output. The following
+command starts a script using the flight recorder in-memory mode:
+</para>
+
+<screen>
+stap -F iotime.stp 
+</screen>
+
+<para>
+Once the script starts, you will see a message like the following that
+provides the command to reconnect to the running script:
+</para>
+
+<screen>
+Disconnecting from systemtap module.
+To reconnect, type "staprun -A stap_5dd0073edcb1f13f7565d8c343063e68_19556"
+</screen>
+
+<para>
+When the interesting event occurs, you reattach to the currently running script
+and output the recent data in the memory buffer and get continuing output with
+the following command:
+</para>
+
+<screen>
+staprun -A stap_5dd0073edcb1f13f7565d8c343063e68_19556
+</screen>
+
+<para>
+By default the kernel buffer is 1MB in size and it can be increased with the
+<command>-s</command> option specifying the size in megabytes (rounded up to the
+next power over 2) for the buffer. For example <command>-s2</command> on the
+SystemTap command line would specify 2MB for the buffer.
+</para>
+</section>
+
+<section id="file-flight-recorder">
+<title>File Flight Recorder</title>
+<indexterm>
+<primary>flight recorder mode</primary>
+<secondary>file mode</secondary>
+</indexterm>
+
+<para>
+The flight recorder mode can also store data to files. The number and size of
+the files kept is controlled by the <command>-S</command> option followed by two
+numerical arguments separated by a comma. The first argument is the maximum size
+in megabytes for the each output file. The second argument is the number of
+recent files to keep. The file name is specified by the <command>-o</command>
+option followed by the name. SystemTap will add a number suffix to the file name
+to indicate the order of the files. The following will start SystemTap in file
+flight recorder mode with the output going to files named
+<command>/tmp/iotime.log.</command><replaceable>[0-9]+</replaceable> and each
+file 1MB or smaller and keeping latest two files:
+</para>
+
+<screen>
+stap -F -o /tmp/pfaults.log -S 1,2  pfaults.stp 
+</screen>
+
+<para>
+The number printed by the command is the process ID. Sending a SIGTERM to
+the process will shutdown the SystemTap script and stop the data collection. For
+example if the previous command listed the 7590 as the process ID, the following
+command whould shutdown the systemtap script:
+</para>
+
+<screen>
+kill -s SIGTERM 7590
+</screen>
+
+<para>
+Only the most recent two file generated by the script are kept and the older
+files are been removed.  Thus, <command>ls -sh /tmp/pfaults.log.*</command>
+shows the only two files:
+</para>
+
+<screen>
+1020K /tmp/pfaults.log.5    44K /tmp/pfaults.log.6
+</screen>
+
+<para>
+One can look at the highest number file for the latest data, in this case
+/tmp/pfaults.log.6.
+</para>
+
+</section>
+</section>
+	</section>
+
+</chapter>
+

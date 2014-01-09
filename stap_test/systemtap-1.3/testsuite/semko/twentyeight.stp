@@ -1,0 +1,12 @@
+#! stap -p2
+
+# need one of these for each prohibited statistic operation
+
+global x
+
+probe end
+{
+	x <<< 10
+	x++
+}
+

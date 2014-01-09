@@ -1,0 +1,15 @@
+global reads
+probe vfs.read
+{
+	reads[execname()] ++
+}
+probe timer.s(3)
+{
+	printf("=======\n")
+	foreach (count in reads-)
+	if (reads[count] >= 1024)
+		printf("%s : %dkB \n", count, reads[count]/1024)
+	else
+		printf("%s : %dB \n", count, reads[count])
+}
+

@@ -1,0 +1,39 @@
+# function to test error handling of pmap aggregation
+
+set test "pmap_agg_overflow"
+if {![installtest_p]} { untested $test; return }
+
+set pass1 "^ERROR: \[^\r\]*overflow\[^\r\]*\r\n"
+set pass2 "WARNING: Number of errors: 2, skipped probes: 0\r\n"
+set skip_result "^WARNING: This test only applies to smp systems\.\.\.\r\n"
+
+set pass 0
+set unsupported 0
+
+spawn stap -DMAXERRORS=1 -g $srcdir/$subdir/$test.stp
+expect {
+  -timeout 240
+    -re  $pass1 {incr pass; exp_continue}
+    -re  $pass2 {incr pass; exp_continue}
+    -re $skip_result {
+	set unsupported 1
+    }
+    timeout {
+        exec kill -INT -[exp_pid]
+	fail "$test timed out"
+    }
+    eof {}
+    -re "semantic error:" { fail "$test compilation" }
+}
+catch { close }
+wait
+
+if {$pass == 3} {
+    pass $test
+} elseif {$unsupported == 1} {
+    unsupported "$test requires smp"
+} else {
+    fail "$test ($pass)"
+}
+
+

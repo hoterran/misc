@@ -1,0 +1,12 @@
+grapher libraries as needed
+Index: systemtap/grapher/Makefile.am
+===================================================================
+--- systemtap.orig/grapher/Makefile.am	2010-01-21 08:23:45.000000000 +0100
++++ systemtap/grapher/Makefile.am	2010-01-21 09:12:47.556618938 +0100
+@@ -9,5 +9,6 @@
+ stapgraph_CXXFLAGS = $(libglade_CFLAGS) -Wall -Werror
+ stapgraph_SOURCES = grapher.cxx StapParser.cxx Graph.cxx GraphWidget.cxx CairoWidget.cxx GraphStyle.cxx
+ stapgraph_LDADD = $(libglade_LIBS)
++stapgraph_LDFLAGS = -Wl,--as-needed
+ dist_pkgdata_DATA = graph-dialog.glade stap-start.glade processwindow.glade
+ endif

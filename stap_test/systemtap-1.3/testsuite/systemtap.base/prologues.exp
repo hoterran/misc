@@ -1,0 +1,30 @@
+set test "prologues -P"
+if {! [installtest_p]} { untested $test } else {
+    set ok 0
+    spawn stap -P $srcdir/$subdir/prologues.stp
+    expect {
+        -timeout 240
+        -re {read[^\r\n]*\r\n} { incr ok; exp_continue }
+        -re {write[^\r\n]*\r\n} { incr ok; exp_continue }
+        timeout { fail "$test (timeout)" }
+        eof
+    }
+    wait
+    if {$ok > 10} { pass $test } else { fail $test }
+}
+
+set test "prologues no-P"
+if {! [installtest_p]} { untested $test } else {
+    set ok 0
+    spawn stap $srcdir/$subdir/prologues.stp
+    expect {
+        -timeout 240
+        -re {read[^\r\n]*\r\n} { incr ok; exp_continue }
+        -re {write[^\r\n]*\r\n} { incr ok; exp_continue }
+        timeout { fail "$test (timeout)" }
+        eof
+    }
+    wait
+    if {$ok > 10} { pass $test } else { fail $test }
+}
+

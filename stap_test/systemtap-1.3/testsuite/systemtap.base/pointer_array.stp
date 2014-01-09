@@ -1,0 +1,9 @@
+probe syscall.execve
+{
+    if (pid() == target()) {
+        println(user_string($argv[0]))
+        for (i=0; i<9; ++i)
+            printf("%c\n", $argv[0][i])
+        println($argv[0][9])
+    }
+}

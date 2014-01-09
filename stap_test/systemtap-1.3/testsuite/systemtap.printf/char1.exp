@@ -1,0 +1,3 @@
+set test "char1"
+set ::result_string {stapok}
+stap_run2 $srcdir/$subdir/$test.stp

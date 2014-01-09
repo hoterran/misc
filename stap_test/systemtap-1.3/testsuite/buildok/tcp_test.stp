@@ -1,0 +1,41 @@
+#! stap -p4
+global send_bytes, recv_bytes, ports, src_ips, rtos, state, mss, ssthresh, cwnd
+
+function print_report()
+{
+	printf("%d\t%d\t%d\t%s\t%d\t%d\t%d\t%d\t%d\n", 
+        	send_bytes,recv_bytes,ports,src_ips,rtos,mss,ssthresh,cwnd,state);
+}
+
+probe tcp.sendmsg {
+	ports   = inet_get_local_port(sock)
+	src_ips = inet_get_ip_source(sock)
+	rtos    = tcp_get_info_rto(sock)
+}
+
+probe tcp.recvmsg {
+        cwnd     = tcp_get_info_snd_cwnd(sock)
+        mss      = tcp_ts_get_info_rcv_mss(sock)
+        ssthresh = tcp_ts_get_info_snd_ssthresh(sock)
+        state    =  tcp_ts_get_info_state(sock)
+}
+
+probe tcp.sendmsg.return {
+	if (size > 0) {
+		send_bytes += size
+	}
+}
+
+probe tcp.recvmsg.return {
+	if (size > 0) {
+		recv_bytes += size
+	}
+}
+
+probe tcp.disconnect {
+        log("tcp disconnect")
+}
+
+probe timer.ms(2000) {
+	print_report()
+}

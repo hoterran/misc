@@ -1,0 +1,9 @@
+probe kernel.function("*@net/socket.c")
+{
+	printf("pid %d prog %s cpu %d uid %d", pid(), execname(), cpu(), uid())
+}
+
+probe timer.ms(4000)
+{
+	exit()
+}

@@ -1,0 +1,7 @@
+#! stap -p2
+
+# maxactive on a timer probe
+
+probe timer.sec(100).maxactive(3)
+{
+}

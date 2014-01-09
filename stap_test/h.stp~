@@ -1,0 +1,9 @@
+probe kernel.function("*@net/socket.c")
+{
+	printf("%s -> %s\n", thread_indent(1), probefunc())
+}
+
+probe timer.ms(4000)
+{
+	exit()
+}

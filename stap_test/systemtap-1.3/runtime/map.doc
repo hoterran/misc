@@ -1,0 +1,151 @@
+/** @addtogroup maps 
+Implements maps (associative arrays) and lists
+
+Maps may contains up to five keys and one value.  Keys may 64-bit ints (INT64) or
+strings (STRING). Values may be 64-bit ints, strings or statistics (STAT).
+
+In order to efficiently handle maps with up to five keys of any combination
+of int64s and strings, the functions to create maps and set and get values
+are all generated as needed.  To do this, you must simply do some defines and 
+include the proper files.  For example, if you need a map with 3 keys, int64, int64, and string
+that stores strings, you need to do
+
+@code
+#define VALUE_TYPE STRING
+#define KEY1_TYPE INT64
+#define KEY2_TYPE INT64
+#define KEY3_TYPE STRING
+#include "map-gen.c"
+@endcode
+
+Repeat the above lines for any other needed maps.
+
+In the above example, maps are created with _stp_map_new_iiss(). All the
+generated functions start with a base name (such as _stp_map_new) and add the key and value types where types
+are abbreviated by "i" (int64), "s" (string) and "x" (statistics).
+
+To continue the provious example,
+
+@code
+//** create a map with a max of 100 elements containing strings **//
+MAP mymap = _stp_map_new_iiss(100);
+
+//** mymap[100, 300, "Ohio"] = "Columbus" **//
+_stp_map_set_iiss (mymap, 100, 300, "Ohio", "Columbus");
+@endcode
+
+All elements have a default value of 0 (or NULL).  Elements are only saved to the map when their value is set
+to something nonzero.  Setting a map node to 0 (or "") deletes it.
+
+For good examples, see the runtime/tests/maps directory or the example probes.
+@{ */
+
+#include "map.h"
+
+/** Create a new map.
+* The exact name of this function depends on the defined key types.
+* See the map overview.
+* This functions accepts a variable number of arguments depending on 
+* the value of valtype.  
+* @param num_entries The maximum number of entries. Space for these
+* entries are allocated when the SystemTap module is loaded.
+* @returns A MAP pointer. NULL on error.
+*/
+MAP _stp_map_new_[is]+ (int num_entries){}
+
+/** Create a new map with values of stats with log histograms.
+* When the histogram type is HIST_LOG, the following parameters are expected.
+* @param num_entries The maximum number of entries. Space for these
+* entries are allocated when the SystemTap module is loaded.
+* @param buckets Number of buckets in the histogram. The maximum values
+* for each bucket are 0, 1, 2, 4, 8, 16, 32, ... So if buckets is 8 the
+* histogram will go from 0 - 64.
+*/
+MAP _stp_map_new_([is]+)x (int num_entries, HIST_LOG, int buckets){}
+
+/** Create a new map with values of stats with linear histograms.
+* When the histogram type is HIST_LOG, the following parameters are expected.
+* @param num_entries The maximum number of entries. Space for these
+* entries are allocated when the SystemTap module is loaded.
+* @param start The starting value of the histogram.
+* @param stop The stopping value of the histogram.
+* @param interval The interval.
+* @todo Check for reasonable values.
+*/
+MAP _stp_map_new_([is]+)x (int num_entries, HIST_LINEAR, int start, int stop, int interval) {}
+
+/** Set a node's value.
+ * This sets a node's value to either an int64 or string.  If the map
+ * is storing statistics, the statistics are cleared and the value is added to it.
+ *
+ * If the value is 0 or "", the node is deleted, if it exists.
+ *
+ * LOCKING: You must hold a writelock on the map when calling this.
+ *
+ * @param map
+ * @param val new value
+ * @returns \li \c 0 on success \li \c -1 on overflow \li \c -2 on bad map or key
+ */
+int _stp_map_set_([is]+)x (MAP map, <VALTYPE> val) {}
+
+/** Adds to a node's value.
+ * For INT64 maps, this adds to the node's value. 
+ *
+ * For STRING maps, this concatenates to the node's value. 
+ *
+ * For STAT maps, this adds to the node's accumulated stats.
+ *
+ * If no node with the proper key exists, it is created first.
+ *
+ * LOCKING: You must hold a writelock on the map when calling this.
+ *
+ * @param map
+ * @param val value to append
+ * @returns \li \c 0 on success \li \c -1 on overflow \li \c -2 on bad map or key
+ */
+int _stp_map_add_([is]+)x (MAP map, <VALTYPE> val) {}
+
+/** Gets a node's value.
+ * This looks up a node given the specified keys and returns its value.
+ * If the node doesn't exist, it returns 0 or "" (depending on type).
+ *
+ * LOCKING: You must get a readlock on the map before calling this.
+ * Release it when finished processing the returned value.
+ *
+ * @param map
+ * @param key
+ * @returns Depending on VALTYPE, returns \li \c int64_t value
+ * \li \c char *value or \li \c stat *value.
+ */
+<VALTYPE> _stp_map_get_([is]+)x (MAP map, <KEY1TYPE> key1,..., <KEYNTYPE> keyn) {}
+
+/** @} end of addtogroup */
+
+/** @page format_string Format Strings
+Format strings for maps and stats use a special format string. Be careful 
+not to confuse it with a printf-style format.
+@verbatim
+--- KEYS and RESULTS ---
+%p - address (hex padded to sizeof(void *))
+%P - symbolic address
+%x - hex int64
+%X - HEX int64
+%d - decimal int64
+%s - string
+--- STATS ---
+%m - min
+%M - max
+%A - avg
+%S - sum
+%H - histogram
+%C - count
+--- MISC ---
+%% - print '%'
+--- PER_CPU ---
+%c - CPU number
+@endverbatim
+When printing map keys, format types are preceeded by a single-digit number 
+indicating the key number. For example, "%1d,%2s" prints key 1 as an int64 followed by
+key 2 as a string. Here's a good example from the test files.
+@include map_format.c
+*/

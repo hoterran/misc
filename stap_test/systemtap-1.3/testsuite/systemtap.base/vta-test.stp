@@ -1,0 +1,1 @@
+probe process(@1).mark("t?") { printf("i: 0x%x\n", $c->i) }

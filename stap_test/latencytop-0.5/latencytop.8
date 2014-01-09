@@ -1,0 +1,58 @@
+.TH LATENCYTOP 8 "November 9, 2008"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+latencytop \- a tool for developers to visualize system latencies
+.SH SYNOPSIS
+.B latencytop
+.RI [ --unknown ] " " [ processes ... ]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B latencytop
+command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBlatencytop\fP is a Linux* tool for software developers (both kernel
+and userspace), aimed at identifying where in the system latency is
+happening, and what kind of operation/action is causing the latency to
+happen so that the code can be changed to avoid the worst latency
+hiccups.
+.PP
+\fBLatencyTOP\fP focuses on the cases where the applications want to
+run and execute useful code, but there's some resource that's not
+currently available (and the kernel then blocks the process). This is
+done both on a system level and on a per process level, so that you can
+see what's happening to the system, and which process is suffering
+and/or causing the delays. 
+
+You can walk the processes by using the cursor keys. If you press \fBs\fP 
+followed by a letter, then only active processes starting with that lettter
+are displayed and walked. If you press \fBs\fP followed by \fB0\fP then
+that filter is reset.
+
+If you press \fBf\fP then \fBLatencyTop\fP displays a list of all processes
+currently waiting for an \fBfsync\fP to finish. Pressing \fBf\fP again
+returns you to the normal operating mode of \fBLatencyTop\fP.
+
+.SH SEE ALSO
+.BR powertop (1)
+.br
+The program is more fully described at http://www.latencytop.org
+.SH AUTHOR
+latencytop was written by Arjan van de Ven <arjan@linux.intel.com>.
+.PP
+This manual page was written by Giacomo Catenazzi <cate@debian.org>,
+for the Debian project (but may be used by others).
+

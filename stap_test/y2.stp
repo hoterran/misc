@@ -1,0 +1,6 @@
+probe syscall.open
+{
+	printf ("%s(%d) open\n", execname(), pid())
+	exit()
+}
+

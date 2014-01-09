@@ -1,0 +1,177 @@
+// User context unwind tapset
+// Copyright (C) 2009, 2010 Red Hat Inc.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+
+%{
+#ifndef STP_NEED_UNWIND_DATA
+#define STP_NEED_UNWIND_DATA 1
+#endif
+#ifndef STP_NEED_SYMBOL_DATA
+#define STP_NEED_SYMBOL_DATA 1
+#endif
+%}
+
+/**
+ * sfunction print_ubacktrace - Print stack back trace for current task. EXPERIMENTAL!
+ *
+ *  Equivalent to print_ustack(ubacktrace()), 
+ *  except that deeper stack nesting may be supported.  Return nothing.
+ */
+function print_ubacktrace () %{
+/* unprivileged */ /* pragma:uprobes */ /* pragma:vma */
+  assert_is_myproc();
+
+  /* use task_pt_regs, CONTEXT->regs might be kernel regs, or not set. */
+  if (current->mm)
+    {
+      struct pt_regs *uregs;
+      int valid;
+      if (CONTEXT->regs && (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+	{
+	  uregs = CONTEXT->regs;
+	  valid = 1;
+	}
+      else
+	{
+	  uregs = task_pt_regs(current);
+	  valid = _stp_task_pt_regs_valid(current, uregs);
+	}
+
+      if (uregs)
+	{
+	  _stp_stack_print(uregs, _STP_SYM_FULL, CONTEXT->pi, MAXTRACE,
+			   current, CONTEXT->ri, valid);
+	  return;
+	}
+    }
+
+    _stp_printf("<no ubacktrace: %s>\n", CONTEXT->probe_point);
+%}
+
+/**
+ * sfunction sprint_ubacktrace - Return stack back trace for current task as string. EXPERIMENTAL!
+ *
+ * Returns a simple backtrace for the current task. One line per
+ * address. Includes the symbol name (or hex address if symbol
+ * couldn't be resolved) and module name (if found). Includes the
+ * offset from the start of the function if found, otherwise the
+ * offset will be added to the module (if found, between
+ * brackets). Returns the backtrace as string (each line terminated by
+ * a newline character).  Note that the returned stack will be
+ * truncated to MAXSTRINGLEN, to print fuller and richer stacks use
+ * print_ubacktrace(). Equivalent to sprint_ustack(ubacktrace()),
+ * but more efficient (no need to translate between hex strings and
+ * final backtrace string).
+ */
+function sprint_ubacktrace () %{
+/* unprivileged */ /* pragma:uprobes */ /* pragma:vma */
+  assert_is_myproc();
+
+  /* use task_pt_regs, CONTEXT->regs might be kernel regs, or not set. */
+  if (current->mm)
+    {
+      struct pt_regs *uregs;
+      int valid;
+      if (CONTEXT->regs && (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+	{
+	  uregs = CONTEXT->regs;
+	  valid = 1;
+	}
+      else
+	{
+	  uregs = task_pt_regs(current);
+	  valid = _stp_task_pt_regs_valid(current, uregs);
+	}
+
+      if (uregs)
+	{
+	  _stp_stack_sprint (THIS->__retvalue, MAXSTRINGLEN, _STP_SYM_SIMPLE,
+			     uregs, CONTEXT->pi, MAXTRACE,
+			     current, CONTEXT->ri, valid);
+	  return;
+	}
+    }
+
+    strlcpy (THIS->__retvalue, "", MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction print_ubacktrace_brief- Print stack back trace for current task. EXPERIMENTAL!
+ *
+ *  Equivalent to print_ubacktrace(), but output for each symbol is
+ *  shorter (just name and offset, or just the hex address of no symbol could be found).
+ */
+function print_ubacktrace_brief () %{
+/* unprivileged */ /* pragma:uprobes */ /* pragma:vma */
+  assert_is_myproc();
+
+  /* use task_pt_regs, CONTEXT->regs might be kernel regs, or not set. */
+  if (current->mm)
+    {
+      struct pt_regs *uregs;
+      int valid;
+      if (CONTEXT->regs && (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+	{
+	  uregs = CONTEXT->regs;
+	  valid = 1;
+	}
+      else
+	{
+	  uregs = task_pt_regs(current);
+	  valid = _stp_task_pt_regs_valid(current, uregs);
+	}
+
+      if (uregs)
+	{
+	  _stp_stack_print(uregs, _STP_SYM_BRIEF, CONTEXT->pi, MAXTRACE,
+			   current, CONTEXT->ri, valid);
+	  return;
+	}
+    }
+
+    _stp_printf("<no ubacktrace: %s>\n", CONTEXT->probe_point);
+%}
+
+/**
+ * sfunction ubacktrace - Hex backtrace of current task stack. EXPERIMENTAL!
+ *
+ *  Return a string of hex addresses that are a backtrace of the 
+ *  stack of the current task.  Output may be truncated as per maximum
+ *  string length. Returns empty string when current probe point cannot
+ *  determine user backtrace.
+ */
+function ubacktrace:string () %{
+/* pure */ /* unprivileged */ /* pragma:uprobes */ /* pragma:vma */
+  assert_is_myproc();
+
+  /* use task_pt_regs, CONTEXT->regs might be kernel regs, or not set. */
+  if (current->mm)
+    {
+      struct pt_regs *uregs;
+      int valid;
+      if (CONTEXT->regs && (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+	{
+	  uregs = CONTEXT->regs;
+	  valid = 1;
+	}
+      else
+	{
+	  uregs = task_pt_regs(current);
+	  valid = _stp_task_pt_regs_valid(current, uregs);
+	}
+
+      if (uregs)
+	{
+	  _stp_stack_sprint (THIS->__retvalue, MAXSTRINGLEN, _STP_SYM_NONE,
+			     uregs, CONTEXT->pi, MAXTRACE,
+			     current, CONTEXT->ri, valid);
+	  return;
+	}
+    }
+
+    strlcpy (THIS->__retvalue, "", MAXSTRINGLEN);
+%}

@@ -1,0 +1,44 @@
+#! /bin/bash
+check_error() { if test $1 != 0; then echo $2; exit $1; fi }
+
+# uname -r can produce different kinds of output:
+# 2.6.32-30.el6.x86_64 (no variant, but including ".arch")
+# 2.6.18-194.3.1.el5debug ("variant", without dot, no arch)
+# 2.6.33.4-95.fc13.i686.PAE (".arch.variant", two dots)
+if [ "$#" -lt 1 ]; then
+    UNAME=`uname -r` # determine the kernel running on the machine
+else
+    UNAME=$1 #user passed in uname value
+fi
+UNAME=`echo $UNAME | sed "s/ //"` #strip out any whitespace
+KERNEL="kernel"
+for VARIANT in debug kdump PAE xen; do
+  # strip out ".variant" or else "variant" at end.
+  TMP=`echo $UNAME | sed s/\\\\.$VARIANT\$// | sed s/$VARIANT\$//`
+  if [ "$TMP" != "$UNAME" ]; then
+      UNAME=$TMP; KERNEL="kernel-$VARIANT"
+  fi
+done
+KERN_ARCH=`uname -m`
+KERN_REV=`echo $UNAME | sed s/.$KERN_ARCH//` # strip arch from uname
+CANDIDATES="$KERNEL-$KERN_REV.$KERN_ARCH \
+  $KERNEL-devel-$KERN_REV.$KERN_ARCH \
+  $KERNEL-debuginfo-$KERN_REV.$KERN_ARCH"
+NEEDED=`rpm --qf "%{name}-%{version}-%{release}.%{arch}\n" \
+    -q $CANDIDATES | grep "is not installed" | awk '{print $2}'`
+if [ "$NEEDED" != "" ]; then
+    echo -e "Need to install the following packages:\n$NEEDED"
+    if [ `id -u` = "0" ]; then #attempt download and install
+        DIR=`mktemp -d` || exit 1
+        if [ ! -x /usr/bin/yumdownloader ]; then
+            echo "Need to first install yum-utils for yumdownloader"
+            yum install -y yum-utils
+        fi
+        yumdownloader --enablerepo="*debuginfo*" $NEEDED --destdir=$DIR \
+                      --resolve
+        check_error $? "problem downloading rpm(s) $NEEDED"
+        rpm --force -ivh $DIR/*.rpm
+        check_error $? "problem installing rpm(s) $NEEDED"
+        rm -r $DIR #cleanup
+    fi
+fi

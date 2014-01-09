@@ -1,0 +1,3281 @@
+cscope 15 $HOME/Projects/misc/zk/test -q 0000000126 0000017853
+	@aexists_test.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+11 
+	$w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+12 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+14 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+15 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+16 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+17 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+18 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+21 
+	}
+}
+
+24 
+	$dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+26 
+tùimes
+[40];
+
+27 
+tmtimes
+[40];
+
+28 
+time_t
+ 
+tùime
+;
+
+29 
+time_t
+ 
+tmtime
+;
+
+31 ià(!
+¡©
+) {
+
+32 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+35 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+36 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+38 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+39 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+41 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+45 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+46 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+47 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+48 
+¡©
+->
+•hem”®OwÃr
+);
+
+49 
+	}
+}
+
+52 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+53 cÚ¡ *
+d©a
+)
+
+55 
+	`´štf
+("com¶‘iÚ %d \n", 
+rc
+);
+
+56 
+	}
+}
+
+59 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+61 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+62 
+timeout
+ = 30000;
+
+64 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+65 
+zhªdË_t
+ *
+zkhªdË
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+66 
+w©ch”_glob®
+, 
+timeout
+, 0, "watcher_global", 0);
+
+68 ià(
+zkhªdË
+ =ğ
+NULL
+) {
+
+69 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+70 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+73 
+»t
+ = 
+	`zoo_«xi¡s
+(
+zkhªdË
+, "/£rv”", 1, 
+com¶‘iÚ
+, "aaa");
+
+75 ià(
+»t
+è{ 
+	`årštf
+(
+¡d”r
+, "Error %d for %s\n",„et, "aexists");
+
+78 
+	`g‘ch¬
+();
+
+80 
+	`zook“³r_şo£
+(
+zkhªdË
+);
+
+83 
+	}
+}
+
+	@awexists_test.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+11 
+	$w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+12 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+14 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+15 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+16 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+17 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+18 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+21 
+	}
+}
+
+24 
+	$dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+26 
+tùimes
+[40];
+
+27 
+tmtimes
+[40];
+
+28 
+time_t
+ 
+tùime
+;
+
+29 
+time_t
+ 
+tmtime
+;
+
+31 ià(!
+¡©
+) {
+
+32 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+35 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+36 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+38 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+39 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+41 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+45 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+46 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+47 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+48 
+¡©
+->
+•hem”®OwÃr
+);
+
+49 
+	}
+}
+
+52 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+53 cÚ¡ *
+d©a
+)
+
+55 
+	`´štf
+("com¶‘iÚ %d\n", 
+rc
+);
+
+56 
+	}
+}
+
+58 
+St
+ 
+	gs
+;
+
+61 
+	$w©ch”_awexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+62 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+64 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+65 ià(
+ty³
+ =ğ
+ZOO_DELETED_EVENT
+) {
+
+66 
+	`´štf
+(" delete \n");
+
+67 } ià(
+ty³
+ =ğ
+ZOO_CREATED_EVENT
+) {
+
+68 
+	`´štf
+(" create \n");
+
+72 
+»t
+ = 
+	`zoo_awexi¡s
+(
+zh
+, "/£rv”", 
+w©ch”_awexi¡s
+,
+
+73 "w©ch_awexi¡s", 
+com¶‘iÚ
+, "test");
+
+74 
+	}
+}
+
+77 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+79 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+80 
+timeout
+ = 30000;
+
+82 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+83 
+zhªdË_t
+ *
+zkhªdË
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+84 
+w©ch”_glob®
+, 
+timeout
+, 0, "watcher_global", 0);
+
+86 ià(
+zkhªdË
+ =ğ
+NULL
+) {
+
+87 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+88 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+103 
+»t
+ = 
+	`zoo_awexi¡s
+(
+zkhªdË
+, "/£rv”", 
+w©ch”_awexi¡s
+,
+
+104 "w©ch_awexi¡s", 
+com¶‘iÚ
+, "test");
+
+106 ià(
+»t
+è{ 
+	`årštf
+(
+¡d”r
+, "Error %d for %s\n",„et, "aexists");
+
+109 
+	`g‘ch¬
+();
+
+111 
+	`zook“³r_şo£
+(
+zkhªdË
+);
+
+114 
+	}
+}
+
+	@monitor.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+10 
+Qu”yS”v”d_w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+11 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+);
+
+12 
+Qu”yS”v”d_¡©_com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+13 cÚ¡ *
+d©a
+);
+
+14 
+Qu”yS”v”d_w©ch”_awexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+15 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+);
+
+16 
+Qu”yS”v”d_awexi¡s
+(
+zhªdË_t
+ *
+zh
+);
+
+19 
+	$Qu”yS”v”d_w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+20 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+22 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+23 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+24 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+25 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+26 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+29 
+	}
+}
+
+32 
+	$Qu”yS”v”d_dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+34 
+tùimes
+[40];
+
+35 
+tmtimes
+[40];
+
+36 
+time_t
+ 
+tùime
+;
+
+37 
+time_t
+ 
+tmtime
+;
+
+39 ià(!
+¡©
+) {
+
+40 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+43 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+44 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+46 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+47 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+49 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+53 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+54 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+55 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+56 
+¡©
+->
+•hem”®OwÃr
+);
+
+57 
+	}
+}
+
+60 
+	$Qu”yS”v”d_¡©_com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+61 cÚ¡ *
+d©a
+)
+
+63 
+	}
+}
+
+66 
+	$Qu”yS”v”d_w©ch”_awexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+67 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+69 
+	`Qu”yS”v”d_awexi¡s
+(
+zh
+);
+
+71 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+72 ià(
+ty³
+ =ğ
+ZOO_DELETED_EVENT
+) {
+
+73 
+	`´štf
+("server gone‡way,„estart‚ow...\n");
+
+74 
+pid_t
+ 
+pid
+ = 
+	`fÜk
+();
+
+75 ià(
+pid
+ < 0) {
+
+76 
+	`årštf
+(
+¡d”r
+, "Error when doing fork.\n");
+
+77 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+79 ià(
+pid
+ == 0) {
+
+81 
+	`exeş
+("./£rv”", "£rv”", 
+NULL
+);
+
+82 
+	`ex™
+(
+EXIT_SUCCESS
+);
+
+84 
+	`¦“p
+(1);
+
+85 } ià(
+ty³
+ =ğ
+ZOO_CREATED_EVENT
+) {
+
+86 
+	`´štf
+("server started...\n");
+
+90 
+	}
+}
+
+93 
+	$Qu”yS”v”d_awexi¡s
+(
+zhªdË_t
+ *
+zh
+)
+
+95 
+»t
+ =
+
+96 
+	`zoo_awexi¡s
+(
+zh
+, "/server",
+
+97 
+Qu”yS”v”d_w©ch”_awexi¡s
+,
+
+99 
+Qu”yS”v”d_¡©_com¶‘iÚ
+,
+
+101 ià(
+»t
+) {
+
+102 
+	`årštf
+(
+¡d”r
+, "E¼Ü %d fÜ %s\n", 
+»t
+, "aexists");
+
+103 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+105 
+	}
+}
+
+108 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+110 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+111 
+timeout
+ = 30000;
+
+113 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+114 
+zhªdË_t
+ *
+zkhªdË
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+115 
+Qu”yS”v”d_w©ch”_glob®
+,
+
+116 
+timeout
+,
+
+118 ià(
+zkhªdË
+ =ğ
+NULL
+) {
+
+119 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+120 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+123 
+	`Qu”yS”v”d_awexi¡s
+(
+zkhªdË
+);
+
+125 
+	`g‘ch¬
+();
+
+127 
+	`zook“³r_şo£
+(
+zkhªdË
+);
+
+130 
+	}
+}
+
+	@rry1.c
+
+1 
+	~<¡ršg.h
+>
+
+2 
+	~<”ºo.h
+>
+
+4 
+	~<zook“³r/zook“³r.h
+>
+
+6 
+zhªdË_t
+ *
+	gzh
+;
+
+12 *
+	$foo_g‘_û¹_Úû
+(* 
+id
+è{  0; 
+	}
+}
+
+16 
+	$w©ch”
+(
+zhªdË_t
+ *
+zzh
+, 
+ty³
+, 
+¡©e
+, cÚ¡ *
+·th
+,
+
+17 *
+w©ch”Ctx
+è{
+	}
+}
+
+19 
+	$maš
+(
+¬gc
+, 
+¬gv
+) {
+
+20 
+bufãr
+[512];
+
+21 
+p
+[2048];
+
+22 *
+û¹
+=0;
+
+23 
+­pId
+[64];
+
+25 
+	`¡rıy
+(
+­pId
+, "example.foo_test");
+
+26 
+û¹
+ = 
+	`foo_g‘_û¹_Úû
+(
+­pId
+);
+
+27 if(
+û¹
+!=0) {
+
+28 
+	`årštf
+(
+¡d”r
+,
+
+29 "C”tifiÿ‹ fÜ‡µid [%s] i [%s]\n",
+­pId
+,
+û¹
+);
+
+30 
+	`¡ºıy
+(
+p
+,
+û¹
+, (p)-1);
+
+31 
+	`ä“
+(
+û¹
+);
+
+33 
+	`årštf
+(
+¡d”r
+, "C”tifiÿ‹ fÜ‡µid [%s]‚Ù found\n",
+­pId
+);
+
+34 
+	`¡rıy
+(
+p
+, "dummy");
+
+37 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_DEBUG
+);
+
+39 
+zh
+ = 
+	`zook“³r_š™
+("127.0.0.1:2181", 
+w©ch”
+, 10000, 0, 0, 0);
+
+40 ià(!
+zh
+) {
+
+41  
+”ºo
+;
+
+43 if(
+	`zoo_add_auth
+(
+zh
+,"foo",
+p
+,
+	`¡¾’
+Õ),0,0)!=
+ZOK
+)
+
+46 
+ACL
+ 
+CREATE_ONLY_ACL
+[] = {{
+ZOO_PERM_CREATE
+, 
+ZOO_AUTH_IDS
+}};
+
+47 
+ACL_veùÜ
+ 
+CREATE_ONLY
+ = {1, 
+CREATE_ONLY_ACL
+};
+
+48 
+rc
+ = 
+	`zoo_ü—‹
+(
+zh
+,"/xyz","v®ue", 5, &
+CREATE_ONLY
+, 
+ZOO_EPHEMERAL
+,
+
+49 
+bufãr
+, (buffer)-1);
+
+52 
+buæ’
+ğ(
+bufãr
+);
+
+53 
+St
+ 
+¡©
+;
+
+54 
+rc
+ = 
+	`zoo_g‘
+(
+zh
+, "/xyz", 0, 
+bufãr
+, &
+buæ’
+, &
+¡©
+);
+
+55 ià(
+rc
+) {
+
+56 
+	`årštf
+(
+¡d”r
+, "E¼Ü %d fÜ %d\n", 
+rc
+, 
+__LINE__
+);
+
+59 
+	`zook“³r_şo£
+(
+zh
+);
+
+61 
+	}
+}
+
+	@server.c
+
+1 
+	~<¡dboŞ.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<zook“³r/zook“³r.h
+>
+
+6 
+	~<zook“³r/zook“³r_log.h
+>
+
+8 
+	$w©ch”_g
+(
+zhªdË_t
+* 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+9 cÚ¡ * 
+·th
+, * 
+w©ch”Ctx
+)
+
+11 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+12 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+13 
+	`´štf
+(" Connectedo zookeeper service successfully!\n");
+
+14 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+15 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+18 
+	}
+}
+
+20 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ *
+Çme
+, cÚ¡ *
+d©a
+)
+
+22 
+	`årštf
+(
+¡d”r
+, "[%s]:„øğ%d\n", (*)(
+d©a
+==0?"nuÎ":d©a), 
+rc
+);
+
+24 ià(!
+rc
+) {
+
+26 
+	`årštf
+(
+¡d”r
+, "\Šamğ%s\n", 
+Çme
+);
+
+28 
+	}
+}
+
+30 
+	$acû±_qu”y
+()
+
+32 
+	`´štf
+("server is„unning...\n");
+
+33 
+	}
+}
+
+35 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+38 cÚ¡ * 
+ho¡
+ = "127.0.0.1:2181";
+
+39 *
+d©a
+ = "alive";
+
+42 
+timeout
+ = 30000;
+
+44 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+45 
+zhªdË_t
+* 
+zkhªdË
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+46 
+w©ch”_g
+, 
+timeout
+, 0, "hello zookeeper.", 0);
+
+47 ià(
+zkhªdË
+ =ğ
+NULL
+) {
+
+48 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+49 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+52 
+»t
+ = 
+	`zoo_aü—‹
+(
+zkhªdË
+, "/£rv”", 
+d©a
+, 
+	`¡¾’
+(data),
+
+53 &
+ZOO_OPEN_ACL_UNSAFE
+, 
+ZOO_EPHEMERAL
+,
+
+54 
+com¶‘iÚ
+, "zoo_acreate");
+
+55 ià(
+»t
+) {
+
+56 
+	`årštf
+(
+¡d”r
+, "E¼Ü %d fÜ %s\n", 
+»t
+, "acreate");
+
+57 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+62 
+	`acû±_qu”y
+();
+
+63 
+	`¦“p
+(5);
+
+64 } 
+çl£
+);
+
+66 
+	`zook“³r_şo£
+(
+zkhªdË
+);
+
+67 
+	}
+}
+
+	@sync_test.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+11 
+	$w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+12 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+14 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+15 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+16 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+17 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+18 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+21 
+	}
+}
+
+24 
+	$dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+26 
+tùimes
+[40];
+
+27 
+tmtimes
+[40];
+
+28 
+time_t
+ 
+tùime
+;
+
+29 
+time_t
+ 
+tmtime
+;
+
+31 ià(!
+¡©
+) {
+
+32 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+35 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+36 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+38 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+39 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+41 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+45 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+46 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+47 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+48 
+¡©
+->
+•hem”®OwÃr
+);
+
+49 
+	}
+}
+
+52 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+53 cÚ¡ *
+d©a
+)
+
+55 
+	`´štf
+("completion\n");
+
+56 
+	}
+}
+
+58 
+St
+ 
+	gs
+;
+
+61 
+	$w©ch”_wexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+62 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+64 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+65 ià(
+ty³
+ =ğ
+ZOO_DELETED_EVENT
+) {
+
+66 
+	`´štf
+(" delete \n");
+
+67 } ià(
+ty³
+ =ğ
+ZOO_CREATED_EVENT
+) {
+
+68 
+	`´štf
+(" create \n");
+
+72 
+»t
+ = 
+	`zoo_wexi¡s
+(
+zh
+, "/£rv”", 
+w©ch”_wexi¡s
+,
+
+73 "w©ch_wexi¡s", &
+s
+);
+
+74 
+	}
+}
+
+77 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+79 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+80 
+timeout
+ = 30000;
+
+82 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+83 
+zhªdË_t
+ *
+zk
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+84 
+w©ch”_glob®
+, 
+timeout
+, 0, "watcher_global", 0);
+
+86 ià(
+zk
+ =ğ
+NULL
+) {
+
+87 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+88 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+91 
+buff
+[100];
+
+92 
+Ën
+ = (
+buff
+);
+
+93 
+St
+ 
+s
+;
+
+95 
+»t
+;
+
+96 *
+d©a
+ = "test";
+
+97 
+d©aL’
+ = 
+	`¡¾’
+(
+d©a
+);
+
+99 
+»t
+ = 
+	`zoo_exi¡s
+(
+zk
+, "/d©a1", 0, &
+s
+);
+
+101 ià(!
+»t
+) {
+
+103 
+	`´štf
+("exi¡ %d %d\n", 
+s
+.
+v”siÚ
+, s.
+d©aL’gth
+);
+
+104 
+»t
+ = 
+	`zoo_d–‘e
+(
+zk
+, "/d©a1", 
+s
+.
+v”siÚ
+);
+
+106 ià(
+»t
+) {
+
+107 
+	`´štf
+("zoo_d–‘çu» %d\n", 
+»t
+);
+
+111 
+»t
+ = 
+	`zoo_ü—‹
+(
+zk
+, "/d©a1", 
+d©a
+, 
+d©aL’
+, &
+ZOO_OPEN_ACL_UNSAFE
+, 0, 
+buff
+, 
+Ën
+ - 1);
+
+113 ià(!
+»t
+) {
+
+114 
+	`´štf
+("zoo_ü—‹ {%s} \n", 
+buff
+);
+
+116 
+	`´štf
+("zoo_ü—‹ fau» {%d} \n", 
+»t
+);
+
+119 
+»t
+ = 
+	`zoo_g‘
+(
+zk
+, "/d©a1", 0, 
+buff
+, &
+Ën
+, &
+s
+);
+
+121 *
+¡r
+ = 
+	`¡ºdup
+(
+buff
+, 
+Ën
+);
+
+122 ià(!
+»t
+) {
+
+123 
+	`´štf
+("zoo_g‘ %s\n", 
+¡r
+);
+
+126 
+d©a
+ = "dddddd";
+
+127 
+d©aL’
+ = 
+	`¡¾’
+(
+d©a
+);
+
+129 
+»t
+ = 
+	`zoo_£t
+(
+zk
+, "/d©a1", 
+d©a
+, 
+d©aL’
+, 
+s
+.
+v”siÚ
+);
+
+131 ià(
+»t
+) {
+
+132 
+	`´štf
+("zoo_£ˆçu» %s\n", 
+¡r
+);
+
+135 
+»t
+ = 
+	`zoo_ü—‹
+(
+zk
+, "/d©a1/d©a2", 
+d©a
+, 
+d©aL’
+, &
+ZOO_OPEN_ACL_UNSAFE
+, 0, 
+buff
+, 
+Ën
+ - 1);
+
+137 ià(
+»t
+) {
+
+138 
+	`´štf
+("zoo_ü—‹ fau» %s\n", 
+¡r
+);
+
+141 
+SŒšg_veùÜ
+ 
+¡ršgs
+;
+
+143 
+»t
+ = 
+	`zoo_g‘_chd»n
+(
+zk
+, "/", 0, &
+¡ršgs
+);
+
+145 ià(!
+»t
+) {
+
+146 
+i
+;
+
+147 
+i
+ = 0; i < 
+¡ršgs
+.
+couÁ
+; i++) {
+
+148 
+	`´štf
+("zoo_g‘_chd»À%d %s\n", 
+i
+, 
+¡ršgs
+.
+d©a
+[i]);
+
+152 
+	`zook“³r_şo£
+(
+zk
+);
+
+155 
+	}
+}
+
+	@sync_test2.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+11 
+	$w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+12 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+14 
+	`´štf
+("%s-%d-%d", 
+·th
+, 
+ty³
+, 
+¡©e
+);
+
+16 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+17 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+18 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+19 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+20 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+23 
+	}
+}
+
+26 
+	$dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+28 
+tùimes
+[40];
+
+29 
+tmtimes
+[40];
+
+30 
+time_t
+ 
+tùime
+;
+
+31 
+time_t
+ 
+tmtime
+;
+
+33 ià(!
+¡©
+) {
+
+34 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+37 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+38 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+40 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+41 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+43 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+47 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+48 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+49 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+50 
+¡©
+->
+•hem”®OwÃr
+);
+
+51 
+	}
+}
+
+54 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+55 cÚ¡ *
+d©a
+)
+
+57 
+	`´štf
+("completion\n");
+
+58 
+	}
+}
+
+60 
+St
+ 
+	gs
+;
+
+63 
+	$w©ch”_wexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+64 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+66 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+67 ià(
+ty³
+ =ğ
+ZOO_DELETED_EVENT
+) {
+
+68 
+	`´štf
+(" delete \n");
+
+69 } ià(
+ty³
+ =ğ
+ZOO_CREATED_EVENT
+) {
+
+70 
+	`´štf
+(" create \n");
+
+74 
+»t
+ = 
+	`zoo_wexi¡s
+(
+zh
+, "/£rv”", 
+w©ch”_wexi¡s
+,
+
+75 "w©ch_wexi¡s", &
+s
+);
+
+76 
+	}
+}
+
+78 
+	$g‘_w©ch”
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+79 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+81 
+zhªdË_t
+ *
+zk
+ = (zhªdË_t*è
+w©ch”Ctx
+;
+
+83 
+	`´štf
+("% %d %d\n", 
+·th
+, 
+¡©e
+, 
+ty³
+);
+
+85 
+buff
+[100];
+
+86 
+Ën
+ = (
+buff
+);
+
+87 
+St
+ 
+s
+;
+
+88 
+»t
+;
+
+90 
+»t
+ = 
+	`zoo_wg‘
+(
+zk
+, "/d©a1", 
+g‘_w©ch”
+, zk, 
+buff
+, &
+Ën
+, &
+s
+);
+
+92 *
+¡r
+ = 
+	`¡ºdup
+(
+buff
+, 
+Ën
+);
+
+93 ià(!
+»t
+) {
+
+94 
+	`´štf
+("zoo_wg‘ %s\n", 
+¡r
+);
+
+96 
+	}
+}
+
+99 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+101 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+102 
+timeout
+ = 30000;
+
+104 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+105 
+zhªdË_t
+ *
+zk
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+106 
+w©ch”_glob®
+, 
+timeout
+, 0, "watcher_global", 0);
+
+108 ià(
+zk
+ =ğ
+NULL
+) {
+
+109 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+110 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+113 
+buff
+[100];
+
+114 
+Ën
+ = (
+buff
+);
+
+115 
+St
+ 
+s
+;
+
+117 
+»t
+;
+
+118 *
+d©a
+ = "test";
+
+119 
+d©aL’
+ = 
+	`¡¾’
+(
+d©a
+);
+
+121 
+»t
+ = 
+	`zoo_exi¡s
+(
+zk
+, "/d©a1", 0, &
+s
+);
+
+123 ià(!
+»t
+) {
+
+125 
+	`´štf
+("exi¡ %d %d\n", 
+s
+.
+v”siÚ
+, s.
+d©aL’gth
+);
+
+126 
+»t
+ = 
+	`zoo_d–‘e
+(
+zk
+, "/d©a1", 
+s
+.
+v”siÚ
+);
+
+128 ià(
+»t
+) {
+
+129 
+	`´štf
+("zoo_d–‘çu» %d\n", 
+»t
+);
+
+133 
+»t
+ = 
+	`zoo_ü—‹
+(
+zk
+, "/d©a1", 
+d©a
+, 
+d©aL’
+, &
+ZOO_OPEN_ACL_UNSAFE
+, 0, 
+buff
+, 
+Ën
+ - 1);
+
+135 ià(!
+»t
+) {
+
+136 
+	`´štf
+("zoo_ü—‹ {%s} \n", 
+buff
+);
+
+138 
+	`´štf
+("zoo_ü—‹ fau» {%d} \n", 
+»t
+);
+
+147 *
+¡r
+ = 
+	`¡ºdup
+(
+buff
+, 
+Ën
+);
+
+148 ià(!
+»t
+) {
+
+149 
+	`´štf
+("zoo_g‘ %s\n", 
+¡r
+);
+
+152 
+»t
+ = 
+	`zoo_wg‘
+(
+zk
+, "/d©a1", 
+g‘_w©ch”
+, zk, 
+buff
+, &
+Ën
+, &
+s
+);
+
+154 
+¡r
+ = 
+	`¡ºdup
+(
+buff
+, 
+Ën
+);
+
+155 ià(!
+»t
+) {
+
+156 
+	`´štf
+("zoo_wg‘ %s\n", 
+¡r
+);
+
+159 
+	`g‘ch¬
+();
+
+161 
+	`zook“³r_şo£
+(
+zk
+);
+
+164 
+	}
+}
+
+	@wexists_test.c
+
+1 
+	~<uni¡d.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<¡ršg.h
+>
+
+5 
+	~<sys/ty³s.h
+>
+
+6 
+	~<sys/wa™.h
+>
+
+7 
+	~<zook“³r/zook“³r.h
+>
+
+8 
+	~<zook“³r/zook“³r_log.h
+>
+
+11 
+	$w©ch”_glob®
+(
+zhªdË_t
+ * 
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+12 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+14 ià(
+ty³
+ =ğ
+ZOO_SESSION_EVENT
+) {
+
+15 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+16 
+	`´štf
+("Connectedo zookeeper service successfully!\n");
+
+17 } ià(
+¡©e
+ =ğ
+ZOO_EXPIRED_SESSION_STATE
+) {
+
+18 
+	`´štf
+("Zookeeper sessionƒxpired!\n");
+
+21 
+	}
+}
+
+24 
+	$dump_¡©
+(cÚ¡ 
+St
+ *
+¡©
+)
+
+26 
+tùimes
+[40];
+
+27 
+tmtimes
+[40];
+
+28 
+time_t
+ 
+tùime
+;
+
+29 
+time_t
+ 
+tmtime
+;
+
+31 ià(!
+¡©
+) {
+
+32 
+	`årštf
+(
+¡d”r
+, "null\n");
+
+35 
+tùime
+ = 
+¡©
+->
+ùime
+ / 1000;
+
+36 
+tmtime
+ = 
+¡©
+->
+mtime
+ / 1000;
+
+38 
+	`ùime_r
+(&
+tmtime
+, 
+tmtimes
+);
+
+39 
+	`ùime_r
+(&
+tùime
+, 
+tùimes
+);
+
+41 
+	`årštf
+(
+¡d”r
+, "\tctime = %s\tczxid=%llx\n"
+
+45 
+tùimes
+, 
+¡©
+->
+czxid
+,
+
+46 
+tmtimes
+, 
+¡©
+->
+mzxid
+,
+
+47 (è
+¡©
+->
+v”siÚ
+, (è¡©->
+av”siÚ
+,
+
+48 
+¡©
+->
+•hem”®OwÃr
+);
+
+49 
+	}
+}
+
+52 
+	$com¶‘iÚ
+(
+rc
+, cÚ¡ 
+St
+ *
+¡©
+,
+
+53 cÚ¡ *
+d©a
+)
+
+55 
+	`´štf
+("completion\n");
+
+56 
+	}
+}
+
+58 
+St
+ 
+	gs
+;
+
+61 
+	$w©ch”_wexi¡s
+(
+zhªdË_t
+ *
+zh
+, 
+ty³
+, 
+¡©e
+,
+
+62 cÚ¡ *
+·th
+, *
+w©ch”Ctx
+)
+
+64 ià(
+¡©e
+ =ğ
+ZOO_CONNECTED_STATE
+) {
+
+65 ià(
+ty³
+ =ğ
+ZOO_DELETED_EVENT
+) {
+
+66 
+	`´štf
+(" delete \n");
+
+67 } ià(
+ty³
+ =ğ
+ZOO_CREATED_EVENT
+) {
+
+68 
+	`´štf
+(" create \n");
+
+72 
+»t
+ = 
+	`zoo_wexi¡s
+(
+zh
+, "/£rv”", 
+w©ch”_wexi¡s
+,
+
+73 "w©ch_wexi¡s", &
+s
+);
+
+74 
+	}
+}
+
+77 
+	$maš
+(
+¬gc
+, cÚ¡ *
+¬gv
+[])
+
+79 cÚ¡ *
+ho¡
+ = "127.0.0.1:2181";
+
+80 
+timeout
+ = 30000;
+
+82 
+	`zoo_£t_debug_Ëv–
+(
+ZOO_LOG_LEVEL_WARN
+);
+
+83 
+zhªdË_t
+ *
+zkhªdË
+ = 
+	`zook“³r_š™
+(
+ho¡
+,
+
+84 
+w©ch”_glob®
+, 
+timeout
+, 0, "watcher_global", 0);
+
+86 ià(
+zkhªdË
+ =ğ
+NULL
+) {
+
+87 
+	`årštf
+(
+¡d”r
+, "Error when connectingo zookeeper servers...\n");
+
+88 
+	`ex™
+(
+EXIT_FAILURE
+);
+
+103 
+»t
+ = 
+	`zoo_wexi¡s
+(
+zkhªdË
+, "/£rv”", 
+w©ch”_wexi¡s
+,
+
+104 "w©ch_wexi¡s", &
+s
+);
+
+106 ià(
+»t
+è{ 
+	`årštf
+(
+¡d”r
+, "Error %d for %s\n",„et, "aexists");
+
+109 
+	`g‘ch¬
+();
+
+111 
+	`zook“³r_şo£
+(
+zkhªdË
+);
+
+114 
+	}
+}
+
+	@
+1
+.
+0
+8
+97
+aexists_test.c
+awexists_test.c
+monitor.c
+rry1.c
+server.c
+sync_test.c
+sync_test2.c
+wexists_test.c

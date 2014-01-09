@@ -1,0 +1,13 @@
+usr/bin/stap-server
+usr/lib/systemtap/stap-serverd
+usr/lib/systemtap/stap-start-server
+usr/lib/systemtap/stap-find-or-start-server
+usr/lib/systemtap/stap-stop-server
+usr/lib/systemtap/stap-gen-cert
+usr/lib/systemtap/stap-authorize-cert
+usr/bin/stap-authorize-server-cert
+usr/lib/systemtap/stap-server-connect
+usr/lib/systemtap/stap-sign-module
+usr/share/man/man8/stap-server.8
+usr/share/man/man8/stap-authorize-server-cert.8
+# TODO stap-env

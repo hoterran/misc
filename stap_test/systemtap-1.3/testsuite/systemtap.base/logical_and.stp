@@ -1,0 +1,41 @@
+/*
+ * logical_and.stp
+ *
+ * Check that systemtap "logical and" works
+ */
+
+global x1_0
+global x2_1
+global x3_0
+global x4_1
+
+probe begin
+{
+	println("systemtap starting probe")
+	x1_0 = 0; x2_1 = 1; x3_0 = 0; x4_1 = 1;
+}
+
+probe end
+{
+	println("systemtap ending probe")
+	if (x1_0 && x3_0 ) {
+		println("systemtap test failure");
+	} else {
+		println("systemtap test success");
+	}
+	if (x2_1 && x3_0 ) {
+		println("systemtap test failure");
+	} else {
+		println("systemtap test success");
+	}
+	if (x1_0 && x4_1 ) {
+		println("systemtap test failure");
+	} else {
+		println("systemtap test success");
+	}
+	if (x2_1 && x4_1 ) {
+		println("systemtap test success");
+	} else {
+		println("systemtap test failure");
+	}
+}

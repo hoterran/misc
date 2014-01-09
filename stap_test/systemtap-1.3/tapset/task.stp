@@ -1,0 +1,384 @@
+// task information tapset
+// Copyright (C) 2006 Intel Corporation.
+// Copyright (C) 2010 Red Hat Inc.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+
+%{
+#include <linux/version.h>
+#include <linux/file.h>
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,25)
+#include <linux/fdtable.h>
+#endif
+#ifndef STAPCONF_TASK_UID
+#include <linux/cred.h>
+#endif
+%}
+
+/**
+ * sfunction task_current - The current task_struct of the current task.
+ * 
+ * General Syntax: task_current:long()
+ *
+ * Description: This function returns the task_struct representing the current process.
+ * This address can be passed to the various task_*() functions to extract
+ * more task-specific data.
+ */
+function task_current:long () %{ /* pure */
+    THIS->__retvalue = (long)current;
+%}
+
+/**
+ * sfunction task_parent - The task_struct of the parent task.
+ *
+ * General Syntax: task_parent:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the parent task_struct of
+ * the given task. This address can be passed to the various 
+ * task_*() functions to extract more task-specific data.
+ */
+function task_parent:long(task:long)
+{
+    return (@defined(@cast(task, "task_struct",
+			   "kernel<linux/sched.h>")->real_parent)
+	    ? @cast(task, "task_struct", "kernel<linux/sched.h>")->real_parent
+	    : @cast(task, "task_struct", "kernel<linux/sched.h>")->parent)
+}
+
+/**
+ * sfunction task_state - The state of the task.
+ *
+ * General Syntax: task_state:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: Return the state of the given task, one of:
+ * TASK_RUNNING (0), TASK_INTERRUPTIBLE (1), TASK_UNINTERRUPTIBLE (2),
+ * TASK_STOPPED (4), TASK_TRACED (8), EXIT_ZOMBIE (16), EXIT_DEAD (32).
+ */
+function task_state:long (task:long)
+{
+    return @cast(task, "task_struct", "kernel<linux/sched.h>")->state
+}
+
+/**
+ * sfunction task_execname - The name of the task.
+ *
+ * General Syntax: task_execname:string(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: Return the name of the given task.
+ */
+function task_execname:string (task:long)
+{
+    return kernel_string(@cast(task, "task_struct", "kernel<linux/sched.h>")->comm)
+}
+
+/**
+ * sfunction task_pid - The process identifier of the task.
+ *
+ * General Syntax: task_pid:long (task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This fucntion returns the process id of the given task.
+ */
+function task_pid:long (task:long)
+{
+    return @cast(task, "task_struct", "kernel<linux/sched.h>")->tgid
+}
+
+/**
+ * sfunction pid2task - The task_struct of the given process identifier.
+ * @pid: Process identifier.
+ *
+ * Description: Return the task struct of the given process id.
+ */
+function pid2task:long (pid:long) %{ /* pure */
+    struct task_struct *t = NULL;
+    pid_t t_pid  = (pid_t)(long)THIS->pid;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
+    struct pid *p_pid = find_get_pid(t_pid);
+    t = pid_task(p_pid, PIDTYPE_PID);
+    put_pid(p_pid);
+#else
+    rcu_read_lock();
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
+    t = find_task_by_vpid (t_pid);
+#else
+    t = find_task_by_pid (t_pid);
+#endif /* 2.6.24 */
+    rcu_read_unlock();
+#endif /* 2.6.31 */
+    THIS->__retvalue = (long)t;
+%}
+
+/**
+ * sfunction pid2execname - The name of the given process identifier.
+ * @pid: Process identifier.
+ *
+ * Description: Return the name of the given process id.
+ */
+function pid2execname:string (pid:long) { 
+    tsk = pid2task(pid)
+    if (tsk)
+	return task_execname(tsk)
+    return ""
+}
+
+/**
+ * sfunction task_tid - The thread identifier of the task.
+ *
+ * General Syntax: task_tid:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the thread id of the given task.
+ */
+function task_tid:long (task:long)
+{
+    return @cast(task, "task_struct", "kernel<linux/sched.h>")->pid
+}
+
+
+/**
+ * sfunction task_gid - The group identifier of the task.
+ *
+ * General Syntax: task_gid:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the group id of the given task.
+ */
+function task_gid:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+#ifdef STAPCONF_TASK_UID
+    THIS->__retvalue = kread(&(t->gid));
+    CATCH_DEREF_FAULT();
+#else
+    /* XXX: We can't easily kread this rcu-protected field. */
+    /* XXX: no task_gid() in 2.6.28 */
+    struct cred *cred;
+    rcu_read_lock();
+    cred = get_task_cred (t);
+    rcu_read_unlock();
+    THIS->__retvalue = cred->gid;
+#endif
+%}
+
+
+/**
+ * sfunction task_egid - The effective group identifier of the task.
+ *
+ * General Syntax: task_egid:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the effective group id of the given task.
+ */
+function task_egid:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+#ifdef STAPCONF_TASK_UID
+    THIS->__retvalue = kread(&(t->egid));
+    CATCH_DEREF_FAULT();
+#else
+    /* XXX: We can't easily kread this rcu-protected field. */
+    /* XXX: no task_egid() in 2.6.28 */
+    struct cred *cred;
+    rcu_read_lock();
+    cred = get_task_cred (t);
+    rcu_read_unlock();
+    THIS->__retvalue = cred->egid;
+#endif
+%}
+
+/**
+ * sfunction task_uid - The user identifier of the task.
+ *
+ * General Syntax: task_uid:long(task:long)
+ * 
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the user id of the given task.
+ */
+function task_uid:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+#ifdef STAPCONF_TASK_UID
+    THIS->__retvalue = kread(&(t->uid));
+    CATCH_DEREF_FAULT();
+#else
+    /* XXX: We can't easily kread this rcu-protected field. */
+    THIS->__retvalue = task_uid (t);
+#endif
+%}
+
+/**
+ * sfunction task_euid - The effective user identifier of the task.
+ *
+ * General Syntax: task_euid:long(task:long)
+ * 
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the effective user id of the given task.
+ */
+function task_euid:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+#ifdef STAPCONF_TASK_UID
+    THIS->__retvalue = kread(&(t->euid));
+    CATCH_DEREF_FAULT();
+#else
+    /* XXX: We can't easily kread this rcu-protected field. */
+    THIS->__retvalue = task_euid (t);
+#endif
+%}
+
+
+/**
+ * sfunction task_prio - The priority value of the task.
+ *
+ * General Syntax: task_prio:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the priority value of the given task.
+ */
+function task_prio:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+    THIS->__retvalue =  kread(&(t->prio)) - MAX_RT_PRIO;
+    CATCH_DEREF_FAULT();
+%}
+
+
+/**
+ * sfunction task_nice - The nice value of the task.
+ *
+ * General Syntax: task_nice:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the nice value of the given task.
+ */
+function task_nice:long (task:long) %{ /* pure */
+    struct task_struct *t = (struct task_struct *)(long)THIS->task;
+    THIS->__retvalue = kread(&(t->static_prio)) - MAX_RT_PRIO - 20;
+    CATCH_DEREF_FAULT();
+%}
+
+/**
+ * sfunction task_cpu - The scheduled cpu of the task.
+ *
+ * General Syntax: task_cpu:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the scheduled cpu for the given task.
+ */
+function task_cpu:long (task:long)
+{
+    ti = (@defined(@cast(task, "task_struct", "kernel<linux/sched.h>")->stack)
+	  ? @cast(task, "task_struct", "kernel<linux/sched.h>")->stack
+	  : @cast(task, "task_struct", "kernel<linux/sched.h>")->thread_info);
+    return @cast(ti, "thread_info", "kernel<linux/sched.h>")->cpu
+}
+
+/**
+ * sfunction task_open_file_handles - The number of open files of the task.
+ *
+ * General Syntax: task_open_file_handles:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the number of open file handlers for the given task.
+ */
+function task_open_file_handles:long (task:long)
+%( kernel_v >= "2.6.15" %?
+%{ /* pure */
+    int locked = 0;
+    unsigned int count=0, fd, max;
+    struct task_struct *t;
+    struct files_struct *fs;
+    struct fdtable *f;
+    t = (struct task_struct *)(long)THIS->task;
+    fs = kread(&(t->files));
+    f = kread(&(fs->fdt));
+    rcu_read_lock();
+    locked = 1;
+    max = kread(&(f->max_fds));
+    for (fd = 0; fd < max; fd++) {
+                if ( kread(&(f->fd[fd])) != NULL)
+                        count ++;
+        }
+    THIS->__retvalue = count;
+    CATCH_DEREF_FAULT();
+    if (locked)
+        rcu_read_unlock();
+%}
+%:
+%{ /* pure */
+    int locked = 0;
+    unsigned int count=0, fd, max;
+    struct task_struct *t;
+    struct files_struct *f;
+    t = (struct task_struct *)(long)THIS->task;
+    f = kread(&(t->files));
+    rcu_read_lock();
+    locked = 1;
+    max = kread(&(f->max_fds));
+    for (fd = 0; fd < max; fd++) {
+                if ( kread(&(f->fd[fd])) != NULL)
+                        count ++;
+        }
+    THIS->__retvalue = count;
+    CATCH_DEREF_FAULT();
+    if (locked)
+        rcu_read_unlock();
+%}
+%)
+
+/**
+ * sfunction task_max_file_handles - The max number of open files for the task.
+ * 
+ * General Syntax: task_max_file_handles:long(task:long)
+ *
+ * @task: task_struct pointer.
+ *
+ * Description: This function returns the maximum number of file handlers for the given task.
+ */
+function task_max_file_handles:long (task:long)
+%( kernel_v >= "2.6.15" %?
+%{ /* pure */
+    int locked = 0;
+    struct task_struct *t;
+    struct files_struct *fs;
+    struct fdtable *f;
+    t = (struct task_struct *)(long)THIS->task;
+    fs = kread (&(t->files));
+    f = kread(&(fs->fdt));
+    rcu_read_lock();
+    locked = 1;
+    THIS->__retvalue = kread(&(f->max_fds));
+    CATCH_DEREF_FAULT();
+    if (locked)
+        rcu_read_unlock();
+%}
+%:
+%{ /* pure */
+    int locked = 0;
+    struct task_struct *t;
+    struct files_struct *f;
+    t = (struct task_struct *)(long)THIS->task;
+    f = kread(&(t->files));
+    rcu_read_lock();
+    locked = 1;
+    THIS->__retvalue = kread(&(f->max_fds));
+    CATCH_DEREF_FAULT();
+    if (locked)
+        rcu_read_unlock();
+%}
+%)

@@ -1,0 +1,209 @@
+// context-symbols tapset
+// Copyright (C) 2005-2008 Red Hat Inc.
+// Copyright (C) 2006 Intel Corporation.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+// <tapsetdescription>
+// Context functions provide additional information about where an event occurred. These functions can 
+//provide information such as a backtrace to where the event occurred and the current register values for the 
+//processor.
+// </tapsetdescription>
+%{
+#ifndef STP_NEED_SYMBOL_DATA
+#define STP_NEED_SYMBOL_DATA 1
+#endif
+%}
+
+/**
+ *  sfunction print_stack - Print out kernel stack from string.
+ * 
+ *  General Syntax: print_stack(stk:string)
+ *
+ *  @stk: String with list of hexadecimal addresses.
+ *
+ *  Description: This function performs a symbolic lookup of the addresses
+ *  in the given  string,
+ *  which is assumed to be the result of a prior call to 
+ *  backtrace().
+ * 
+ *  Print one line per address, including the address, the
+ *  name  of the function containing the address, and an estimate of
+ *  its position within that function.  Return nothing.
+ */
+function print_stack(stk:string) %{
+	char *ptr = THIS->stk;
+	char *tok = strsep(&ptr, " ");
+	while (tok && *tok) {
+		_stp_print_addr (simple_strtol(tok, NULL, 16),
+				 _STP_SYM_FULL, NULL);
+		tok = strsep(&ptr, " ");
+	}
+%}
+
+/**
+ * sfunction sprint_stack - Return stack for kernel addresses from string. EXPERIMENTAL!
+ * @stk: String with list of hexadecimal (kernel) addresses.
+ *
+ * Perform a symbolic lookup of the addresses in the given string,
+ * which is assumed to be the result of a prior call to backtrace().
+ *
+ * Returns a simple backtrace from the given hex string. One line per
+ * address. Includes the symbol name (or hex address if symbol
+ * couldn't be resolved) and module name (if found). Includes the
+ * offset from the start of the function if found, otherwise the
+ * offset will be added to the module (if found, between
+ * brackets). Returns the backtrace as string (each line terminated by
+ * a newline character).  Note that the returned stack will be
+ * truncated to MAXSTRINGLEN, to print fuller and richer stacks use
+ * print_stack.
+ */
+function sprint_stack:string(stk:string) %{
+	char *ptr = THIS->stk;
+	char *tok = strsep(&ptr, " ");
+	char *str = THIS->__retvalue;
+	size_t len = MAXSTRINGLEN - 1;
+	while (tok && *tok && len > 0) {
+		int s = _stp_snprint_addr(str, len,
+					  simple_strtol(tok, NULL, 16),
+					  _STP_SYM_SIMPLE, NULL);
+		len -= s;
+		str += s;
+		tok = strsep(&ptr, " ");
+	}
+
+        str--;
+        if (len > 0)
+                str[0] = '\0';
+        else
+                THIS->__retvalue[MAXSTRINGLEN - 1] = '\0';
+%}
+
+/**
+ * sfunction probefunc - Return the probe point's function name, if known.
+ * 
+ * General Syntax: probefunc:string()
+ *
+ * Description: This function returns the name of the function being probed.
+ * It will do this based on the probe point string as returned by pp().
+ * Please note: this function is deprecated, please use symname() and/or
+ * usymname(). This function might return a function name based on the
+ * current address if the probe point context couldn't be parsed.
+ */
+function probefunc:string () %{ /* pure */
+	char *ptr, *start;
+
+	start = strstr(CONTEXT->probe_point, "function(\"");
+	ptr = start + 10; 
+	if (!start) {
+		start = strstr(CONTEXT->probe_point, "inline(\"");
+		ptr = start + 8;
+	}
+
+	if (start) {
+		int len = MAXSTRINGLEN;
+		char *dst = THIS->__retvalue;
+		while (*ptr != '@' && *ptr != '"' && --len > 0 && *ptr)
+			*dst++ = *ptr++;
+		*dst = 0;
+
+	} else if (CONTEXT->regs) {
+		_stp_snprint_addr(THIS->__retvalue, MAXSTRINGLEN,
+				  REG_IP(CONTEXT->regs),
+				  _STP_SYM_SYMBOL,
+				  (CONTEXT->regflags & _STP_REGS_USER_FLAG
+				   ? current : NULL));
+       	         if (THIS->__retvalue[0] == '.')  /* powerpc symbol has a dot*/
+       	         	strlcpy(THIS->__retvalue,THIS->__retvalue + 1,MAXSTRINGLEN);
+	} else {
+		THIS->__retvalue[0] = '\0';
+	}
+%}
+
+/**
+ * sfunction probemod - Return the probe point's kernel module name.
+ * 
+ * General Syntax: probemod:string()
+ * 
+ * Description: This funciton returns the name of the kernel module
+ * containing the probe point, if known.
+ */
+function probemod:string () %{ /* pure */
+	char *ptr, *start;
+
+	start = strstr(CONTEXT->probe_point, "module(\"");
+	ptr = start + 8;
+
+	if (start) {
+		int len = MAXSTRINGLEN;
+		char *dst = THIS->__retvalue;
+		while (*ptr != '"' && --len && *ptr)
+			*dst++ = *ptr++;
+		*dst = 0;
+	} else if (CONTEXT->regs
+		   && ! (CONTEXT->regflags & _STP_REGS_USER_FLAG)) {
+		struct _stp_module *m;
+		m = _stp_kmod_sec_lookup (REG_IP(CONTEXT->regs), NULL);
+		if (m && m->name)
+			strlcpy (THIS->__retvalue, m->name, MAXSTRINGLEN);
+		else
+			strlcpy (THIS->__retvalue, "<unknown>", MAXSTRINGLEN);
+	} else
+		strlcpy (THIS->__retvalue, "<unknown>", MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction modname - Return the kernel module name loaded at the address.
+ * @addr: The address.
+ *
+ * Description: Returns the module name associated with the given
+ * address if known. If not known it will return the string "<unknown>".
+ * If the address was not in a kernel module, but in the kernel itself,
+ * then the string "kernel" will be returned.
+ */
+function modname:string (addr: long) %{ /* pure */
+	struct _stp_module *m;
+	m = _stp_kmod_sec_lookup (THIS->addr, NULL);
+	if (m && m->name)
+          strlcpy (THIS->__retvalue, m->name, MAXSTRINGLEN);
+	else
+	  strlcpy (THIS->__retvalue, "<unknown>", MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction symname - Return the kernel symbol associated with the given address.
+ *
+ * General Syntax: symname:string(addr:long)
+ * 
+ * @addr: The address to translate.
+ *
+ * Description: Returns the (function) symbol name associated with the
+ * given address if known. If not known it will return the hex string
+ * representation of addr.
+ */
+function symname:string (addr: long) %{ /* pure */
+	 _stp_snprint_addr(THIS->__retvalue, MAXSTRINGLEN, THIS->addr,
+			   _STP_SYM_SYMBOL, NULL);
+%}
+
+/**
+ * sfunction symdata - Return the kernel symbol and module offset for the address.
+ *
+ * General Syntax: symdata:string(addr:long)
+ *
+ * @addr: The address to translate.
+ *
+ * Description: Returns the (function) symbol name associated with the
+ * given address if known, the offset from the start and size of the
+ * symbol, plus module name (between brackets). If symbol is unknown,
+ * but module is known, the offset inside the module, plus the size of
+ * the module is added.  If any element is not known it will be
+ * omitted and if the symbol name is unknown it will return the hex
+ * string for the given address.
+ */
+function symdata:string (addr: long) %{ /* pure */
+	_stp_snprint_addr(THIS->__retvalue, MAXSTRINGLEN, THIS->addr,
+			  _STP_SYM_DATA, NULL);
+%}

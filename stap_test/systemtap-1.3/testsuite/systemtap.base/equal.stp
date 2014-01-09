@@ -1,0 +1,28 @@
+/*
+ * equal.stp
+ *
+ * Simple function to test that equal operation works
+ */
+
+global count
+global count2
+
+probe begin { println("systemtap starting probe") }
+
+probe kernel.function("schedule") { ++count; ++count2; }
+
+probe end
+{
+	println("systemtap ending probe")
+	printf("count = %d\n", count)
+	printf("count2 = %d\n", count)
+	if ( count == count2) {
+		if ( (count-1) == count2 ) {
+			println("systemtap test failure");
+		} else {
+			println("systemtap test success");
+		}
+	} else {
+		println("systemtap test failure");
+	}
+}

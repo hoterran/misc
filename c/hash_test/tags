@@ -1,0 +1,94 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DICT_ERR	dict.h	40;"	d
+DICT_HT_INITIAL_SIZE	dict.h	88;"	d
+DICT_NOTUSED	dict.h	43;"	d
+DICT_OK	dict.h	39;"	d
+DICT_STATS_VECTLEN	dict.c	591;"	d	file:
+__DICT_H	dict.h	37;"	d
+_dictClear	dict.c	/^int _dictClear(dict *d, dictht *ht)$/;"	f
+_dictExpandIfNeeded	dict.c	/^static int _dictExpandIfNeeded(dict *d)$/;"	f	file:
+_dictInit	dict.c	/^int _dictInit(dict *d, dictType *type,$/;"	f
+_dictKeyIndex	dict.c	/^static int _dictKeyIndex(dict *d, const void *key)$/;"	f	file:
+_dictNextPower	dict.c	/^static unsigned long _dictNextPower(unsigned long size)$/;"	f	file:
+_dictPrintStatsHt	dict.c	/^static void _dictPrintStatsHt(dictht *ht) {$/;"	f	file:
+_dictRehashStep	dict.c	/^static void _dictRehashStep(dict *d) {$/;"	f	file:
+_dictReset	dict.c	/^static void _dictReset(dictht *ht)$/;"	f	file:
+d	dict.h	/^    dict *d;$/;"	m	struct:dictIterator
+dict	dict.h	/^typedef struct dict {$/;"	s
+dict	dict.h	/^} dict;$/;"	t	typeref:struct:dict
+dictAdd	dict.c	/^int dictAdd(dict *d, void *key, void *val)$/;"	f
+dictCompareHashKeys	dict.h	113;"	d
+dictCreate	dict.c	/^dict *dictCreate(dictType *type,$/;"	f
+dictDelete	dict.c	/^int dictDelete(dict *ht, const void *key) {$/;"	f
+dictDeleteNoFree	dict.c	/^int dictDeleteNoFree(dict *ht, const void *key) {$/;"	f
+dictDisableResize	dict.c	/^void dictDisableResize(void) {$/;"	f
+dictEmpty	dict.c	/^void dictEmpty(dict *d) {$/;"	f
+dictEnableResize	dict.c	/^void dictEnableResize(void) {$/;"	f
+dictEntry	dict.h	/^typedef struct dictEntry {$/;"	s
+dictEntry	dict.h	/^} dictEntry;$/;"	t	typeref:struct:dictEntry
+dictExpand	dict.c	/^int dictExpand(dict *d, unsigned long size)$/;"	f
+dictFetchValue	dict.c	/^void *dictFetchValue(dict *d, const void *key) {$/;"	f
+dictFind	dict.c	/^dictEntry *dictFind(dict *d, const void *key)$/;"	f
+dictFreeEntryKey	dict.h	102;"	d
+dictFreeEntryVal	dict.h	91;"	d
+dictGenCaseHashFunction	dict.c	/^unsigned int dictGenCaseHashFunction(const unsigned char *buf, int len) {$/;"	f
+dictGenHashFunction	dict.c	/^unsigned int dictGenHashFunction(const unsigned char *buf, int len) {$/;"	f
+dictGenericDelete	dict.c	/^static int dictGenericDelete(dict *d, const void *key, int nofree)$/;"	f	file:
+dictGetEntryKey	dict.h	120;"	d
+dictGetEntryVal	dict.h	121;"	d
+dictGetIterator	dict.c	/^dictIterator *dictGetIterator(dict *d)$/;"	f
+dictGetRandomKey	dict.c	/^dictEntry *dictGetRandomKey(dict *d)$/;"	f
+dictGetSafeIterator	dict.c	/^dictIterator *dictGetSafeIterator(dict *d) {$/;"	f
+dictHashKey	dict.h	118;"	d
+dictIdentityHashFunction	dict.c	/^unsigned int dictIdentityHashFunction(unsigned int key)$/;"	f
+dictIntHashFunction	dict.c	/^unsigned int dictIntHashFunction(unsigned int key)$/;"	f
+dictIsRehashing	dict.h	124;"	d
+dictIterator	dict.h	/^typedef struct dictIterator {$/;"	s
+dictIterator	dict.h	/^} dictIterator;$/;"	t	typeref:struct:dictIterator
+dictNext	dict.c	/^dictEntry *dictNext(dictIterator *iter)$/;"	f
+dictPrintStats	dict.c	/^void dictPrintStats(dict *d) {$/;"	f
+dictRehash	dict.c	/^int dictRehash(dict *d, int n) {$/;"	f
+dictRehashMilliseconds	dict.c	/^int dictRehashMilliseconds(dict *d, int ms) {$/;"	f
+dictRelease	dict.c	/^void dictRelease(dict *d)$/;"	f
+dictReleaseIterator	dict.c	/^void dictReleaseIterator(dictIterator *iter)$/;"	f
+dictReplace	dict.c	/^int dictReplace(dict *d, void *key, void *val)$/;"	f
+dictResize	dict.c	/^int dictResize(dict *d)$/;"	f
+dictSetHashKey	dict.h	106;"	d
+dictSetHashVal	dict.h	95;"	d
+dictSize	dict.h	123;"	d
+dictSlots	dict.h	122;"	d
+dictType	dict.h	/^typedef struct dictType {$/;"	s
+dictType	dict.h	/^} dictType;$/;"	t	typeref:struct:dictType
+dict_can_resize	dict.c	/^static int dict_can_resize = 1;$/;"	v	file:
+dict_force_resize_ratio	dict.c	/^static unsigned int dict_force_resize_ratio = 5;$/;"	v	file:
+dictht	dict.h	/^typedef struct dictht {$/;"	s
+dictht	dict.h	/^} dictht;$/;"	t	typeref:struct:dictht
+entry	dict.h	/^    dictEntry *entry, *nextEntry;$/;"	m	struct:dictIterator
+hashFunction	dict.h	/^    unsigned int (*hashFunction)(const void *key);$/;"	m	struct:dictType
+ht	dict.h	/^    dictht ht[2];$/;"	m	struct:dict
+index	dict.h	/^    int table, index, safe;$/;"	m	struct:dictIterator
+iterators	dict.h	/^    int iterators; \/* number of iterators currently running *\/$/;"	m	struct:dict
+key	dict.h	/^    void *key;$/;"	m	struct:dictEntry
+keyCompare	dict.h	/^    int (*keyCompare)(void *privdata, const void *key1, const void *key2);$/;"	m	struct:dictType
+keyDestructor	dict.h	/^    void (*keyDestructor)(void *privdata, void *key);$/;"	m	struct:dictType
+keyDup	dict.h	/^    void *(*keyDup)(void *privdata, const void *key);$/;"	m	struct:dictType
+next	dict.h	/^    struct dictEntry *next;$/;"	m	struct:dictEntry	typeref:struct:dictEntry::dictEntry
+nextEntry	dict.h	/^    dictEntry *entry, *nextEntry;$/;"	m	struct:dictIterator
+privdata	dict.h	/^    void *privdata;$/;"	m	struct:dict
+rehashidx	dict.h	/^    int rehashidx; \/* rehashing not in progress if rehashidx == -1 *\/$/;"	m	struct:dict
+safe	dict.h	/^    int table, index, safe;$/;"	m	struct:dictIterator
+size	dict.h	/^    unsigned long size;$/;"	m	struct:dictht
+sizemask	dict.h	/^    unsigned long sizemask;$/;"	m	struct:dictht
+table	dict.h	/^    dictEntry **table;$/;"	m	struct:dictht
+table	dict.h	/^    int table, index, safe;$/;"	m	struct:dictIterator
+timeInMilliseconds	dict.c	/^long long timeInMilliseconds(void) {$/;"	f
+type	dict.h	/^    dictType *type;$/;"	m	struct:dict
+used	dict.h	/^    unsigned long used;$/;"	m	struct:dictht
+val	dict.h	/^    void *val;$/;"	m	struct:dictEntry
+valDestructor	dict.h	/^    void (*valDestructor)(void *privdata, void *obj);$/;"	m	struct:dictType
+valDup	dict.h	/^    void *(*valDup)(void *privdata, const void *obj);$/;"	m	struct:dictType

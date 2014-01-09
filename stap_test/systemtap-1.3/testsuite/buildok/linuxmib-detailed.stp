@@ -1,0 +1,7 @@
+#! stap -p4
+
+probe linuxmib.DelayedACKs, linuxmib.ListenOverflows,
+      linuxmib.ListenDrops, linuxmib.TCPMemoryPressures
+{
+	printf("%p %d\n", sk, op)
+}

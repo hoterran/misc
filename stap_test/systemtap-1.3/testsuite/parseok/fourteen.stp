@@ -1,0 +1,28 @@
+#! stap -p1
+
+global
+%( kernel_v > "2.6" %? /* and */
+   %( kernel_vr != "2.9.77-2873NOTHING" %? /* and */
+      %( kernel_v <= "3.5" %? /* and */
+         %( kernel_vr == "2.3.5-2.43.54.2" %? "FAIL1" %: PASS %)
+      %: "FAIL2" %)
+   %: "FAIL3" %)
+%: "FAIL4" %)
+
+global
+%( arch == "i386" %? i386
+%: %( arch == "powerpc" %? powerpc
+   %: %( arch != "x86_64" %? other %: x86_64 %) 
+   %)
+%)
+
+global
+%( $# != 2 %? /* and */
+   %( @# < "1" %? /* and */
+      %( @# == "0" %? /* and */
+         %( $# >= 3 %? /* and */
+            %( $2 >= "12" %? $3 FAIL5 %: $2 FAIL6 %) #This line must not be evaluated
+         %: PASS2 %)
+      %: "FAIL7" %)
+   %: "FAIL8" %)
+%: "FAIL9" %)

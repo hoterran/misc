@@ -1,0 +1,7 @@
+#! stap -p1
+
+function zoo () %{ /* invalid embedded code */ %}
+
+probe begin
+{
+}

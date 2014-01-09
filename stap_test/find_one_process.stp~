@@ -1,0 +1,21 @@
+global reads, writes
+
+probe vfs.read
+{
+	reads[execname()] ++
+}
+
+probe vfs.write
+{
+	writes[execname()] ++
+}
+
+probe timer.s(3)
+{
+	printf("=======\n")
+	if ([@1] in reads)
+		printf("%s read: %d \n", @1, reads[@1])
+	if ([@1] in writes)
+		printf("%s write : %d \n", @1, writes[@1])
+}
+

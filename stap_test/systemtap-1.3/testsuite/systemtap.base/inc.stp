@@ -1,0 +1,28 @@
+/*
+ * inc.stp
+ *
+ * Check that systemtap ++ works
+ */
+
+global x1
+
+probe begin
+{
+	println("systemtap starting probe")
+	x1 = 41
+}
+
+probe end
+{
+	println("systemtap ending probe")
+	x1++
+	if (x1 == 42) {
+		++x1
+		if (x1 != 43 ) {
+			println("systemtap test failure")
+		} else {
+			println("systemtap test success")
+		}
+	} else
+		println("systemtap test failure")
+}

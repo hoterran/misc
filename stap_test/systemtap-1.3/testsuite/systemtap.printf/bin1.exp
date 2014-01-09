@@ -1,0 +1,3 @@
+set test "bin1"
+set ::result_string {42                     }
+stap_run_binary $srcdir/$subdir/$test.stp

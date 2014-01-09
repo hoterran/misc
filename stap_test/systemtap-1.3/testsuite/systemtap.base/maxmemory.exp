@@ -1,0 +1,29 @@
+if {![installtest_p]} {untested "MAXMEMORY"; return}
+
+set script {
+    global k
+
+    probe begin {
+	print("systemtap starting probe\n")
+	k["foo"] = 0
+    }
+
+    probe kernel.function("vfs_read"), kernel.function("vfs_write") {
+	k["foo"]++
+    }
+    probe end {
+	print("systemtap ending probe\n")
+    }
+}
+
+# MAXMEMORY1 tests to make sure normal operation doesn't receive a
+# max memory error
+set test "MAXMEMORY1"
+set error {[^\r]+ allocation failed}
+stap_run_error $test 0 $error "" -u -e $script
+
+# MAXMEMORY2 is the same script, but we're adjusting STP_MAXMEMORY to
+# a low value so that we *will* get an allocation error or an insert
+# module error.
+set test "MAXMEMORY2"
+stap_run_error $test 1 $error "" -u -DSTP_MAXMEMORY=200 -e $script

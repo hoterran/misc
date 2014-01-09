@@ -1,0 +1,23 @@
+
+set file $srcdir/$subdir/conversions.stp
+foreach value {0 0xffffffff 0xffffffffffffffff} {
+    # PR 4121: address 0 is valid on s390x
+    if {[istarget s390x-*-*] && $value == 0} { set value 0x7777777777 }
+    # PR 4540: ia64 thinks 0xffffffffffffffff okay for character accesses
+    if {[istarget ia64-*-*] && $value == 0xffffffffffffffff } { set value 0xafffffffffffffff }
+    set test "conversions.stp $value"
+    if {![installtest_p]} { untested $test; continue }
+    spawn stap -DMAXERRORS=40 $file $value
+    set errs 0
+    verbose -log "exp $test $errs"
+    expect {
+        -timeout 180
+        -re {(ERROR|WARNING)[^\r\n]*\r\n} { incr errs; exp_continue }
+        eof { }
+        timeout { fail "$test (timeout)" }
+    }
+    verbose -log "done exp $test $errs"
+    wait
+    if {$errs == 14} { pass $test } else { fail "$test ($errs)" }
+    verbose -log "done $test $errs"
+}

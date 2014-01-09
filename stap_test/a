@@ -1,0 +1,6 @@
+global count=0
+
+probe kernel.function("sys_sync") {
+	count++
+	printf("sys_sync called %d times, current by pid %d\n", count, pid);
+}

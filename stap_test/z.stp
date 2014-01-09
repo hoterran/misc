@@ -1,0 +1,11 @@
+probe kernel.function(@1) 
+{
+	printf("%s-%s\n", probefunc(), execname())
+	printf("%s", $$parms)
+}
+probe kernel.function(@1).return 
+{
+	printf("%s-%s\n", probefunc(), execname())
+	exit()
+}
+

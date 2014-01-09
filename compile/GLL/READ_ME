@@ -1,0 +1,6 @@
+Generalized LL parser from van Deudekom and Kooiman,
+Top-Down Non-Correcting Error Recovery in LLgen;
+extended to handle infinite ambiguity (under breadth-first prediction only)
+
+Interpreter; obtains grammar and input as C code.
+

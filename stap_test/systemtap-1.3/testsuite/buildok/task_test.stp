@@ -1,0 +1,35 @@
+#! stap -p4
+
+probe begin {
+  c = task_current()
+  log(sprint(task_parent(c)))
+  log(sprint(task_state(c)))
+  log(task_execname(c))
+  log(sprint(task_pid(c)))
+  log(sprint(task_tid(c)))
+  log(sprint(task_gid(c)))
+  log(sprint(task_egid(c)))
+  log(sprint(task_uid(c)))
+  log(sprint(task_euid(c)))
+  log(sprint(task_prio(c)))
+  log(sprint(task_nice(c)))
+  log(sprint(task_cpu(c)))
+  log(sprint(task_open_file_handles(c)))
+  log(sprint(task_max_file_handles(c)))
+  log(sprint(pid2task(pid())))
+  log(sprint(pid2execname(pid())))
+
+  // task_time.stp
+  log(task_time_string())
+  log(cputime_to_string(0))
+  log(msecs_to_string(0))
+  log(sprint(cputime_to_msecs(0)))
+  log(sprint(task_stime()))
+  log(sprint(task_utime()))
+
+  log(task_time_string_tid(0))
+  log(sprint(task_stime_tid(0)))
+  log(sprint(task_utime_tid(0)))
+
+  exit()
+}

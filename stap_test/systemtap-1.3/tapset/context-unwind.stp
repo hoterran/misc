@@ -1,0 +1,125 @@
+// context-unwind tapset
+// Copyright (C) 2005-2010 Red Hat Inc.
+// Copyright (C) 2006 Intel Corporation.
+//
+// This file is part of systemtap, and is free software.  You can
+// redistribute it and/or modify it under the terms of the GNU General
+// Public License (GPL); either version 2, or (at your option) any
+// later version.
+// <tapsetdescription>
+// Context functions provide additional information about where an event occurred. These functions can 
+//provide information such as a backtrace to where the event occurred and the current register values for the 
+//processor.
+// </tapsetdescription>
+%{
+#ifndef STP_NEED_UNWIND_DATA
+#define STP_NEED_UNWIND_DATA 1
+#endif
+#ifndef STP_NEED_SYMBOL_DATA
+#define STP_NEED_SYMBOL_DATA 1
+#endif
+%}
+
+/**
+ *  sfunction print_backtrace - Print stack back trace
+ *
+ *  General Syntax: print_backtrace()
+ * 
+ *  Description: This function isEquivalent to print_stack(backtrace()), 
+ *  except that deeper stack nesting may be supported.
+ *  The function does not return a value.
+ */
+function print_backtrace () %{
+	if (CONTEXT->regs && ! (CONTEXT->regflags & _STP_REGS_USER_FLAG)) {
+		_stp_stack_print(CONTEXT->regs, _STP_SYM_FULL, CONTEXT->pi, MAXTRACE, NULL, NULL, 0);
+	} else {
+		_stp_printf("Systemtap probe: %s\n", CONTEXT->probe_point);
+	}
+%}
+
+/**
+ * sfunction sprint_backtrace - Return stack back trace as string. EXPERIMENTAL!
+ *
+ * Returns a simple (kernel) backtrace. One line per address.
+ * Includes the symbol name (or hex address if symbol
+ * couldn't be resolved) and module name (if found). Includes the
+ * offset from the start of the function if found, otherwise the
+ * offset will be added to the module (if found, between
+ * brackets). Returns the backtrace as string (each line terminated by
+ * a newline character).  Note that the returned stack will be
+ * truncated to MAXSTRINGLEN, to print fuller and richer stacks use
+ * print_backtrace(). Equivalent to sprint_stack(backtrace()),
+ * but more efficient (no need to translate between hex strings and
+ * final backtrace string).
+ */
+function sprint_backtrace () %{
+	if (CONTEXT->regs && ! (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+		_stp_stack_sprint (THIS->__retvalue, MAXSTRINGLEN,
+				   _STP_SYM_SIMPLE, CONTEXT->regs,
+				   CONTEXT->pi, MAXTRACE, NULL, NULL, 0);
+	else
+		strlcpy (THIS->__retvalue, "", MAXSTRINGLEN);
+%}
+
+/**
+ * sfunction backtrace - Hex backtrace of current stack
+ *
+ * General Syntax: backtrace:string()
+ * 
+ * Description: This function returns a string of hex addresses 
+ * that are a backtrace of the stack. Output may be truncated as 
+ * as per maximum string length (MAXSTRINGLEN).
+ */
+function backtrace:string () %{ /* pure */
+	if (CONTEXT->regs && ! (CONTEXT->regflags & _STP_REGS_USER_FLAG))
+		_stp_stack_sprint (THIS->__retvalue, MAXSTRINGLEN,
+				   _STP_SYM_NONE, CONTEXT->regs,
+				   CONTEXT->pi, MAXTRACE, NULL, NULL, 0);
+	else 
+		strlcpy (THIS->__retvalue, "", MAXSTRINGLEN);
+%}
+
+/**
+ *  sfunction task_backtrace - Hex backtrace of an arbitrary task
+ *
+ *  General Syntax: task_backtrace:string(task:long)
+ *
+ *  @task: pointer to task_struct
+ *
+ *  Description: This function returns a string of hex addresses
+ *  that are a backtrace of the stack of a particular task
+ *  Output may be truncated as per maximum string length.
+ */
+function task_backtrace:string (task:long) %{ /* pure */
+	 _stp_stack_snprint_tsk(THIS->__retvalue, MAXSTRINGLEN,
+		(struct task_struct *)(unsigned long)THIS->task, 0, MAXTRACE);
+%}
+
+/**
+ *  sfunction caller - Return name and address of calling function
+ *
+ *  General Syntax: caller:string()
+ *
+ *  Description: This function returns the address and name of the 
+ *  calling function. This is equivalent to calling:
+ *  sprintf("%s 0x%x", symname(caller_addr(), caller_addr()))
+ *  Works only for return probes at this time.
+ */
+function caller:string() {
+	return sprintf("%s 0x%x", symname(caller_addr()), caller_addr());
+}
+
+/**
+ *  sfunction caller_addr -  Return caller address
+ *
+ *  General Syntax: caller_addr:long()
+ *
+ *  Description: This function returns the address of the calling function. 
+ *  Works only for return probes at this time.
+ */
+function caller_addr:long () %{ /* pure */
+        if (CONTEXT->pi)
+		THIS->__retvalue = (int64_t)(long)_stp_ret_addr_r(CONTEXT->pi);
+        else
+		THIS->__retvalue = 0;
+%}

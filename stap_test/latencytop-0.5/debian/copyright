@@ -1,0 +1,25 @@
+This package was debianized by Giacomo A. Catenazzi <cate@debian.org> on
+Tue, 12 Feb 2008 22:36:39 +0100.
+
+It was downloaded from http://www.latencytop.org/
+
+Upstream Author: 
+
+    Arjan van de Ven <arjan@linux.intel.com>    
+
+Copyright: 
+
+    Copyright 2007, Intel Corporation
+    Copyright 2008, Intel Corporation
+    Copyright 2008, Benjamin Herrenschmidt
+
+License:
+
+    This program file is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation; version 2 of the License.
+
+
+The Debian packaging is (C) 2008, Giacomo A. Catenazzi <cate@debian.org> and
+is licensed under the GPL-2, see `/usr/share/common-licenses/GPL-2'.
+

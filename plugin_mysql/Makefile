@@ -1,0 +1,6 @@
+CC=gcc                                                                                                                        
+CFLAGS=$(CFLAG)
+CFLAGS+=-g -Wall
+
+first.o:CFLAGS += -I/usr/local/mysql/include/mysql -DMYSQL_DYNAMIC_PLUGIN
+first.o:first.c

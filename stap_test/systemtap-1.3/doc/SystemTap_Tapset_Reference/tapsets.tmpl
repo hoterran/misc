@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+
+<book id="TapsetRef">
+ <bookinfo>
+  <title>SystemTap Tapset Reference Manual</title>
+<!--starthere-->
+  <copyright>
+   <year>2008-2009</year>
+   <holder>Red Hat, Inc. and others</holder>
+  </copyright>
+
+  <authorgroup>
+   <author>
+    <othername>SystemTap</othername>
+    <contrib>Hackers</contrib>
+   </author>
+  </authorgroup>
+
+
+  <legalnotice>
+   <para>
+     This documentation is free software; you can redistribute
+     it and/or modify it under the terms of the GNU General Public
+     License version 2 as published by the Free Software Foundation.
+   </para>
+      
+   <para>
+     This program is distributed in the hope that it will be
+     useful, but WITHOUT ANY WARRANTY; without even the implied
+     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+     See the GNU General Public License for more details.
+   </para>
+      
+   <para>
+     You should have received a copy of the GNU General Public
+     License along with this program; if not, write to the Free
+     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+     MA 02111-1307 USA
+   </para>
+      
+   <para>
+     For more details see the file COPYING in the source
+     distribution of Linux.
+   </para>
+  </legalnotice>
+ </bookinfo>
+<!-- pls dont remove marker comments, as they are used in publican conversion-->
+<toc></toc>
+<chapter id="introduction">
+  <title>Introduction</title>
+  <para>
+    SystemTap provides free software (GPL) infrastructure to simplify the
+    gathering of information about the running Linux system. This assists
+    diagnosis of a performance or functional problem. SystemTap eliminates the
+    need for the developer to go through the tedious and disruptive instrument,
+    recompile, install, and reboot sequence that may be otherwise required to
+    collect data.
+  </para>
+
+  <para>
+    SystemTap provides a simple command line interface and scripting language
+    for writing instrumentation for a live running kernel. The instrumentation
+    makes extensive use of the probe points and functions provided in the
+    <firstterm>tapset</firstterm> library. This document describes the various
+    probe points and functions.
+  </para>
+  
+    <section id="format">
+      <title>Tapset Name Format</title>
+	
+      <para>In this guide, tapset definitions appear in the following format:</para>
+
+      <screen>
+	name:return (parameters)
+	definition
+      </screen>
+	
+      <para>
+	The <replaceable>return</replaceable> field specifies what data type the
+	tapset extracts and returns from the kernel during a probe (and thus,
+	returns).  Tapsets use 2 data types for
+	<replaceable>return</replaceable>: <literal>long</literal> (tapset
+	extracts and returns an integer) and <literal>string</literal> (tapset
+	extracts and returns a string).
+      </para>
+
+      <para>
+	In some cases, tapsets do not have a <replaceable>return</replaceable>
+	value. This simply means that the tapset does not extract anything from
+	the kernel.  This is common among asynchronous events such as timers,
+	exit functions, and print functions.
+      </para>
+<!--
+<varlistentry>
+<term></term>
+<listitem>
+	<para></para>
+</listitem>
+</varlistentry>
+-->
+
+    </section>
+  
+  </chapter>
+<!--endhere-->
+<!--markerforxi-->
+<!-- pls dont remove marker comments, as they are used in publican conversion-->
+  <chapter id="context_stp">
+    <title>Context Functions</title>
+    <para>
+      The context functions provide additional information about where
+      an event occurred.
+      These functions can provide information such as a backtrace to 
+      where the event occurred
+      and the current register values for the processor.
+    </para>
+!Itapset/context.stp
+!Itapset/context-symbols.stp
+!Itapset/ucontext-symbols.stp
+!Itapset/context-unwind.stp
+!Itapset/ucontext-unwind.stp
+!Itapset/task.stp
+!Itapset/pn.stp
+  </chapter>
+
+  <chapter id="timestamp_stp">
+    <title>Timestamp Functions</title>
+    <para>
+      Each timestamp function returns a value to indicate when
+      a function is executed.
+      These returned values can then be used to indicate
+      when an event occurred, provide an ordering for events, or compute
+      the amount of time elapsed between two time stamps.
+    </para>
+!Itapset/timestamp.stp
+!Itapset/timestamp_gtod.stp
+  </chapter>
+
+  <chapter id="ctime.stp">
+    <title>Time string utility function</title>
+    <para>
+      Utility function to turn seconds since the epoch (as returned by
+      the timestamp function gettimeofday_s()) into a human readable
+      date/time string.
+    </para>
+!Itapset/ctime.stp
+  </chapter>
+
+  <chapter id="memory_stp">
+    <title>Memory Tapset</title>
+ <para>
+      This family of probe points is used to probe memory-related events
+      or query the memory usage of the current process.
+      It contains the following probe points:
+    </para>
+!Itapset/memory.stp
+!Itapset/proc_mem.stp
+  </chapter>
+
+  <chapter id="task_time_stp">
+    <title>Task Time Tapset</title>
+    <para>
+      This tapset defines utility functions to query time related
+      properties of the current tasks, translate those in miliseconds
+      and human readable strings.
+    </para>
+!Itapset/task_time.stp
+  </chapter>
+
+  <chapter id="iosched.stp">
+    <title>IO Scheduler and block IO Tapset</title>
+    <para>
+      This family of probe points is used to probe block IO layer and IO scheduler activities.
+      It contains the following probe points:
+    </para>
+!Itapset/ioscheduler.stp
+!Itapset/ioblock.stp
+  </chapter>
+
+  <chapter id="scsi.stp">
+    <title>SCSI Tapset</title>
+    <para>
+      This family of probe points is used to probe SCSI activities.  
+      It contains the following probe points:
+    </para>
+!Itapset/scsi.stp
+  </chapter>
+
+  <chapter id="tty.stp">
+    <title>TTY Tapset</title>
+    <para>
+      This family of probe points is used to probe TTY (Teletype) activities.
+      It contains the following probe points:
+    </para>
+!Itapset/tty.stp
+  </chapter>
+
+  <chapter id="networking.stp">
+    <title>Networking Tapset</title>
+    <para>
+      This family of probe points is used to probe the activities of
+      the network device and protocol layers.
+    </para>
+!Itapset/networking.stp
+!Itapset/tcp.stp
+!Itapset/udp.stp
+!Itapset/ip.stp
+  </chapter>
+
+  <chapter id="socket.stp">
+    <title>Socket Tapset</title>
+    <para>
+      This family of probe points is used to probe socket activities.
+      It contains the following probe points:
+   </para>
+!Itapset/socket.stp
+  </chapter>
+  <chapter id="kprocess.stp">
+    <title>Kernel Process Tapset</title>
+    <para>
+      This family of probe points is used to probe process-related activities.
+      It contains the following probe points:
+    </para>
+!Itapset/kprocess.stp
+  </chapter>
+  <chapter id="signal.stp">
+    <title>Signal Tapset</title>
+    <para>
+      This family of probe points is used to probe signal activities.
+      It contains the following probe points:
+    </para>
+!Itapset/signal.stp
+  </chapter>
+  <chapter id="dentry.stp">
+    <title>Directory-entry (dentry) Tapset</title>
+    <para>
+      This family of functions is used to map kernel VFS
+      directory entry pointers to file or full path names.
+    </para>
+!Itapset/dentry.stp
+    </chapter>
+  <chapter id="logging.stp">
+    <title>Logging Tapset</title>
+    <para>
+      This family of functions is used to send simple
+      message strings to various destinations.
+    </para>
+!Itapset/logging.stp
+    </chapter>
+  <chapter id="random.stp">
+    <title>Random functions Tapset</title>
+    <para>
+      These functions deal with random number generation.
+    </para>
+!Itapset/random.stp
+    </chapter>
+  <chapter id="conversions.stp">
+    <title>String and data retrieving functions Tapset</title>
+    <para>
+      Functions to retrieve strings and other primitive types from
+      the kernel or a user space programs based on addresses. All
+      strings are of a maximum length given by MAXSTRINGLEN.
+    </para>
+!Itapset/conversions.stp
+    </chapter>
+  <chapter id="string.stp">
+    <title>A collection of standard string functions</title>
+    <para>
+      Functions to get the length, a substring, getting at individual
+      characters, string seaching, escaping, tokenizing, and converting
+      strings to longs.
+    </para>
+!Itapset/string.stp
+    </chapter>
+  <chapter id="ansi.stp">
+    <title>Utility functions for using ansi control chars in logs</title>
+    <para>
+      Utility functions for logging using ansi control characters. This
+      lets you manipulate the cursor position and character color output
+      and attributes of log messages.
+    </para>
+!Itapset/ansi.stp
+    </chapter>
+</book>

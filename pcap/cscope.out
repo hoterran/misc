@@ -1,0 +1,5428 @@
+cscope 15 $HOME/Projects/misc/pcap -q 0000000330 0000026763
+	@a.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<Ãtš‘/š.h
+>
+
+4 
+	$maš
+()
+
+6 * 
+dev
+, 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+8 
+bpf_u_št32
+ 
+Ãt
+;
+
+9 
+bpf_u_št32
+ 
+mask
+;
+
+12 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+14 
+	`´štf
+("Deviû %s\n", 
+dev
+);
+
+16 
+	`pÿp_looku²‘
+(
+dev
+, &
+Ãt
+, &
+mask
+, 
+”rbuf
+);
+
+18 
+š_addr
+ 
+d
+;
+
+19 
+d
+.
+s_addr
+ = 
+Ãt
+;
+
+21 * 
+z
+ = 
+	`š‘_Áß
+(
+d
+);
+
+23 
+d
+.
+s_addr
+ = 
+mask
+;
+
+25 * 
+z2
+ = 
+	`š‘_Áß
+(
+d
+);
+
+27 
+	`´štf
+("Ãˆ- % - %s\n", 
+z
+, 
+z2
+);
+
+30 
+	}
+}
+
+	@b.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<”ºo.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+8 
+	~<Ãtš‘/if_‘h”.h
+>
+
+13 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,
+
+14 cÚ¡ 
+u_ch¬
+* 
+·ck‘
+) {
+
+15 
+couÁ
+ = 1;
+
+16 
+	`årštf
+(
+¡dout
+, "%d count:%d-packet:[%s]-[%s]-snaplen:%d-totallen:%d\n",
+
+17 
+	`time
+(
+NULL
+), 
+couÁ
+, 
+·ck‘
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+18 
+couÁ
+++;
+
+19 
+	}
+}
+
+21 
+	$maš
+(
+¬gc
+, * 
+¬gv
+[]) {
+
+22 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+23 
+pÿp_t
+ *
+desü
+;
+
+24 
+pÿp_pkthdr
+ 
+pkthdr
+;
+
+26 
+desü
+ = 
+	`pÿp_İ’_live
+("ªy",100, 0, 
+	`©oi
+(
+¬gv
+[1]), 
+”rbuf
+);
+
+28 cÚ¡ *
+·ck‘
+ = 
+NULL
+;
+
+30 
+·ck‘
+ = 
+	`pÿp_Ãxt
+(
+desü
+, &
+pkthdr
+);
+
+31 
+	`my_ÿÎback
+("kkk", &
+pkthdr
+, 
+·ck‘
+);
+
+34 
+	}
+}
+
+	@c.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<”ºo.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+8 
+	~<Ãtš‘/if_‘h”.h
+>
+
+10 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,
+
+11 cÚ¡ 
+u_ch¬
+* 
+·ck‘
+) {
+
+12 
+couÁ
+ = 1;
+
+13 
+	`årštf
+(
+¡dout
+, "%d-%s-%s-%d-%d\n", 
+couÁ
+, 
+·ck‘
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+14 
+	`fæush
+(
+¡dout
+);
+
+15 
+couÁ
+++;
+
+16 
+	}
+}
+
+18 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+20 
+i
+;
+
+21 *
+dev
+;
+
+22 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+23 
+pÿp_t
+ *
+desü
+;
+
+24 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+25 
+pÿp_pkthdr
+ 
+hdr
+;
+
+26 
+‘h”_h—d”
+ *
+•thr
+;
+
+27 
+bpf_´og¿m
+ 
+å
+;
+
+28 
+bpf_u_št32
+ 
+maskp
+;
+
+29 
+bpf_u_št32
+ 
+Ã
+;
+
+31 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+32 
+	`´štf
+("%s", 
+dev
+);
+
+33 
+	`fæush
+(
+¡dout
+);
+
+34 
+	`pÿp_looku²‘
+(
+dev
+, &
+Ã
+, &
+maskp
+, 
+”rbuf
+);
+
+36 
+desü
+ = 
+	`pÿp_İ’_live
+(
+dev
+, 200, 0, -1, 
+”rbuf
+);
+
+38 
+	`pÿp_compe
+(
+desü
+, &
+å
+, 
+¬gv
+[1], 0, 
+Ã
+);
+
+40 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+42 
+	`pÿp_loİ
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+44 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+47 
+	}
+}
+
+	@d.c
+
+1 
+	~<sys/sock‘.h
+>
+
+2 
+	~<Ãtš‘/š.h
+>
+
+3 
+	~<¬·/š‘.h
+>
+
+5 
+	$maš
+()
+
+8 
+š_addr
+ 
+d
+;
+
+10 
+	`š‘_©Ú
+("127.0.0.1", &
+d
+);
+
+12 
+	}
+}
+
+	@e.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<”ºo.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+8 
+	~<Ãtš‘/if_‘h”.h
+>
+
+10 
+	#SIZE_ETHERNET
+ 14
+
+	)
+
+12 
+	s¢iff_‘h”Ãt
+ {
+
+13 
+u_ch¬
+ 
+	m‘h”_dho¡
+[
+ETHER_ADDR_LEN
+];
+
+14 
+u_ch¬
+ 
+	m‘h”_sho¡
+[
+ETHER_ADDR_LEN
+];
+
+15 
+u_shÜt
+ 
+	m‘h”_ty³
+;
+
+19 
+	s¢iff_
+ {
+
+20 
+u_ch¬
+ 
+	m_vhl
+;
+
+21 
+u_ch¬
+ 
+	m_tos
+;
+
+22 
+u_shÜt
+ 
+	m_Ën
+;
+
+23 
+u_shÜt
+ 
+	m_id
+;
+
+24 
+u_shÜt
+ 
+	m_off
+;
+
+25 
+	#IP_RF
+ 0x8000
+
+	)
+
+26 
+	#IP_DF
+ 0x4000
+
+	)
+
+27 
+	#IP_MF
+ 0x2000
+
+	)
+
+28 
+	#IP_OFFMASK
+ 0x1ffà
+
+	)
+
+29 
+u_ch¬
+ 
+	m_‰l
+;
+
+30 
+u_ch¬
+ 
+	m_p
+;
+
+31 
+u_shÜt
+ 
+	m_sum
+;
+
+32 
+š_addr
+ 
+	m_¤c
+,
+	m_d¡
+;
+
+34 
+	#IP_HL
+(
+
+è((()->
+_vhl
+è& 0x0f)
+
+	)
+
+35 
+	#IP_V
+(
+
+è((()->
+_vhl
+è>> 4)
+
+	)
+
+37 
+	s¢iff_tı
+ {
+
+38 
+ušt16_t
+ 
+	mth_¥Üt
+;
+
+39 
+ušt16_t
+ 
+	mth_dpÜt
+;
+
+40 
+ušt32_t
+ 
+	mth_£q
+;
+
+41 
+ušt32_t
+ 
+	mth_ack
+;
+
+43 
+u_ch¬
+ 
+	mth_offx2
+;
+
+44 
+	#TH_OFF
+(
+th
+è((Ñh)->
+th_offx2
+ & 0xf0è>> 4)
+
+	)
+
+45 
+u_ch¬
+ 
+	mth_æags
+;
+
+46 
+	#TH_FIN
+ 0x01
+
+	)
+
+47 
+	#TH_SYN
+ 0x02
+
+	)
+
+48 
+	#TH_RST
+ 0x04
+
+	)
+
+49 
+	#TH_PUSH
+ 0x08
+
+	)
+
+50 
+	#TH_ACK
+ 0x10
+
+	)
+
+51 
+	#TH_URG
+ 0x20
+
+	)
+
+52 
+	#TH_ECE
+ 0x40
+
+	)
+
+53 
+	#TH_CWR
+ 0x80
+
+	)
+
+54 
+	#TH_FLAGS
+ (
+TH_FIN
+|
+TH_SYN
+|
+TH_RST
+|
+TH_ACK
+|
+TH_URG
+|
+TH_ECE
+|
+TH_CWR
+)
+
+	)
+
+55 
+u_shÜt
+ 
+	mth_wš
+;
+
+56 
+u_shÜt
+ 
+	mth_sum
+;
+
+57 
+u_shÜt
+ 
+	mth_u½
+;
+
+60 cÚ¡ 
+¢iff_‘h”Ãt
+ *
+	g‘h”Ãt
+;
+
+61 cÚ¡ 
+¢iff_
+ *
+	ghdr
+;
+
+62 cÚ¡ 
+¢iff_tı
+ *
+	gtıhdr
+;
+
+63 cÚ¡ *
+	g·ylßd
+;
+
+65 
+u_št
+ 
+	gsize_hdr
+;
+
+66 
+u_št
+ 
+	gsize_tıhdr
+;
+
+68 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,
+
+69 cÚ¡ 
+u_ch¬
+* 
+s
+) {
+
+70 
+couÁ
+ = 1;
+
+72 
+‘h”Ãt
+ = (
+¢iff_‘h”Ãt
+*)(
+s
+);
+
+74 
+hdr
+ = (
+¢iff_
+ *)(
+s
+ + 
+SIZE_ETHERNET
+);
+
+75 
+size_hdr
+ = 
+	`IP_HL
+(
+hdr
+)*4;
+
+76 ià(
+size_hdr
+ < 20) {
+
+77 
+	`´štf
+(" * Inv®id IP h—d”†’gth: %u by‹s\n", 
+size_hdr
+);
+
+81 
+tıhdr
+ = (
+¢iff_tı
+ *)(
+s
+ + 
+SIZE_ETHERNET
+ + 
+size_hdr
+);
+
+82 
+size_tıhdr
+ = 
+	`TH_OFF
+(
+tıhdr
+)*4;
+
+83 ià(
+size_tıhdr
+ < 20) {
+
+84 
+	`´štf
+(" * Inv®id TCP h—d”†’gth: %u by‹s\n", 
+size_tıhdr
+);
+
+88 
+	`årštf
+(
+¡dout
+, "%d-%s-%s-%d-%d\n", 
+couÁ
+, 
+s
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+89 
+	`fæush
+(
+¡dout
+);
+
+90 
+couÁ
+++;
+
+91 
+	}
+}
+
+93 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+95 
+i
+;
+
+96 *
+dev
+;
+
+97 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+98 
+pÿp_t
+ *
+desü
+;
+
+99 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+100 
+pÿp_pkthdr
+ 
+hdr
+;
+
+101 
+‘h”_h—d”
+ *
+•thr
+;
+
+102 
+bpf_´og¿m
+ 
+å
+;
+
+103 
+bpf_u_št32
+ 
+maskp
+;
+
+104 
+bpf_u_št32
+ 
+Ã
+;
+
+106 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+108 
+	`pÿp_looku²‘
+(
+dev
+, &
+Ã
+, &
+maskp
+, 
+”rbuf
+);
+
+110 
+desü
+ = 
+	`pÿp_İ’_live
+("ªy", 100, 0, -1, 
+”rbuf
+);
+
+112 
+	`pÿp_compe
+(
+desü
+, &
+å
+, 
+¬gv
+[1], 0, 
+Ã
+);
+
+114 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+116 
+	`pÿp_loİ
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+118 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+121 
+	}
+}
+
+	@f.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<”ºo.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+8 
+	~<Ãtš‘/if_‘h”.h
+>
+
+10 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,
+
+11 cÚ¡ 
+u_ch¬
+* 
+·ck‘
+) {
+
+12 
+couÁ
+ = 1;
+
+14 ià(
+pkthdr
+ =ğ
+NULL
+) {
+
+15 
+couÁ
+++;
+
+19 
+	`årštf
+(
+¡dout
+, "%d-%s-%s-%d-%d\n", 
+couÁ
+, 
+·ck‘
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+20 
+	`fæush
+(
+¡dout
+);
+
+21 
+couÁ
+++;
+
+22 
+	}
+}
+
+27 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+29 
+i
+;
+
+30 
+dev
+[64] = "lo";
+
+31 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+32 
+pÿp_t
+ *
+desü
+;
+
+33 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+34 
+pÿp_pkthdr
+ 
+hdr
+;
+
+35 
+‘h”_h—d”
+ *
+•thr
+;
+
+36 
+bpf_´og¿m
+ 
+å
+;
+
+37 
+bpf_u_št32
+ 
+Ãtmask
+;
+
+38 
+bpf_u_št32
+ 
+loÿÊ‘
+;
+
+40 
+	`pÿp_looku²‘
+(
+dev
+, &
+loÿÊ‘
+, &
+Ãtmask
+, 
+”rbuf
+);
+
+42 
+desü
+ = 
+	`pÿp_İ’_live
+(
+dev
+, 65535, 0, -1, 
+”rbuf
+);
+
+44 
+	`pÿp_compe
+(
+desü
+, &
+å
+, 
+¬gv
+[1], 0, 
+Ãtmask
+);
+
+46 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+48 
+	`pÿp_di¥©ch
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+50 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+53 
+	}
+}
+
+	@h.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<¡dlib.h
+>
+
+3 
+	~<uni¡d.h
+>
+
+5 
+	~<pÿp.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+30 
+	$maš
+() {
+
+32 
+pÿp_if_t
+ *
+devli¡
+, *
+cu¼
+;
+
+33 
+pÿp_addr_t
+ *
+addr
+;
+
+34 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+36 
+	`pÿp_fšd®ldevs
+(&
+devli¡
+, 
+”rbuf
+);
+
+38 
+cu¼
+ = 
+devli¡
+; cu¼; cu¼ = cu¼->
+Ãxt
+) {
+
+43 
+	`´štf
+("%s-%s-%p-%d\n", 
+cu¼
+->
+Çme
+, cu¼->
+desütiÚ
+,
+
+44 
+cu¼
+->
+add»s£s
+, cu¼->
+æags
+);
+
+45 
+addr
+ = 
+cu¼
+->
+add»s£s
+;‡ddr;‡dd¸ğaddr->
+Ãxt
+) {
+
+46 
+	`´štf
+("\t%s\n",
+
+47 
+	`š‘_Áß
+(((
+sockaddr_š
+ *è(
+addr
+->addr))->
+sš_addr
+));
+
+52 
+	}
+}
+
+	@packet_mmap_1.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<pÿp.h
+>
+
+3 
+	~<lšux/ty³s.h
+>
+
+4 
+	~<lšux/f‹r.h
+>
+
+6 
+	~<sys/sock‘.h
+>
+
+7 
+	~<¡ršg.h
+>
+
+8 
+	~<lšux/if_·ck‘.h
+>
+
+9 
+	~<Ãt/if.h
+>
+
+10 
+	~<sys/ioùl.h
+>
+
+11 
+	~<¬·/š‘.h
+>
+
+12 
+	~<uni¡d.h
+>
+
+13 
+	~<lšux/if_‘h”.h
+>
+
+15 
+	~<sys/pŞl.h
+>
+
+16 
+	~<sys/mmª.h
+>
+
+18 #iâdeà
+P
+
+
+19 
+	#P
+(
+fÜm©
+, ...) do \
+
+21 
+	`årštf
+(
+¡dout
+, "% % %d " 
+fÜm©
+ "\n", 
+__FILE__
+, 
+__FUNCTION__
+, 
+__LINE__
+, ##
+__VA_ARGS__
+); \
+
+22 
+	`fæush
+(
+¡dout
+); \
+
+24 0);
+
+	)
+
+27 
+	$PrštPack‘
+(cÚ¡ * 
+
+)
+
+30 
+	}
+}
+
+32 
+boŞ
+ 
+	$Ex´essiÚToF‹r
+(cÚ¡ * 
+exp
+, 
+sock_årog
+* 
+f
+)
+
+34 
+pÿp_t
+* 
+pHªdË
+ = 
+	`pÿp_İ’_d—d
+(
+DLT_EN10MB
+, 1500);
+
+35 ià(
+NULL
+==
+pHªdË
+)
+
+37 
+	`P
+("pcap_open_deadƒrror");
+
+38  
+çl£
+;
+
+40 
+bpf_´og¿m
+ 
+¡_bpf
+;
+
+41 ià(-1==
+	`pÿp_compe
+(
+pHªdË
+, &
+¡_bpf
+, (*)
+exp
+, 1, 0x00ffffff))
+
+43 
+	`pÿp_şo£
+(
+pHªdË
+);
+
+44 
+	`P
+("compileƒrror");
+
+45  
+çl£
+;
+
+47 
+f
+->
+Ën
+ = ()
+¡_bpf
+.
+bf_Ën
+;
+
+48 
+f
+->
+f‹r
+ = (
+sock_f‹r
+*)
+¡_bpf
+.
+bf_š¢s
+;
+
+49 
+	`pÿp_şo£
+(
+pHªdË
+);
+
+50  
+Œue
+;
+
+51 
+	}
+}
+
+53 
+	$F»eF‹r
+(
+sock_årog
+* 
+f
+)
+
+55 ià(
+NULL
+!=
+f
+->
+f‹r
+)
+
+57 
+bpf_´og¿m
+ 
+¡_bpf
+;
+
+58 
+¡_bpf
+.
+bf_Ën
+ = 
+f
+->
+Ën
+;
+
+59 
+¡_bpf
+.
+bf_š¢s
+ = (
+bpf_š¢
+*)
+f
+->
+f‹r
+;
+
+60 
+	`pÿp_ä“code
+(&
+¡_bpf
+);
+
+61 
+f
+->
+f‹r
+ = 
+NULL
+;
+
+63 
+	}
+}
+
+65 
+boŞ
+ 
+	$S‘Promisc
+(
+sock
+, cÚ¡ * 
+dev
+)
+
+67 
+iäeq
+ 
+‘h»q
+;
+
+68 
+	`¡ºıy
+(
+‘h»q
+.
+iä_Çme
+, 
+dev
+, 
+IFNAMSIZ
+);
+
+69 ià(
+	`ioùl
+(
+sock
+, 
+SIOCGIFFLAGS
+, &
+‘h»q
+)==-1)
+
+71 
+	`P
+("ioctlƒrror");
+
+72  
+çl£
+;
+
+74 
+‘h»q
+.
+iä_æags
+ |ğ
+IFF_PROMISC
+;
+
+75 ià(
+	`ioùl
+(
+sock
+, 
+SIOCSIFFLAGS
+, &
+‘h»q
+)==-1)
+
+77 
+	`P
+("ioctlƒrror");
+
+78  
+çl£
+;
+
+80  
+Œue
+;
+
+81 
+	}
+}
+
+83 
+boŞ
+ 
+	$BšdDeviû
+(
+sock
+, cÚ¡ * 
+dev
+)
+
+85 
+sockaddr_Î
+ 
+addr
+;
+
+86 
+iäeq
+ 
+iä
+;
+
+87 
+	`mem£t
+(&
+iä
+, 0, (ifr));
+
+88 
+	`¡ºıy
+(
+iä
+.
+iä_Çme
+, 
+dev
+, (ifr.ifr_name));
+
+89 ià(
+	`ioùl
+(
+sock
+, 
+SIOCGIFINDEX
+, &
+iä
+) == -1)
+
+91 
+	`P
+("ioctlƒrror");
+
+92  
+çl£
+;
+
+95 
+	`mem£t
+(&
+addr
+, 0, (addr));
+
+96 
+addr
+.
+¦l_çmy
+ = 
+AF_PACKET
+;
+
+97 
+addr
+.
+¦l_´ÙocŞ
+ = 
+	`htÚs
+(0x03);
+
+98 
+addr
+.
+¦l_ifšdex
+ = 
+iä
+.
+iä_ifšdex
+;
+
+99 
+addr
+.
+¦l_h©y³
+ = 0;
+
+100 
+addr
+.
+¦l_pk‰y³
+ = 0;
+
+101 
+addr
+.
+¦l_h®’
+ = 0;
+
+102 ià(-1 =ğ
+	`bšd
+(
+sock
+, (
+sockaddr
+ *)&
+addr
+, (addr)))
+
+104 
+	`P
+("bindƒrror");
+
+105  
+çl£
+;
+
+107  
+Œue
+;
+
+108 
+	}
+}
+
+110 
+	$‹¡
+(cÚ¡ * 
+exp
+, cÚ¡ * 
+dev
+)
+
+112 
+sock
+ = 
+	`sock‘
+(
+PF_PACKET
+, 
+SOCK_RAW
+, 
+	`htÚs
+(
+ETH_P_IP
+));
+
+113 ià(
+sock
+<=0)
+
+115 
+	`P
+("socketƒrror");
+
+119 
+	#PER_PACKET_SIZE
+ 2048
+
+	)
+
+120 cÚ¡ 
+BUFFER_SIZE
+ = 1024*1024*16;
+
+121 
+ack‘_»q
+ 
+»q
+;
+
+122 
+»q
+.
+_block_size
+ = 4096;
+
+123 
+»q
+.
+_block_Ä
+ = 
+BUFFER_SIZE
+/»q.
+_block_size
+;
+
+124 
+»q
+.
+_äame_size
+ = 
+PER_PACKET_SIZE
+;
+
+125 
+»q
+.
+_äame_Ä
+ = 
+BUFFER_SIZE
+/»q.
+_äame_size
+;
+
+126 ià(-1==
+	`£tsockİt
+(
+sock
+, 
+SOL_PACKET
+, 
+PACKET_RX_RING
+, &
+»q
+, (
+ack‘_»q
+)))
+
+128 
+	`³¼Ü
+("setsockopt");
+
+129 
+	`P
+("set PACKET_RX_RINGƒrror");
+
+130 
+	`şo£
+(
+sock
+);
+
+134 * 
+pBufãr
+ = (*)
+	`mm­
+(0, 
+BUFFER_SIZE
+, 
+PROT_READ
+|
+PROT_WRITE
+, 
+MAP_SHARED
+, 
+sock
+, 0);
+
+135 ià(
+MAP_FAILED
+==
+pBufãr
+)
+
+137 
+	`P
+("mmapƒrror");
+
+138 
+	`şo£
+(
+sock
+);
+
+143 ià(!
+	`S‘Promisc
+(
+sock
+, 
+dev
+))
+
+145 
+	`P
+("S‘Promisø[%s]ƒ¼Ü", 
+dev
+);
+
+146 
+	`mem£t
+(&
+»q
+, 0, (req));
+
+147 ià(-1==
+	`£tsockİt
+(
+sock
+, 
+SOL_PACKET
+, 
+PACKET_RX_RING
+, &
+»q
+, (req)))
+
+149 
+	`P
+("set map buffero 0ƒrror!");
+
+151 
+	`şo£
+(
+sock
+);
+
+154 ià(!
+	`BšdDeviû
+(
+sock
+, 
+dev
+))
+
+156 
+	`P
+("bšd [%s]ƒ¼Ü", 
+dev
+);
+
+157 
+	`mem£t
+(&
+»q
+, 0, (req));
+
+158 ià(-1==
+	`£tsockİt
+(
+sock
+, 
+SOL_PACKET
+, 
+PACKET_RX_RING
+, &
+»q
+, (req)))
+
+160 
+	`P
+("set map buffero 0ƒrror!");
+
+162 
+	`şo£
+(
+sock
+);
+
+166 
+nExpL’
+ = 
+	`¡¾’
+(
+exp
+);
+
+167 
+sock_årog
+ 
+F‹r
+;
+
+168 
+	`mem£t
+(&
+F‹r
+, 0, (
+sock_årog
+));
+
+169 ià(
+nExpL’
+>0)
+
+171 ià(
+	`Ex´essiÚToF‹r
+(
+exp
+, &
+F‹r
+))
+
+173 ià(
+	`£tsockİt
+(
+sock
+, 
+SOL_SOCKET
+, 
+SO_ATTACH_FILTER
+,
+
+174 &
+F‹r
+, (Filter))<0)
+
+176 
+	`³¼Ü
+("setsockopt");
+
+181 
+pŞlfd
+ 
+pfd
+;
+
+182 
+nIndex
+ = 0;
+
+187 
+ack‘_hdr
+* 
+pH—d
+ = (ack‘_hdr*)(
+pBufãr
+ + 
+nIndex
+*
+PER_PACKET_SIZE
+);
+
+188 ià(
+pH—d
+->
+_Ën
+<34 ||…Head->tp_len>1614)
+
+192 
+	`PrštPack‘
+((*)
+pH—d
++pH—d->
+_Ãt
+);
+
+193 
+pH—d
+->
+_Ën
+ = 0;
+
+194 
+pH—d
+->
+_¡©us
+ = 
+TP_STATUS_KERNEL
+;
+
+199 
+nIndex
+++;
+
+200 ià(
+nIndex
+>=
+BUFFER_SIZE
+/
+PER_PACKET_SIZE
+)
+
+202 
+nIndex
+ = 0;
+
+206 
+pfd
+.
+fd
+ = 
+sock
+;
+
+207 
+pfd
+.
+ev’ts
+ = 
+POLLIN
+ | 
+POLLERR
+;
+
+208 
+pfd
+.
+»v’ts
+ = 0;
+
+209 
+	`pŞl
+(&
+pfd
+, 1, 1000))
+
+212 
+	`³¼Ü
+("poll");
+
+213 
+	`P
+("pollƒrror");
+
+214 
+EndWhe
+;
+
+217 
+	`P
+("time out");
+
+222 
+EndWhe
+:
+
+223 ià(-1==
+	`munm­
+(
+pBufãr
+, 
+BUFFER_SIZE
+))
+
+225 
+	`P
+("unmapƒrror!");
+
+227 
+	`mem£t
+(&
+»q
+, 0, (req));
+
+228 ià(-1==
+	`£tsockİt
+(
+sock
+, 
+SOL_PACKET
+, 
+PACKET_RX_RING
+, &
+»q
+, (req)))
+
+230 
+	`P
+("set map buffero 0ƒrror!");
+
+232 
+	`şo£
+(
+sock
+);
+
+233 
+sock
+ = -1;
+
+235 ià(
+nExpL’
+>0)
+
+237 
+	`F»eF‹r
+(&
+F‹r
+);
+
+239 
+	}
+}
+
+241 
+	$maš
+()
+
+243 
+	`‹¡
+("tcp or udp", "eth1");
+
+245 
+	}
+}
+
+	@packet_mmap_2.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<sys/ty³s.h
+>
+
+3 
+	~<sys/sock‘.h
+>
+
+4 
+	~<sys/mmª.h
+>
+
+5 
+	~<lšux/if_·ck‘.h
+>
+
+6 
+	~<pŞl.h
+>
+
+7 
+	~<Ãt/‘h”Ãt.h
+>
+
+9 
+	#PER_PACKET_SIZE
+ 2048
+
+	)
+
+11 
+	$C®lBackPack‘
+(*
+d©a
+)
+
+13 
+	`´štf
+("Recv A Packet.\n");
+
+14 
+	}
+}
+
+16 
+	$maš
+()
+
+18 
+fd
+ = 0, 
+»t
+ = 0;
+
+19 *
+buff
+ = 
+NULL
+;
+
+21 
+fd
+ = 
+	`sock‘
+(
+PF_PACKET
+, 
+SOCK_RAW
+, 
+	`htÚs
+(
+ETH_P_ALL
+));
+
+22 if(
+fd
+<0)
+
+24 
+	`³¼Ü
+("socket");
+
+25 
+çed_2
+;
+
+28 
+ack‘_»q
+ 
+»q
+;
+
+29 cÚ¡ 
+BUFFER_SIZE
+ = 1024*1024*16;
+
+31 
+»q
+.
+_block_size
+ = 4096;
+
+32 
+»q
+.
+_block_Ä
+ = 
+BUFFER_SIZE
+/»q.
+_block_size
+;
+
+33 
+»q
+.
+_äame_size
+ = 
+PER_PACKET_SIZE
+;
+
+34 
+»q
+.
+_äame_Ä
+ = 
+BUFFER_SIZE
+/»q.
+_äame_size
+;
+
+36 
+»t
+ = 
+	`£tsockİt
+(
+fd
+, 
+SOL_PACKET
+, 
+PACKET_RX_RING
+, (*)&
+»q
+, (req));
+
+37 if(
+»t
+<0)
+
+39 
+	`³¼Ü
+("setsockopt");
+
+40 
+çed_2
+;
+
+43 
+buff
+ = (*)
+	`mm­
+(0, 
+BUFFER_SIZE
+, 
+PROT_READ
+|
+PROT_WRITE
+, 
+MAP_SHARED
+, 
+fd
+, 0);
+
+44 if(
+buff
+ =ğ
+MAP_FAILED
+)
+
+46 
+	`³¼Ü
+("mmap");
+
+47 
+çed_2
+;
+
+50 
+nIndex
+=0, 
+i
+=0;
+
+54 
+ack‘_hdr
+* 
+pH—d
+ = (ack‘_hdr*)(
+buff
++ 
+nIndex
+*
+PER_PACKET_SIZE
+);
+
+56 if(
+pH—d
+->
+_¡©us
+ =ğ
+TP_STATUS_USER
+)
+
+57 
+´oûss_·ck‘
+;
+
+60 
+pŞlfd
+ 
+pfd
+;
+
+61 
+pfd
+.
+fd
+ = fd;
+
+63 
+pfd
+.
+ev’ts
+ = 
+POLLIN
+;
+
+64 
+pfd
+.
+»v’ts
+ = 0;
+
+65 
+»t
+ = 
+	`pŞl
+(&
+pfd
+, 1, -1);
+
+66 if(
+»t
+<0)
+
+68 
+	`³¼Ü
+("poll");
+
+69 
+çed_1
+;
+
+72 
+´oûss_·ck‘
+:
+
+74 
+i
+=0; i<
+»q
+.
+_äame_Ä
+; i++)
+
+76 
+ack‘_hdr
+* 
+pH—d
+ = (ack‘_hdr*)(
+buff
++ 
+nIndex
+*
+PER_PACKET_SIZE
+);
+
+79 if(
+pH—d
+->
+_¡©us
+ =ğ
+TP_STATUS_KERNEL
+)
+
+83 
+	`C®lBackPack‘
+((*)
+pH—d
++pH—d->
+_Ãt
+);
+
+86 
+pH—d
+->
+_Ën
+ = 0;
+
+87 
+pH—d
+->
+_¡©us
+ = 
+TP_STATUS_KERNEL
+;
+
+90 
+nIndex
+++;
+
+91 
+nIndex
+%=
+»q
+.
+_äame_Ä
+;
+
+95 
+sucûss
+:
+
+96 
+	`şo£
+(
+fd
+);
+
+97 
+	`munm­
+(
+buff
+, 
+BUFFER_SIZE
+);
+
+100 
+çed_1
+:
+
+101 
+	`munm­
+(
+buff
+, 
+BUFFER_SIZE
+);
+
+103 
+çed_2
+:
+
+104 
+	`şo£
+(
+fd
+);
+
+106 
+	}
+}
+
+	@pcap_bond.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<uni¡d.h
+>
+
+3 
+	~<¡ršg.h
+>
+
+4 
+	~<¡dlib.h
+>
+
+5 
+	~<pÿp.h
+>
+
+6 
+	~<time.h
+>
+
+7 
+	~<libg’.h
+>
+
+8 
+	~<sigÇl.h
+>
+
+9 
+	~<¡dšt.h
+>
+
+10 
+	~<¡d¬g.h
+>
+
+11 
+	~<sys/sock‘.h
+>
+
+12 
+	~<Ãtš‘/š.h
+>
+
+13 
+	~<¬·/š‘.h
+>
+
+14 
+	~<sys/ty³s.h
+>
+
+15 
+	~<hœedis/hœedis.h
+>
+
+16 
+	~<sys/¡©.h
+>
+
+17 
+	~<fú.h
+>
+
+18 
+	~<”ºo.h
+>
+
+19 
+	~<¡ršg.h
+>
+
+21 
+	#OK
+ (0)
+
+	)
+
+22 
+	#ERR
+ (-1)
+
+	)
+
+23 
+	#PEND
+ (1)
+
+	)
+
+25 
+	#SIZE_IP
+ 16
+
+	)
+
+26 
+	#SIZE_ETHERNET
+ 14
+
+	)
+
+27 
+	#ETHER_ADDR_LEN
+ 6
+
+	)
+
+28 
+	#HOSTNAME_LEN
+ 128
+
+	)
+
+30 
+	#PKT_TYPE_TCP
+ 1
+
+	)
+
+31 
+	#PKT_TYPE_UDP
+ 2
+
+	)
+
+33 
+	#OUTPUT_INTERVAL
+ 300
+
+	)
+
+35 
+	#SLL_HDR_LEN
+ 16
+
+	)
+
+36 
+	#SLL_ADDRLEN
+ 8
+
+	)
+
+38 
+	s¦l_h—d”
+ {
+
+39 
+u_št16_t
+ 
+	m¦l_pk‰y³
+;
+
+40 
+u_št16_t
+ 
+	m¦l_h©y³
+;
+
+41 
+u_št16_t
+ 
+	m¦l_h®’
+;
+
+42 
+u_št8_t
+ 
+	m¦l_addr
+[
+SLL_ADDRLEN
+];
+
+43 
+u_št16_t
+ 
+	m¦l_´ÙocŞ
+;
+
+47 
+	s¢iff_‘h”Ãt
+ {
+
+48 
+u_ch¬
+ 
+	m‘h”_dho¡
+[
+ETHER_ADDR_LEN
+];
+
+49 
+u_ch¬
+ 
+	m‘h”_sho¡
+[
+ETHER_ADDR_LEN
+];
+
+50 
+u_shÜt
+ 
+	m‘h”_ty³
+;
+
+54 
+	s¢iff_
+ {
+
+55 
+u_ch¬
+ 
+	m_vhl
+;
+
+56 
+u_ch¬
+ 
+	m_tos
+;
+
+57 
+u_shÜt
+ 
+	m_Ën
+;
+
+58 
+u_shÜt
+ 
+	m_id
+;
+
+59 
+u_shÜt
+ 
+	m_off
+;
+
+60 
+	#IP_RF
+ 0x8000
+
+	)
+
+61 
+	#IP_DF
+ 0x4000
+
+	)
+
+62 
+	#IP_MF
+ 0x2000
+
+	)
+
+63 
+	#IP_OFFMASK
+ 0x1ffà
+
+	)
+
+64 
+u_ch¬
+ 
+	m_‰l
+;
+
+65 
+u_ch¬
+ 
+	m_p
+;
+
+66 
+u_shÜt
+ 
+	m_sum
+;
+
+67 
+š_addr
+ 
+	m_¤c
+,
+	m_d¡
+;
+
+69 
+	#IP_HL
+(
+
+è((()->
+_vhl
+è& 0x0f)
+
+	)
+
+70 
+	#IP_V
+(
+
+è((()->
+_vhl
+è>> 4)
+
+	)
+
+73 
+	s¢iff_tı
+ {
+
+74 
+ušt16_t
+ 
+	mth_¥Üt
+;
+
+75 
+ušt16_t
+ 
+	mth_dpÜt
+;
+
+76 
+ušt32_t
+ 
+	mth_£q
+;
+
+77 
+ušt32_t
+ 
+	mth_ack
+;
+
+79 
+u_ch¬
+ 
+	mth_offx2
+;
+
+80 
+	#TH_OFF
+(
+th
+è((Ñh)->
+th_offx2
+ & 0xf0è>> 4)
+
+	)
+
+81 
+u_ch¬
+ 
+	mth_æags
+;
+
+82 
+	#TH_FIN
+ 0x01
+
+	)
+
+83 
+	#TH_SYN
+ 0x02
+
+	)
+
+84 
+	#TH_RST
+ 0x04
+
+	)
+
+85 
+	#TH_PUSH
+ 0x08
+
+	)
+
+86 
+	#TH_ACK
+ 0x10
+
+	)
+
+87 
+	#TH_URG
+ 0x20
+
+	)
+
+88 
+	#TH_ECE
+ 0x40
+
+	)
+
+89 
+	#TH_CWR
+ 0x80
+
+	)
+
+90 
+	#TH_FLAGS
+ (
+TH_FIN
+|
+TH_SYN
+|
+TH_RST
+|
+TH_ACK
+|
+TH_URG
+|
+TH_ECE
+|
+TH_CWR
+)
+
+	)
+
+91 
+u_shÜt
+ 
+	mth_wš
+;
+
+92 
+u_shÜt
+ 
+	mth_sum
+;
+
+93 
+u_shÜt
+ 
+	mth_u½
+;
+
+96 cÚ¡ 
+¦l_h—d”
+ *
+	g¦lhdr
+;
+
+97 cÚ¡ 
+¢iff_‘h”Ãt
+ *
+	g‘h”Ãt
+;
+
+98 cÚ¡ 
+¢iff_
+ *
+	ghdr
+;
+
+99 cÚ¡ 
+¢iff_tı
+ *
+	gtıhdr
+;
+
+100 cÚ¡ *
+	g·ylßd
+;
+
+102 
+u_št
+ 
+	gsize_hdr
+;
+
+103 
+u_št
+ 
+	gsize_tıhdr
+;
+
+105 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+h
+,
+
+106 cÚ¡ 
+u_ch¬
+* 
+s
+) {
+
+108 
+	`´štf
+("ssss");
+
+109 
+	`fæush
+(
+¡dout
+);
+
+111 
+tm
+ *tm;
+
+112 
+time_t
+ 
+timeSmpSec
+;
+
+113 
+¤c_
+[
+SIZE_IP
+], 
+d¡_
+[SIZE_IP];
+
+114 
+ušt16_t
+ 
+¤c_pÜt
+, 
+d¡_pÜt
+;
+
+116 
+timeSmpSec
+ = 
+h
+->
+ts
+.
+tv_£c
+;
+
+117 
+tm
+ = 
+	`loÿÉime
+(&
+timeSmpSec
+);
+
+121 
+¦lhdr
+ = (
+¦l_h—d”
+*)(
+s
+);
+
+124 
+hdr
+ = (
+¢iff_
+ *)(
+s
+ + 
+SLL_HDR_LEN
+);
+
+126 
+size_hdr
+ = 
+	`IP_HL
+(
+hdr
+)*4;
+
+127 ià(
+size_hdr
+ < 20) {
+
+128 
+	`´štf
+(" * Inv®id IP h—d”†’gth: %u by‹s", 
+size_hdr
+);
+
+132 
+tıhdr
+ = (
+¢iff_tı
+ *)(
+s
+ + 
+SLL_HDR_LEN
+ + 
+size_hdr
+);
+
+133 
+size_tıhdr
+ = 
+	`TH_OFF
+(
+tıhdr
+)*4;
+
+134 ià(
+size_tıhdr
+ < 20) {
+
+135 
+	`´štf
+(" * Inv®id TCP h—d”†’gth: %u by‹s\n", 
+size_tıhdr
+);
+
+139 
+	`š‘_Áİ
+(
+AF_INET
+, (*)&(
+hdr
+->
+_¤c
+), 
+¤c_
+, 
+SIZE_IP
+);
+
+140 
+	`š‘_Áİ
+(
+AF_INET
+, (*)&(
+hdr
+->
+_d¡
+), 
+d¡_
+, 
+SIZE_IP
+);
+
+141 
+¤c_pÜt
+ = 
+	`Áohs
+(
+tıhdr
+->
+th_¥Üt
+);
+
+142 
+d¡_pÜt
+ = 
+	`Áohs
+(
+tıhdr
+->
+th_dpÜt
+);
+
+145 
+	`´štf
+("caplen:%d†en:%d %s:%d->%s:%d ip_total_bytes:%d\n\n",
+
+146 
+h
+->
+ÿ¶’
+, h->
+Ën
+,
+
+147 
+¤c_
+, 
+¤c_pÜt
+, 
+d¡_
+, 
+d¡_pÜt
+,
+
+148 
+	`Áohs
+(
+hdr
+->
+_Ën
+));
+
+149 
+	}
+}
+
+151 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+153 
+i
+;
+
+154 *
+dev
+;
+
+155 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+156 
+pÿp_t
+ *
+desü
+;
+
+157 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+158 
+pÿp_pkthdr
+ 
+hdr
+;
+
+159 
+‘h”_h—d”
+ *
+•thr
+;
+
+160 
+bpf_´og¿m
+ 
+å
+;
+
+161 
+bpf_u_št32
+ 
+maskp
+;
+
+162 
+bpf_u_št32
+ 
+Ã
+;
+
+164 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+166 
+	`´štf
+("%s", 
+dev
+);
+
+167 
+	`fæush
+(
+¡dout
+);
+
+168 
+	`pÿp_looku²‘
+(
+dev
+, &
+Ã
+, &
+maskp
+, 
+”rbuf
+);
+
+170 
+desü
+ = 
+	`pÿp_İ’_live
+(
+dev
+, 100, 0, -1, 
+”rbuf
+);
+
+171 
+desü
+ = 
+	`pÿp_İ’_live
+("ªy", 100, 0, -1, 
+”rbuf
+);
+
+173 
+	`pÿp_compe
+(
+desü
+, &
+å
+, 
+¬gv
+[1], 0, 
+Ã
+);
+
+175 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+177 
+	`pÿp_loİ
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+179 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+182 
+	}
+}
+
+	@pcap_dispatch.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+5 
+	$ÿÎback
+(
+u_ch¬
+ *
+u£r
+, cÚ¡ 
+pÿp_pkthdr
+ *
+h
+, cÚ¡ u_ch¬ *
+s
+) {
+
+6 
+	`´štf
+("hahaha~n");
+
+7 
+	}
+}
+
+9 
+	$maš
+(
+¬gc
+, *
+¬gv
+[])
+
+11 
+pÿp_t
+ *
+hªdË
+;
+
+12 *
+dev
+;
+
+13 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+14 
+bpf_´og¿m
+ 
+å
+;
+
+15 
+f‹r_exp
+[] = "port 3306";
+
+16 
+bpf_u_št32
+ 
+mask
+;
+
+17 
+bpf_u_št32
+ 
+Ãt
+;
+
+18 
+pÿp_pkthdr
+ 
+h—d”
+;
+
+19 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+22 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+23 ià(
+dev
+ =ğ
+NULL
+) {
+
+24 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆfšd deçuÉ deviû: %s\n", 
+”rbuf
+);
+
+28 ià(
+	`pÿp_looku²‘
+(
+dev
+, &
+Ãt
+, &
+mask
+, 
+”rbuf
+) == -1) {
+
+29 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆg‘‚‘mask fÜ deviû %s: %s\n", 
+dev
+, 
+”rbuf
+);
+
+30 
+Ãt
+ = 0;
+
+31 
+mask
+ = 0;
+
+34 
+hªdË
+ = 
+	`pÿp_İ’_live
+("lo", 
+BUFSIZ
+, 0, 3000, 
+”rbuf
+);
+
+35 ià(
+hªdË
+ =ğ
+NULL
+) {
+
+36 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆİ’ deviû %s: %s\n", 
+dev
+, 
+”rbuf
+);
+
+40 ià(
+	`pÿp_compe
+(
+hªdË
+, &
+å
+, 
+f‹r_exp
+, 0, 
+Ãt
+) == -1) {
+
+41 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆ·r£ f‹¸%s: %s\n", 
+f‹r_exp
+, 
+	`pÿp_g‘”r
+(
+hªdË
+));
+
+44 ià(
+	`pÿp_£tf‹r
+(
+hªdË
+, &
+å
+) == -1) {
+
+45 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆš¡®Èf‹¸%s: %s\n", 
+f‹r_exp
+, 
+	`pÿp_g‘”r
+(
+hªdË
+));
+
+49 
+	`pÿp_di¥©ch
+(
+hªdË
+, 2, 
+ÿÎback
+, 
+NULL
+);
+
+53 
+	`pÿp_şo£
+(
+hªdË
+);
+
+55 
+	}
+}
+
+	@pcap_next_test.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+4 
+	$maš
+(
+¬gc
+, *
+¬gv
+[])
+
+6 
+pÿp_t
+ *
+hªdË
+;
+
+7 *
+dev
+;
+
+8 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+9 
+bpf_´og¿m
+ 
+å
+;
+
+10 
+f‹r_exp
+[] = "port 3306";
+
+11 
+bpf_u_št32
+ 
+mask
+;
+
+12 
+bpf_u_št32
+ 
+Ãt
+;
+
+13 
+pÿp_pkthdr
+ 
+h—d”
+;
+
+14 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+17 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+18 ià(
+dev
+ =ğ
+NULL
+) {
+
+19 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆfšd deçuÉ deviû: %s\n", 
+”rbuf
+);
+
+23 ià(
+	`pÿp_looku²‘
+(
+dev
+, &
+Ãt
+, &
+mask
+, 
+”rbuf
+) == -1) {
+
+24 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆg‘‚‘mask fÜ deviû %s: %s\n", 
+dev
+, 
+”rbuf
+);
+
+25 
+Ãt
+ = 0;
+
+26 
+mask
+ = 0;
+
+29 
+hªdË
+ = 
+	`pÿp_İ’_live
+("lo", 
+BUFSIZ
+, 0, 1000, 
+”rbuf
+);
+
+30 ià(
+hªdË
+ =ğ
+NULL
+) {
+
+31 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆİ’ deviû %s: %s\n", 
+dev
+, 
+”rbuf
+);
+
+35 ià(
+	`pÿp_compe
+(
+hªdË
+, &
+å
+, 
+f‹r_exp
+, 0, 
+Ãt
+) == -1) {
+
+36 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆ·r£ f‹¸%s: %s\n", 
+f‹r_exp
+, 
+	`pÿp_g‘”r
+(
+hªdË
+));
+
+39 ià(
+	`pÿp_£tf‹r
+(
+hªdË
+, &
+å
+) == -1) {
+
+40 
+	`årštf
+(
+¡d”r
+, "Couldn'ˆš¡®Èf‹¸%s: %s\n", 
+f‹r_exp
+, 
+	`pÿp_g‘”r
+(
+hªdË
+));
+
+44 
+·ck‘
+ = 
+	`pÿp_Ãxt
+(
+hªdË
+, &
+h—d”
+);
+
+46 
+	`´štf
+("Jacked‡…ack‘ w™h†’gth oà[%d] [%s]\n", 
+h—d”
+.
+Ën
+, 
+·ck‘
+);
+
+48 
+	`pÿp_şo£
+(
+hªdË
+);
+
+50 
+	}
+}
+
+	@pcap_z2.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<¡dio.h
+>
+
+3 
+	~<¡dlib.h
+>
+
+4 
+	~<”ºo.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<Ãtš‘/š.h
+>
+
+7 
+	~<¬·/š‘.h
+>
+
+8 
+	~<Ãtš‘/if_‘h”.h
+>
+
+9 
+	~<Ãt/‘h”Ãt.h
+>
+
+10 
+	~<Ãtš‘/‘h”.h
+>
+
+11 
+	~<Ãtš‘/.h
+>
+
+14 #iâdeà
+ETHER_HDRLEN
+
+
+15 
+	#ETHER_HDRLEN
+ 14
+
+	)
+
+19 
+u_št16_t
+ 
+	ghªdË_‘h”Ãt
+
+
+20 (
+u_ch¬
+ *
+	g¬gs
+,cÚ¡ 
+pÿp_pkthdr
+* 
+	gpkthdr
+,const u_char*
+
+21 
+	g·ck‘
+);
+
+22 
+u_ch¬
+* 
+	ghªdË_IP
+
+
+23 (
+u_ch¬
+ *
+	g¬gs
+,cÚ¡ 
+pÿp_pkthdr
+* 
+	gpkthdr
+,const u_char*
+
+24 
+	g·ck‘
+);
+
+36 
+	smy_
+ {
+
+37 
+u_št8_t
+ 
+	m_vhl
+;
+
+38 
+	#IP_V
+(
+
+è((()->
+_vhl
+ & 0xf0è>> 4)
+
+	)
+
+39 
+	#IP_HL
+(
+
+è(()->
+_vhl
+ & 0x0f)
+
+	)
+
+40 
+u_št8_t
+ 
+	m_tos
+;
+
+41 
+u_št16_t
+ 
+	m_Ën
+;
+
+42 
+u_št16_t
+ 
+	m_id
+;
+
+43 
+u_št16_t
+ 
+	m_off
+;
+
+44 
+	#IP_DF
+ 0x4000
+
+	)
+
+45 
+	#IP_MF
+ 0x2000
+
+	)
+
+46 
+	#IP_OFFMASK
+ 0x1ffà
+
+	)
+
+47 
+u_št8_t
+ 
+	m_‰l
+;
+
+48 
+u_št8_t
+ 
+	m_p
+;
+
+49 
+u_št16_t
+ 
+	m_sum
+;
+
+50 
+š_addr
+ 
+	m_¤c
+,
+	m_d¡
+;
+
+54 
+	$my_ÿÎback
+(
+u_ch¬
+ *
+¬gs
+,cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,const u_char*
+
+55 
+·ck‘
+)
+
+57 
+	`´štf
+("aaaa");
+
+58 
+	`fæush
+(
+¡dout
+);
+
+60 
+u_št16_t
+ 
+ty³
+ = 
+	`hªdË_‘h”Ãt
+(
+¬gs
+,
+pkthdr
+,
+·ck‘
+);
+
+62 if(
+ty³
+ =ğ
+ETHERTYPE_IP
+)
+
+64 
+	`hªdË_IP
+(
+¬gs
+,
+pkthdr
+,
+·ck‘
+);
+
+65 }if(
+ty³
+ =ğ
+ETHERTYPE_ARP
+)
+
+68 if(
+ty³
+ =ğ
+ETHERTYPE_REVARP
+)
+
+71 
+	}
+}
+
+73 
+u_ch¬
+* 
+	ghªdË_IP
+
+
+74 (
+u_ch¬
+ *
+	g¬gs
+,cÚ¡ 
+pÿp_pkthdr
+* 
+	gpkthdr
+,const u_char*
+
+75 
+	g·ck‘
+)
+
+77 cÚ¡ 
+my_
+* 
+	g
+;
+
+78 
+u_št
+ 
+	gËngth
+ = 
+pkthdr
+->
+Ën
+;
+
+79 
+u_št
+ 
+	ghËn
+,
+	goff
+,
+	gv”siÚ
+;
+
+80 
+	gi
+;
+
+82 
+	gËn
+;
+
+85 
+	g
+ = (
+my_
+*)(
+·ck‘
+ + (
+‘h”_h—d”
+));
+
+86 
+	gËngth
+ -ğ(
+‘h”_h—d”
+);
+
+89 ià(
+	gËngth
+ < (
+	gmy_
+))
+
+91 
+´štf
+("Œunÿ‹d i°%d",
+Ëngth
+);
+
+92  
+	gNULL
+;
+
+95 
+	gËn
+ = 
+Áohs
+(
+
+->
+_Ën
+);
+
+96 
+	ghËn
+ = 
+IP_HL
+(
+
+);
+
+97 
+	gv”siÚ
+ = 
+IP_V
+(
+
+);
+
+100 if(
+	gv”siÚ
+ != 4)
+
+102 
+årštf
+(
+¡dout
+,"UnknowÀv”siÚ %d\n",
+v”siÚ
+);
+
+103  
+	gNULL
+;
+
+107 if(
+	ghËn
+ < 5 )
+
+109 
+årštf
+(
+¡dout
+,"bad-hËÀ%d \n",
+hËn
+);
+
+113 if(
+	gËngth
+ < 
+	gËn
+)
+
+114 
+´štf
+("\Árunÿ‹d IP - %d by‹ missšg\n",
+Ën
+ - 
+Ëngth
+);
+
+117 
+	goff
+ = 
+Áohs
+(
+
+->
+_off
+);
+
+118 if((
+	goff
+ & 0x1fff) == 0 )
+
+120 
+årštf
+(
+¡dout
+,"IP: ");
+
+121 
+årštf
+(
+¡dout
+,"%s ",
+
+122 
+š‘_Áß
+(
+
+->
+_¤c
+));
+
+123 
+årštf
+(
+¡dout
+,"%s %d %d %d %d\n",
+
+124 
+š‘_Áß
+(
+
+->
+_d¡
+),
+
+125 
+hËn
+,
+v”siÚ
+,
+Ën
+,
+off
+);
+
+128  
+	gNULL
+;
+
+134 
+u_št16_t
+ 
+	ghªdË_‘h”Ãt
+
+
+135 (
+u_ch¬
+ *
+	g¬gs
+,cÚ¡ 
+pÿp_pkthdr
+* 
+	gpkthdr
+,const u_char*
+
+136 
+	g·ck‘
+)
+
+138 
+u_št
+ 
+	gÿ¶’
+ = 
+pkthdr
+->
+ÿ¶’
+;
+
+139 
+u_št
+ 
+	gËngth
+ = 
+pkthdr
+->
+Ën
+;
+
+140 
+‘h”_h—d”
+ *
+	g•Œ
+;
+
+141 
+u_shÜt
+ 
+	g‘h”_ty³
+;
+
+143 ià(
+	gÿ¶’
+ < 
+	gETHER_HDRLEN
+)
+
+145 
+årštf
+(
+¡dout
+,"Packet†ength†esshanƒthernet header†ength\n");
+
+150 
+	g•Œ
+ = (
+‘h”_h—d”
+ *è
+·ck‘
+;
+
+151 
+	g‘h”_ty³
+ = 
+Áohs
+(
+•Œ
+->
+‘h”_ty³
+);
+
+154 
+årštf
+(
+¡dout
+,"ETH: ");
+
+155 
+årštf
+(
+¡dout
+,"%s "
+
+156 ,
+‘h”_Áß
+((
+‘h”_addr
+*)
+•Œ
+->
+‘h”_sho¡
+));
+
+157 
+årštf
+(
+¡dout
+,"%s "
+
+158 ,
+‘h”_Áß
+((
+‘h”_addr
+*)
+•Œ
+->
+‘h”_dho¡
+));
+
+161 ià(
+	g‘h”_ty³
+ =ğ
+ETHERTYPE_IP
+)
+
+163 
+årštf
+(
+¡dout
+,"(IP)");
+
+164 }ià(
+	g‘h”_ty³
+ =ğ
+ETHERTYPE_ARP
+)
+
+166 
+årštf
+(
+¡dout
+,"(ARP)");
+
+167 }ià(
+	g•Œ
+->
+	g‘h”_ty³
+ =ğ
+ETHERTYPE_REVARP
+)
+
+169 
+årštf
+(
+¡dout
+,"(RARP)");
+
+171 
+årštf
+(
+¡dout
+,"(%d)", 
+•Œ
+->
+‘h”_ty³
+);
+
+173 
+årštf
+(
+¡dout
+," %d\n",
+Ëngth
+);
+
+175  
+	g‘h”_ty³
+;
+
+179 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+181 
+i
+;
+
+182 *
+dev
+;
+
+183 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+184 
+pÿp_t
+ *
+desü
+;
+
+185 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+186 
+pÿp_pkthdr
+ 
+hdr
+;
+
+187 
+‘h”_h—d”
+ *
+•thr
+;
+
+188 
+bpf_´og¿m
+ 
+å
+;
+
+189 
+bpf_u_št32
+ 
+maskp
+;
+
+190 
+bpf_u_št32
+ 
+Ã
+;
+
+192 
+dev
+ = 
+	`pÿp_lookupdev
+(
+”rbuf
+);
+
+193 
+	`´štf
+("%s", 
+dev
+);
+
+194 
+	`fæush
+(
+¡dout
+);
+
+196 
+	`pÿp_looku²‘
+(
+dev
+, &
+Ã
+, &
+maskp
+, 
+”rbuf
+);
+
+198 
+desü
+ = 
+	`pÿp_İ’_live
+(
+dev
+, 100, 0, -1, 
+”rbuf
+);
+
+200 
+	`pÿp_compe
+(
+desü
+, &
+å
+, 
+¬gv
+[1], 0, 
+Ã
+);
+
+202 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+204 
+	`pÿp_loİ
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+206 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+209 
+	}
+}
+
+	@pf_packet_1.c
+
+1 
+	~<¡dio.h
+>
+
+2 
+	~<¡dlib.h
+>
+
+3 
+	~<”ºo.h
+>
+
+4 
+	~<uni¡d.h
+>
+
+5 
+	~<sys/sock‘.h
+>
+
+6 
+	~<sys/ty³s.h
+>
+
+7 
+	~<lšux/š.h
+>
+
+8 
+	~<lšux/if_‘h”.h
+>
+
+10 
+	$maš
+(
+¬gc
+, **
+¬gv
+) {
+
+12 
+sock
+, 
+n
+;
+
+13 
+bufãr
+[2048];
+
+14 *
+h—d
+, *
+‘hh—d
+;
+
+16 iàĞ(
+sock
+=
+	`sock‘
+(
+PF_PACKET
+, 
+SOCK_RAW
+, 
+	`htÚs
+(
+ETH_P_IP
+)))<0) {
+
+17 
+	`³¼Ü
+("socket");
+
+18 
+	`ex™
+(1);
+
+22 
+	`´štf
+("----------\n");
+
+23 
+n
+ = 
+	`»cväom
+(
+sock
+,
+bufãr
+,2048,0,
+NULL
+,NULL);
+
+24 
+	`´štf
+("%d by‹ »ad\n",
+n
+);
+
+30 ià(
+n
+<42) {
+
+31 
+	`³¼Ü
+("recvfrom():");
+
+32 
+	`´štf
+("Incomplete…acket (errno is %d)\n",
+
+33 
+”ºo
+);
+
+34 
+	`şo£
+(
+sock
+);
+
+35 
+	`ex™
+(0);
+
+38 
+‘hh—d
+ = 
+bufãr
+;
+
+39 
+	`´štf
+("Source MAC‡ddress: "
+
+41 
+‘hh—d
+[0],ethhead[1],ethhead[2],
+
+42 
+‘hh—d
+[3],ethhead[4],ethhead[5]);
+
+43 
+	`´štf
+("Destination MAC‡ddress: "
+
+45 
+‘hh—d
+[6],ethhead[7],ethhead[8],
+
+46 
+‘hh—d
+[9],ethhead[10],ethhead[11]);
+
+48 
+h—d
+ = 
+bufãr
++14;
+
+49 ià(*
+h—d
+==0x45) {
+
+51 
+	`´štf
+("Source host %d.%d.%d.%d\n",
+
+52 
+h—d
+[12],iphead[13],
+
+53 
+h—d
+[14],iphead[15]);
+
+54 
+	`´štf
+("Dest host %d.%d.%d.%d\n",
+
+55 
+h—d
+[16],iphead[17],
+
+56 
+h—d
+[18],iphead[19]);
+
+57 
+	`´štf
+("Source,Dest…orts %d,%d\n",
+
+58 (
+h—d
+[20]<<8)+iphead[21],
+
+59 (
+h—d
+[22]<<8)+iphead[23]);
+
+60 
+	`´štf
+("Lay”-4…rÙocŞ %d\n",
+h—d
+[9]);
+
+63 
+	}
+}
+
+	@user_bfilter.c
+
+1 
+	~<pÿp.h
+>
+
+2 
+	~<pÿp-bpf.h
+>
+
+3 
+	~<¡dio.h
+>
+
+4 
+	~<¡dlib.h
+>
+
+5 
+	~<”ºo.h
+>
+
+6 
+	~<sys/sock‘.h
+>
+
+7 
+	~<Ãtš‘/š.h
+>
+
+8 
+	~<¬·/š‘.h
+>
+
+9 
+	~<Ãtš‘/if_‘h”.h
+>
+
+11 #ifdeà
+BPF_MAJOR_VERSION
+
+
+12 #undeà
+BPF_MAJOR_VERSION
+
+
+15 
+bpf_´og¿m
+ 
+	gmyF‹r
+;
+
+17 
+	$u£r_f‹r
+(cÚ¡ *
+exp
+) {
+
+19 
+pÿp_t
+ *
+p
+ = 
+	`pÿp_İ’_d—d
+(
+DLT_LINUX_SLL
+, 65535);
+
+21 
+	`´štf
+("%d\n", 
+	`pÿp_compe
+(
+p
+, &
+myF‹r
+, 
+exp
+, 1, 0x00ffffff));
+
+23 
+	`pÿp_şo£
+(
+p
+);
+
+26 
+	}
+}
+
+28 
+	$my_ÿÎback
+(
+u_ch¬
+* 
+u£Ëss
+, cÚ¡ 
+pÿp_pkthdr
+* 
+pkthdr
+,
+
+29 cÚ¡ 
+u_ch¬
+* 
+·ck‘
+) {
+
+31 
+couÁ
+ = 1;
+
+32 ià(
+	`bpf_f‹r
+(
+myF‹r
+.
+bf_š¢s
+, (*)
+·ck‘
+, 
+pkthdr
+->
+Ën
+,…kthdr->
+ÿ¶’
+)) {
+
+33 
+	`årštf
+(
+¡dout
+, "1-%d-%s-%s-%d-%d\n", 
+couÁ
+, 
+·ck‘
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+34 
+	`fæush
+(
+¡dout
+);
+
+36 
+	`årštf
+(
+¡dout
+, "2-%d-%s-%s-%d-%d\n", 
+couÁ
+, 
+·ck‘
+, 
+u£Ëss
+, 
+pkthdr
+->
+ÿ¶’
+,…kthdr->
+Ën
+);
+
+37 
+	`fæush
+(
+¡dout
+);
+
+39 
+couÁ
+++;
+
+40 
+	}
+}
+
+42 
+	$maš
+(
+¬gc
+, ** 
+¬gv
+)
+
+44 
+i
+;
+
+45 *
+dev
+;
+
+46 
+”rbuf
+[
+PCAP_ERRBUF_SIZE
+];
+
+47 
+pÿp_t
+ *
+desü
+;
+
+48 cÚ¡ 
+u_ch¬
+ *
+·ck‘
+;
+
+49 
+pÿp_pkthdr
+ 
+hdr
+;
+
+50 
+‘h”_h—d”
+ *
+•thr
+;
+
+51 
+bpf_´og¿m
+ 
+å
+;
+
+52 
+bpf_u_št32
+ 
+maskp
+;
+
+53 
+bpf_u_št32
+ 
+Ã
+;
+
+55 
+desü
+ = 
+	`pÿp_İ’_live
+("ªy", 200, 0, -1, 
+”rbuf
+);
+
+57 
+	`pÿp_compe
+(
+desü
+, &
+å
+, "ho¡ 10.250.7.14", 0, 
+Ã
+);
+
+59 
+	`pÿp_£tf‹r
+(
+desü
+, &
+å
+);
+
+61 
+	`u£r_f‹r
+("port 3306");
+
+63 
+	`pÿp_loİ
+(
+desü
+, -1, 
+my_ÿÎback
+, "kkk");
+
+65 
+	`årštf
+(
+¡dout
+, "aoaoa");
+
+68 
+	}
+}
+
+	@
+1
+.
+0
+15
+144
+a.c
+b.c
+c.c
+d.c
+e.c
+f.c
+h.c
+packet_mmap_1.c
+packet_mmap_2.c
+pcap_bond.c
+pcap_dispatch.c
+pcap_next_test.c
+pcap_z2.c
+pf_packet_1.c
+user_bfilter.c

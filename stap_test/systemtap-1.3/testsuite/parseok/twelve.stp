@@ -1,0 +1,13 @@
+#! /bin/sh
+
+stap -p1 -g $@ - <<'END'
+
+%{
+/* hello world */
+%}
+
+function foo:long (p1:string, p2:long, p3) %{
+  /* goodbye world */
+%}
+
+END

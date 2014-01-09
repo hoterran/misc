@@ -1,0 +1,34 @@
+How these tests work:
+
+Dejagnu finds all *.c files, compiles them and runs them in a temporary 
+directory  while running the systemtap script sys.stp.  
+
+If you need to know why a test is failing you can look in the test log, or
+> gcc -o testname testname.c
+> test-debug.tcl testname 
+
+
+HOW TO WRITE TESTS
+
+1. write a test case C file using some system calls.
+
+2. After each system call, put a comment on the next line starting with "//"
+The comment should have the expected output.  Where an arbitrary number
+is expected, put "NNNN" (for decimal) or "XXXX" (for hex). Or you can
+just write regular expressions. The "NNNN" and "XXXX" are just shorthand to
+aid readability and are converted to regular expressions in test.tcl.
+
+Normally opening and closing parentheses ('(' and ')') get quoted.  If
+you want unquoted parentheses, use '[[[[' (for '(') or ']]]]' (for ')').
+
+3. Somewhere is your test program puts a comment line like this:
+/* COVERAGE: syscall1 syscall2 ... */
+where you list the systemcalls that are tested.  Then you can run 
+coverage.tcl and get a coverage report.
+
+You probably want to write your test case without the comments first. Make
+sure it compiles and works as expected. Then try it with 
+"stap sys.stp -c ./testname" or test-debug.tcl to see the output.
+
+IMPORTANT: Note that the test scripts create a temporary directory for each 
+test program. Each program will run in an empty directory.

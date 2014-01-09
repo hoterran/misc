@@ -1,0 +1,37 @@
+function print_all_trace_info(point) {
+	printf("backtrace from %s:\n", pp())
+        print_backtrace()
+        printf("--- %s ---\n", point)
+	bt = backtrace()
+	printf("the stack is %s\n", bt)
+	print_stack(bt);
+        print("--------\n")
+}
+
+probe begin {
+	print_backtrace()
+}
+
+probe end {
+	print_backtrace()
+}
+
+global flag = 0
+
+probe module("systemtap_test_module2").function("yyy_func2") {
+	print_all_trace_info("yyy_func2")
+	flag ++
+}
+
+probe module("systemtap_test_module2").function("yyy_func3") {
+	print_all_trace_info("yyy_func3")
+	flag ++
+}
+
+probe module("systemtap_test_module2").function("yyy_func4") {
+	print_all_trace_info("yyy_func4")
+	flag ++
+	exit();
+}
+
+

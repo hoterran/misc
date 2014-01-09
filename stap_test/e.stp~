@@ -1,0 +1,4 @@
+probe syscall.*
+{ 
+	print ("hello world\n")
+}

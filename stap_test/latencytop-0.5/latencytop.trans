@@ -1,0 +1,144 @@
+#
+1	vfs_read		Reading from file
+1	vfs_write		Writing to file
+1	__mark_inode_dirty	Marking inode dirty
+1	vfs_readdir		Reading directory content
+1	vfs_unlink		Unlinking file
+1	blocking_notifier_call_chain	Blocking notifier
+1	lock_super		Superblock lock contention
+1	vfs_create		Creating a file
+#
+2	__bread			Synchronous buffer read
+2	do_generic_mapping_read	Reading file data
+2	sock_sendmsg		Sending data over socket
+2	do_sys_open		Opening file
+2	do_sys_poll		Waiting for event (poll)
+2	core_sys_select		Waiting for event (select)
+2	proc_reg_read		Reading from /proc file
+2	__pollwait		Waiting for event (poll)
+2	sys_fcntl		FCNTL system call
+2	scsi_error_handler	SCSI error handler
+2	proc_root_readdir	Reading /proc directory
+2	ksoftirqd		Waking ksoftirqd
+2	worker_thread		.
+2	do_unlinkat		Unlinking file
+2	__wait_on_buffer	Waiting for buffer IO to complete
+2	pdflush			pdflush() kernel thread
+2	kjournald		kjournald() kernel thread
+2	blkdev_ioctl		block device IOCTL
+2	kauditd_thread		kernel audit daemon
+2	tty_ioctl		TTY IOCTL
+2	__filemap_fdatawrite_range fdatasync system call
+2	do_sync_write		synchronous write
+2	kthreadd		kthreadd kernel thread
+2	usb_port_resume		Waking up USB device
+2	usb_autoresume_device	Waking up USB device
+2	kswapd			kswapd() kernel thread
+2	md_thread		Raid resync kernel thread
+2	i915_wait_request	Waiting for GPU command to complete
+2	request_module		Loading a kernel module
+
+#
+3	tty_wait_until_sent	Waiting for TTY to finish sending
+3	pipe_read		Reading from a pipe
+3	pipe_write		Writing to a pipe
+3	pipe_wait		Waiting for pipe data
+3	read_block_bitmap	Reading EXT3 block bitmaps
+3	scsi_execute_req	Executing raw SCSI command
+3	sys_wait4		Waiting for a process to die
+3	sr_media_change		Checking for media change
+3	sr_do_ioctl		SCSI cdrom ioctl
+3	sd_ioctl		SCSI disk ioctl
+3	sr_cd_check		Checking CDROM media present
+3	ext3_read_inode		Reading EXT3 inode
+3	htree_dirblock_to_tree	Reading EXT3 directory htree
+3	ext3_readdir		Reading EXT3 directory
+3	ext3_bread		Synchronous EXT3 read
+3	ext3_free_branches	Unlinking file on EXT3
+3	ext3_get_branch		Reading EXT3 indirect blocks
+3	ext3_find_entry		EXT3: Looking for file
+3	__ext3_get_inode_loc	Reading EXT3 inode
+3	ext3_delete_inode	EXT3 deleting inode
+3	sync_page		Writing a page to disk
+3	tty_poll		Waiting for TTY data
+3	tty_read		Waiting for TTY input
+3	tty_write		Writing data to TTY
+3	update_atime		Updating inode atime
+3	page_cache_sync_readahead	Pagecache sync readahead
+3	do_fork			Fork() system call
+3	sys_mkdirat		Creating directory
+3	lookup_create		Creating file
+3	inet_sendmsg		Sending TCP/IP data
+3	tcp_recvmsg		Receiving TCP/IP data
+3	link_path_walk		Following symlink
+3	path_walk		Walking directory tree
+3	sys_getdents		Reading directory content
+3	unix_stream_recvmsg	Waiting for data on unix socket
+3	ext3_mkdir		EXT3: Creating a directory
+3	journal_get_write_access	EXT3: Waiting for journal access
+3	synchronize_rcu		Waiting for RCU
+3	input_close_device	Closing input device
+3	mousedev_close_device	Closing mouse device
+3	mousedev_release	Closing mouse device
+3	mousedev_open		Opening mouse device
+3	kmsg_read		Reading from dmesg
+3	sys_futex		Userspace lock contention
+3	do_futex		Userspace lock contention
+3	vt_waitactive		vt_waitactive IOCTL
+3	acquire_console_sem	Waiting for console access
+3	filp_close		Closing a file
+3	sync_inode		(f)syncing an inode to disk
+3	ata_exec_internal_sg	Executing internal ATA command
+3	writeback_inodes	Writing back inodes
+3	ext3_orphan_add 	EXT3 adding orphan
+3	ext3_mark_inode_dirty 	EXT3 marking inode dirty
+3	ext3_unlink 		EXT3 unlinking file
+3	ext3_create		EXT3 Creating a file
+3	log_do_checkpoint	EXT3 journal checkpoint
+3	generic_delete_inode	Deleting an inode
+3	proc_delete_inode	Removing /proc file
+3	do_truncate		Truncating file
+3	sys_execve		Executing a program
+3	journal_commit_transaction	EXT3: committing transaction
+3	__stop_machine_run	Freezing the kernel (for module load)
+3	sys_munmap		unmapping memory
+3	sys_mmap		mmaping memory
+3	sync_buffer		Writing buffer to disk (synchronous)
+3	inotify_inode_queue_event	Inotify event
+3	proc_lookup		Looking up /proc file
+3	generic_make_request	Creating block layer request
+3	get_request_wait	Creating block layer request
+3	alloc_page_vma		Allocating a VMA
+#3	__d_lookup		Looking up a dentry
+3	blkdev_direct_IO	Direct block device IO
+3	sys_mprotect		mprotect() system call
+3	shrink_icache_memory	reducing inode cache memory footprint
+3	vfs_stat_fd		stat() operation
+3	cdrom_open		opening cdrom device
+3	sys_epoll_wait		Waiting for event (epoll)
+3	sync_sb_inodes		Syncing inodes
+3	tcp_connect		TCP/IP connect
+3	ata_scsi_ioctl		ATA/SCSI disk ioctl
+3	do_rmdir		Removing directory
+3	vfs_rmdir		Removing directory
+3	sys_flock		flock() on a file
+3	usbdev_open		opening USB device
+3	lock_kernel		Big Kernel Lock contention
+3	blk_execute_rq		Submitting block IO
+3	scsi_cmd_ioctl		SCSI ioctl command
+3	acpi_ec_transaction	ACPI hardware access
+3	journal_get_undo_access	Waiting for EXT3 journal undo operation
+3	i915_irq_wait		Waiting for GPU interrupt
+3	i915_gem_throttle_ioctl	Throttling GPU while waiting for commands
+
+#
+#
+5	do_page_fault		Page fault
+5	handle_mm_fault		Page fault
+5	filemap_fault		Page fault
+5	sync_filesystems	Syncing filesystem
+5	sys_nanosleep		Application requested delay
+5	sys_pause		Application requested delay
+5	evdev_read		Reading keyboard/mouse input
+5	do_fsync		fsync() on a file (type 'F' for details)
+5	__log_wait_for_space	Waiting for EXT3 journal space

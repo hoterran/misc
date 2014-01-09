@@ -1,0 +1,74 @@
+/*
+ * timers.stp
+ *
+ * Test the functionality of the various timer.* probes.
+ */
+
+global p
+global j1, j2, jmax
+global ms1, ms500, msmax
+
+probe begin
+{
+	printf("systemtap starting probe\n")
+}
+
+probe timer.profile { ++p }
+
+probe timer.jiffies(1) { ++j1 }
+probe timer.jiffies(2) { ++j2 }
+probe timer.jiffies(1000000) { ++jmax }
+
+/* as long as HZ>2, ms(1) and ms(500) 
+ * will produce different counts */
+probe timer.ms(1) { ++ms1 }
+probe timer.ms(500) { ++ms500 }
+probe timer.ms(1000000) { ++msmax }
+
+probe end
+{
+	printf("systemtap ending probe\n")
+	printf("p = %d\n", p)
+	printf("j1 = %d\n", j1)
+	printf("j2 = %d\n", j2)
+	printf("jmax = %d\n", jmax)
+	printf("ms1 = %d\n", ms1)
+	printf("ms500 = %d\n", ms500)
+	printf("msmax = %d\n", msmax)
+
+	/* profile counter should be non-zero, and at
+	 * least as many as the jiffies(1) counter */
+	/* (fudge comparison by ~1% since start & end aren't synchronized) */
+	if ((p > 0) && (p*100 >= j1*99)) {
+		printf("systemtap test success\n")
+	} else {
+		printf("unexpected profile count: %d profiles and %d jiffies\n", p, j1)
+		printf("systemtap test failure\n");
+	}
+
+	/* jiffies(1) should count more than jiffies(2),
+	 * and both should be non-zero. */
+	if ((j2 > 0) && (j2 < j1)) {
+		printf("systemtap test success\n")
+	} else {
+		printf("unexpected jiffies count\n")
+		printf("systemtap test failure\n");
+	}
+
+	/* ms(1) should count more than ms(500),
+	 * and both should be non-zero. */
+	if ((ms500 > 0) && (ms500 < ms1)) {
+		printf("systemtap test success\n")
+	} else {
+		printf("unexpected ms count\n")
+		printf("systemtap test failure\n");
+	}
+
+	/* both 'infinite' intervals should register zero counts */
+	if ((jmax == 0) && (msmax == 0)) {
+		printf("systemtap test success\n")
+	} else {
+		printf("unexpected count on 'infinite' interval\n")
+		printf("systemtap test failure\n");
+	}
+}

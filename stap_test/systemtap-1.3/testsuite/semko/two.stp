@@ -1,0 +1,5 @@
+#! stap -up2
+
+probe begin {
+  bar = 2 + "string";  # mixing integer+string arithmetic
+}

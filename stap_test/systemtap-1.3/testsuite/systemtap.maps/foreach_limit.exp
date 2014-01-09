@@ -1,0 +1,101 @@
+# Test of foreach statements using "limit EXP".
+
+set test "foreach_limit"
+
+set ::result_string {
+Arrays:
+unsorted:
+key 9, value 18
+key 1, value 40
+key 8, value 16
+key 2, value 4
+key 7, value 14
+key 3, value 36
+key 6, value 12
+key 5, value 10
+key 4, value 8
+key 10, value 20
+
+unsorted limit 5:
+key 9, value 18
+key 1, value 40
+key 8, value 16
+key 2, value 4
+key 7, value 14
+loop had 5 iterations
+
+sorted (by values) limit 5:
+key 2, value 4
+key 4, value 8
+key 5, value 10
+key 6, value 12
+key 7, value 14
+loop had 5 iterations
+
+sorted (by keys) limit 5:
+key 1, value 40
+key 2, value 4
+key 3, value 36
+key 4, value 8
+key 5, value 10
+loop had 5 iterations
+
+sorted (by values) limit x (3):
+key 2, value 4
+key 4, value 8
+key 5, value 10
+loop had 3 iterations
+
+sorted (by values) limit x * 2 (6):
+key 2, value 4
+key 4, value 8
+key 5, value 10
+key 6, value 12
+key 7, value 14
+key 8, value 16
+loop had 6 iterations
+
+sorted (by values) limit ++x:
+key 2, value 4
+key 4, value 8
+key 5, value 10
+key 6, value 12
+loop had 4 iterations
+x ended up as 4
+
+sorted (by values) limit x++:
+key 2, value 4
+key 4, value 8
+key 5, value 10
+key 6, value 12
+loop had 4 iterations
+x ended up as 5
+
+Aggregates:
+count=150 sum=21360
+min=4 max=600
+value |-------------------------------------------------- count
+    1 |                                                    0
+    2 |                                                    0
+    4 |@                                                   1
+    8 |@@@@@@                                              6
+   16 |@@@@@@@@@@@@@                                      13
+   32 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       28
+   64 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            39
+  128 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         42
+  256 |@@@@@@@@@@@@@@@@@                                  17
+  512 |@@@@                                                4
+ 1024 |                                                    0
+ 2048 |                                                    0
+
+bucket 67: 1
+bucket 68: 6
+bucket 69: 13
+bucket 70: 28
+loop had 71 iterations
+
+Done.}
+
+stap_run2 $srcdir/$subdir/$test.stp
+
+

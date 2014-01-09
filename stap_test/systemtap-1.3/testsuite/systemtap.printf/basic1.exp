@@ -1,0 +1,3 @@
+set test "basic1"
+set ::result_string {HelloWorld}
+stap_run2 $srcdir/$subdir/$test.stp

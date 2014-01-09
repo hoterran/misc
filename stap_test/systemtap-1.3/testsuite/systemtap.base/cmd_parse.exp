@@ -1,0 +1,170 @@
+if {![installtest_p]} {
+    for {set i 0} { $i < 16} {incr i} {
+        untested cmd_parse$i
+    }
+    return
+}
+
+spawn stap -c {echo "hello world"} -we {probe begin {}}
+expect {
+    -timeout 60
+    "hello world" {pass "cmd_parse1"}
+    timeout {fail "cmd_parse1: unexpected timeout"}
+    eof {fail "cmd_parse1: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {echo "hello "\"world\"} -we {probe begin {}}
+expect {
+    -timeout 60
+    "hello \"world\"" {pass "cmd_parse2"}
+    timeout {fail "cmd_parse2: unexpected timeout"}
+    eof {fail "cmd_parse2: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {sh -c '(a="hello world"; echo $a)'} -we {probe begin {}}
+expect {
+    -timeout 60
+    "hello world" {pass "cmd_parse3"}
+    timeout {fail "cmd_parse3: unexpected timeout"}
+    eof {fail "cmd_parse3: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {sh -c '(a="hello "\"world\"; echo $a)'} -we {probe begin {}}
+expect {
+    -timeout 60
+    "hello \"world\"" {pass "cmd_parse4"}
+    timeout {fail "cmd_parse4: unexpected timeout"}
+    eof {fail "cmd_parse4: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {sh -c '(a="hello "world; echo $a)'} -we {probe begin {}}
+expect {
+    -timeout 60
+    "hello world" {pass "cmd_parse5"}
+    timeout {fail "cmd_parse5: unexpected timeout"}
+    eof {fail "cmd_parse5: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {bash -c '((a=42+7)); echo "The answer is $a"'} -we {probe begin {}}
+expect {
+    -timeout 60
+    "The answer is 49" {pass "cmd_parse6"}
+    timeout {fail "cmd_parse6: unexpected timeout"}
+    eof {fail "cmd_parse6: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -c {sh -c '(echo "Hello World" 1>&2) > /dev/null'} -we {probe begin {}}
+expect {
+    -timeout 60
+    "Hello World" {pass "cmd_parse7"}
+    timeout {fail "cmd_parse7: unexpected timeout"}
+    eof {fail "cmd_parse7: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -l {vm.*}
+expect {
+    -timeout 60
+    -re "vm.*" {pass "cmd_parse8"}
+    timeout {fail "cmd_parse8: unexpected timeout"}
+    eof {fail "cmd_parse8: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn stap -e {probe begin { printf("%d %s\n", argc, argv[$1]) exit() }} 1
+expect {
+    -timeout 60
+    "1 1" { pass cmd_parse9 }
+    timeout { fail "cmd_parse9 timeout" }
+    eof { fail "cmd_parse9 eof" }
+}
+wait;catch {close}
+
+spawn stap -e {probe begin { printf("%d %s\n", argc, argv[$1]) exit() }} 5 a b c d
+expect {
+    -timeout 60
+    "5 d" { pass cmd_parse10 }
+    timeout { fail "cmd_parse10 timeout" }
+    eof { fail "cmd_parse10 eof" }
+}
+wait;catch {close}
+
+spawn stap -e {probe begin { printf("%d %s\n", argc, argv[$1]) exit() }} 10 a b c d
+expect {
+    -timeout 60
+    "5 " { pass cmd_parse11 }
+    timeout { fail "cmd_parse11 timeout" }
+    eof { fail "cmd_parse11 eof" }
+}
+wait;catch {close}
+
+spawn stap -e {probe begin { printf("%d %s\n", argc, argv[0]) exit() }}
+expect {
+    -timeout 60
+    "0 " { pass cmd_parse12 }
+    timeout { fail "cmd_parse12 timeout" }
+    eof { fail "cmd_parse12 eof" }
+}
+wait;catch {close}
+
+spawn stap -L syscall.a*
+expect {
+    -timeout 60
+    -re {(syscall\.a[_a-zA-Z0-9]*(\ [_a-zA-Z0-9\$]+:[^:]+?)+\r\n)+} { pass "cmd_parse13" }
+    timeout {fail "cmd_parse13: unexpected timeout"}
+    eof {fail "cmd_parse13: unexpected EOF"}
+}
+wait;catch {close}
+
+spawn sh -c "stap -v -v --vp 01020 -h 2>&1"
+expect {
+    -re {add per-pass verbosity .23242.} { pass "cmd_parse14" }
+    timeout { fail "cmd_parse14: timeout" }
+    eof { fail "cmd_parse14: eof" }
+}
+wait;catch {close}
+
+set uname [exec uname -r]
+set linux26ver [lindex [split $uname {.-}] 2]
+if {$linux26ver < 29} {
+  verbose -log "kfail, see commit e0ccd3\n";
+  setup_kfail 4186 "*-*-*"
+}
+spawn sh -c "stap -m do_not_cache_me -B kernelrelease -p4 -e 'probe begin {exit()}'"
+# the \r below is meant to match the "kernelrelease" output, as distinct from
+# any possible auxiliary make verbosity.
+expect {
+    -timeout 60
+    -re "$uname\r" { pass "cmd_parse15" }
+    timeout { fail "cmd_parse15: timeout" }
+    eof { fail "cmd_parse15: eof" }
+}
+wait;catch {close}
+
+set uname [exec uname -i]
+# normalize arch
+if {$uname == "ppc64"} then {set uname powerpc}
+if {$uname == "s390x"} then {set uname s390}
+if {$uname == "i686"} then {set uname i386}
+
+spawn sh -c "stap -m do_not_cache_me -a $uname -p4 -e 'probe begin {exit()}'"
+# the \r below is meant to match the "kernelrelease" output, as distinct from
+# any possible auxiliary make verbosity.
+expect {
+    -timeout 60
+    -re "do_not_cache_me.ko\r" { pass "cmd_parse16" }
+    timeout { fail "cmd_parse16: timeout" }
+    eof { fail "cmd_parse16: eof" }
+}
+wait;catch {close}
+
+# NB: when adding extra tests here, increment the ![installtest_p]
+# loop count too at the top.
+
+catch {exec rm -f do_not_cache_me.ko}

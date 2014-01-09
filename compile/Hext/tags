@@ -1,0 +1,78 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+C	parser.h	/^	char C;$/;"	m	struct:stack_entry
+CC	Makefile	/^CC =		gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS =	-ansi -Wstrict-prototypes -Wmissing-prototypes \\$/;"	m
+DEBUG	parser.c	19;"	d	file:
+EXE	Makefile	/^EXE =		#$/;"	m
+EXE	Makefile	/^EXE =		.exe$/;"	m
+G	hardware.c	/^char G[MACHINE_WIDTH];$/;"	v
+GRAM	Makefile	/^GRAM =		gram1$/;"	m
+G_size	hardware.c	/^int G_size;$/;"	v
+LEX	Makefile	/^LEX =		flex$/;"	m
+LEX	Makefile	/^LEX =		lex$/;"	m
+LINT	Makefile	/^LINT =		echo No lint under MSDOS$/;"	m
+LINT	Makefile	/^LINT =		lint -ansi -xh$/;"	m
+MACHINE_WIDTH	hardware.h	3;"	d
+MAXRULE	driver.h	3;"	d
+MAXSTACK	driver.h	2;"	d
+Mstar	hardware.c	/^Mstar(char c) {$/;"	f
+OBJ	Makefile	/^OBJ =		driver.o parser.o hardware.o print.o $(GRAM).o$/;"	m
+Q	parser.h	/^	struct vector Q;$/;"	m	struct:stack_entry	typeref:struct:stack_entry::vector
+SLEEP	Makefile	/^SLEEP =		rem$/;"	m
+SLEEP	Makefile	/^SLEEP =		sleep$/;"	m
+SRC	Makefile	/^SRC =		driver.c parser.c hardware.c print.c $(GRAM).c$/;"	m
+SUBSYSTEM	Makefile	/^SUBSYSTEM =	MSDOS$/;"	m
+SUBSYSTEM	Makefile	/^SUBSYSTEM =	UNIX$/;"	m
+SYSTEM	Makefile	/^SYSTEM =	MSDOS$/;"	m
+SYSTEM	Makefile	/^SYSTEM =	UNIX$/;"	m
+TIME	Makefile	/^TIME =		time$/;"	m
+U	parser.c	/^struct vector U, V;$/;"	v	typeref:struct:vector
+V	parser.c	/^struct vector U, V;$/;"	v	typeref:struct:
+add_rule	parser.c	/^add_rule(char lhs, const char *rhs) {$/;"	f
+algorithm_B	parser.c	/^algorithm_B(int exhaustive) {$/;"	f
+and	hardware.c	/^and(struct vector v1, struct vector v2) {$/;"	f
+bit	hardware.h	/^	char bit[MACHINE_WIDTH];$/;"	m	struct:vector
+debug_vec	parser.c	33;"	d	file:
+debug_vec	parser.c	36;"	d	file:
+debugf	parser.c	32;"	d	file:
+debugf	parser.c	35;"	d	file:
+error	driver.c	/^error(const char *s) {$/;"	f
+first_in	hardware.c	/^first_in(struct vector v) {$/;"	f
+grammar	gram1.c	/^grammar(void) {$/;"	f
+grammar	gram2.c	/^grammar(void) {$/;"	f
+grammar	gram3.c	/^grammar(void) {$/;"	f
+grammar	gram4.c	/^grammar(void) {$/;"	f
+i	parser.c	/^static int i;					\/* input pointer *\/$/;"	v	file:
+i	parser.h	/^	int i;$/;"	m	struct:stack_entry
+input	gram1.c	/^char input[] = "p+p+p";$/;"	v
+input	gram2.c	/^char input[] = "xxxxxx";$/;"	v
+input	gram3.c	/^char input[] = "xxxxxx";$/;"	v
+input	gram4.c	/^char input[] = "x-y*z+(x+z\/y)*y";$/;"	v
+is_zero	hardware.c	/^is_zero(struct vector v) {$/;"	f
+length	parser.c	/^static int length[MAXRULE];$/;"	v	file:
+less_its_first_1bit_that_matches	hardware.c	/^less_its_first_1bit_that_matches(struct vector v1, struct vector v2) {$/;"	f
+link	parser.h	/^	int link;$/;"	m	struct:stack_entry
+main	driver.c	/^main(void) {$/;"	f
+or	hardware.c	/^or(struct vector v1, struct vector v2) {$/;"	f
+p	parser.c	/^int p;						\/* stack pointer *\/$/;"	v
+pi	parser.h	/^	int pi;$/;"	m	struct:stack_entry
+pn	parser.c	/^static int pn[MACHINE_WIDTH];$/;"	v	file:
+print_grammar	print.c	/^print_grammar(void) {$/;"	f
+print_stack	print.c	/^print_stack(const char *s) {$/;"	f
+print_vec	print.c	/^print_vec(const char *m, struct vector v) {$/;"	f
+rsh	hardware.c	/^rsh(struct vector v) {$/;"	f
+rule	driver.c	/^rule(char lhs, const char *rhs) {$/;"	f
+stack	parser.c	/^struct stack_entry stack[MAXSTACK];$/;"	v	typeref:struct:stack_entry
+stack_entry	parser.h	/^struct stack_entry {$/;"	s
+start	gram1.c	/^char start = 'E';$/;"	v
+start	gram2.c	/^char start = 'S';$/;"	v
+start	gram3.c	/^char start = 'S';$/;"	v
+start	gram4.c	/^char start = 'E';$/;"	v
+subject	parser.c	/^static char subject[MAXRULE];$/;"	v	file:
+vector	hardware.h	/^struct vector {$/;"	s
+zero	hardware.c	/^struct vector zero;$/;"	v	typeref:struct:vector

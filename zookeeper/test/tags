@@ -1,0 +1,49 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+QueryServerd_awexists	monitor.c	/^QueryServerd_awexists(zhandle_t *zh)$/;"	f	file:
+QueryServerd_dump_stat	monitor.c	/^QueryServerd_dump_stat(const struct Stat *stat)$/;"	f	file:
+QueryServerd_stat_completion	monitor.c	/^QueryServerd_stat_completion(int rc, const struct Stat *stat,$/;"	f
+QueryServerd_watcher_awexists	monitor.c	/^QueryServerd_watcher_awexists(zhandle_t *zh, int type, int state,$/;"	f
+QueryServerd_watcher_global	monitor.c	/^QueryServerd_watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+accept_query	server.c	/^void accept_query()$/;"	f
+completion	aexists_test.c	/^completion(int rc, const struct Stat *stat,$/;"	f
+completion	awexists_test.c	/^completion(int rc, const struct Stat *stat,$/;"	f
+completion	server.c	/^void completion(int rc, const char *name, const void *data)$/;"	f
+completion	sync_test.c	/^completion(int rc, const struct Stat *stat,$/;"	f
+completion	sync_test2.c	/^completion(int rc, const struct Stat *stat,$/;"	f
+completion	wexists_test.c	/^completion(int rc, const struct Stat *stat,$/;"	f
+dump_stat	aexists_test.c	/^dump_stat(const struct Stat *stat)$/;"	f	file:
+dump_stat	awexists_test.c	/^dump_stat(const struct Stat *stat)$/;"	f	file:
+dump_stat	sync_test.c	/^dump_stat(const struct Stat *stat)$/;"	f	file:
+dump_stat	sync_test2.c	/^dump_stat(const struct Stat *stat)$/;"	f	file:
+dump_stat	wexists_test.c	/^dump_stat(const struct Stat *stat)$/;"	f	file:
+foo_get_cert_once	rry1.c	/^char *foo_get_cert_once(char* id) { return 0; }$/;"	f
+get_watcher	sync_test2.c	/^get_watcher(zhandle_t *zh, int type, int state,$/;"	f
+main	aexists_test.c	/^main(int argc, const char *argv[])$/;"	f
+main	awexists_test.c	/^main(int argc, const char *argv[])$/;"	f
+main	monitor.c	/^main(int argc, const char *argv[])$/;"	f
+main	rry1.c	/^int main(int argc, char argv) {$/;"	f
+main	server.c	/^int main(int argc, const char *argv[])$/;"	f
+main	sync_test.c	/^main(int argc, const char *argv[])$/;"	f
+main	sync_test2.c	/^main(int argc, const char *argv[])$/;"	f
+main	wexists_test.c	/^main(int argc, const char *argv[])$/;"	f
+s	awexists_test.c	/^struct Stat s;$/;"	v	typeref:struct:Stat
+s	sync_test.c	/^struct Stat s;$/;"	v	typeref:struct:Stat
+s	sync_test2.c	/^struct Stat s;$/;"	v	typeref:struct:Stat
+s	wexists_test.c	/^struct Stat s;$/;"	v	typeref:struct:Stat
+watcher	rry1.c	/^void watcher(zhandle_t *zzh, int type, int state, const char *path,$/;"	f
+watcher_awexists	awexists_test.c	/^watcher_awexists(zhandle_t *zh, int type, int state,$/;"	f
+watcher_g	server.c	/^void watcher_g(zhandle_t* zh, int type, int state,$/;"	f
+watcher_global	aexists_test.c	/^watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+watcher_global	awexists_test.c	/^watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+watcher_global	sync_test.c	/^watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+watcher_global	sync_test2.c	/^watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+watcher_global	wexists_test.c	/^watcher_global(zhandle_t * zh, int type, int state,$/;"	f
+watcher_wexists	sync_test.c	/^watcher_wexists(zhandle_t *zh, int type, int state,$/;"	f
+watcher_wexists	sync_test2.c	/^watcher_wexists(zhandle_t *zh, int type, int state,$/;"	f
+watcher_wexists	wexists_test.c	/^watcher_wexists(zhandle_t *zh, int type, int state,$/;"	f
+zh	rry1.c	/^static zhandle_t *zh;$/;"	v	file:
