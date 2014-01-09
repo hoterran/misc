@@ -1,0 +1,2169 @@
+cscope 15 $HOME/Projects/misc/compile/Unger.c -q 0000000131 0000010836
+	@PrintStack.c
+
+2 
+	$PrötSèck
+(c⁄° *
+msg
+) {
+
+3 
+n
+;
+
+5 
+	`¥ötf
+("PrötSèck %s, downw¨ds\n", 
+msg
+);
+
+6 
+n
+ = 0;Ç < 
+NSèckEÀms
+;Ç++) {
+
+7 
+SèckEÀmTy≥
+ *
+£
+ = &
+Sèck
+[
+n
+];
+
+9 
+	`¥ötf
+("Goal: ");
+
+10 
+	`PrötGﬂl
+(&
+£
+->
+GﬂlFõld
+);
+
+11 
+	`¥ötf
+("; Progress: RhsUsedField = %d; InpUsedField = %d;\n",
+
+12 
+£
+->
+RhsU£dFõld
+, se->
+I≈U£dFõld
+);
+
+14 
+	`¥ötf
+("\n");
+
+15 
+	}
+}
+
+	@TD_parser.c
+
+1 
+	~<°dio.h
+>
+
+2 
+	~<°rög.h
+>
+
+4 
+	~"TD_∑r£r.h
+"
+
+5 
+	~"gømm¨.h
+"
+
+7 
+	#WFST
+
+
+	)
+
+8 #unde‡
+CHARTEST
+
+
+10 
+	#MaxRuÀs
+ 100
+
+	)
+
+11 
+	#MaxRhsLígth
+ 10
+
+	)
+
+12 
+	#MaxI≈utLígth
+ 100
+
+	)
+
+13 
+	#AºaySize
+ 1000
+
+	)
+
+16 #i‚def 
+CHARTEST
+
+
+17 
+	tSymbﬁTy≥
+;
+
+19 °ru˘{
+	mch
+;} 
+	tSymbﬁTy≥
+;
+
+22 
+SymbﬁTy≥
+ 
+	gNoSymbﬁ
+ = {'\0'};
+
+24 
+SymbﬁTy≥
+ 
+	$Ch¨2Symbﬁ
+(
+ch
+) {
+
+25 #i‚def 
+CHARTEST
+
+
+26  
+ch
+;
+
+28 
+SymbﬁTy≥
+ 
+ªs
+;
+
+30 
+ªs
+.
+ch
+ = ch;
+
+31  
+ªs
+;
+
+33 
+	}
+}
+
+35 
+	$SymbﬁsEquÆ
+(
+SymbﬁTy≥
+ 
+s1
+, SymbﬁTy≥ 
+s2
+) {
+
+36 #i‚def 
+CHARTEST
+
+
+37  
+s1
+ =
+s2
+;
+
+39  
+s1
+.
+ch
+ =
+s2
+.ch;
+
+41 
+	}
+}
+
+43 
+	$PrötSymbﬁ
+(
+SymbﬁTy≥
+ 
+s
+) {
+
+44 #i‚def 
+CHARTEST
+
+
+45 
+	`¥ötf
+("%c", 
+s
+);
+
+47 
+	`¥ötf
+("%c", 
+s
+.
+ch
+);
+
+49 
+	}
+}
+
+51 
+	$PrötSymbﬁs
+(
+SymbﬁTy≥
+ 
+sym
+[]) {
+
+52 
+n
+ = 0;
+
+54 !
+	`SymbﬁsEquÆ
+(
+sym
+[
+n
+], 
+NoSymbﬁ
+)) {
+
+55 
+	`PrötSymbﬁ
+(
+sym
+[
+n
+++]);
+
+57 
+	}
+}
+
+60 
+SymbﬁTy≥
+ 
+	tI≈utSåögTy≥
+[
+MaxI≈utLígth
+];
+
+62 
+I≈utSåögTy≥
+ 
+	gI≈utSåög
+;
+
+63 
+	gI≈utLígth
+;
+
+65 
+	$InôI≈utSåög
+(c⁄° *
+öp
+) {
+
+66 
+n
+ = 0;
+
+68 
+öp
+[
+n
+] != '\0') {
+
+69 
+I≈utSåög
+[
+n
+] = 
+	`Ch¨2Symbﬁ
+(
+öp
+[n]);
+
+70 
+n
+++;
+
+72 
+I≈utSåög
+[
+n
+] = 
+NoSymbﬁ
+;
+
+73 
+I≈utLígth
+ = 
+n
+;
+
+74 
+	}
+}
+
+76 
+	$PrötI≈utSåög
+() {
+
+77 
+	`PrötSymbﬁs
+(
+I≈utSåög
+);
+
+78 
+	}
+}
+
+81 °ru˘ {
+SymbﬁTy≥
+ 
+	mSym
+[
+MaxRhsLígth
+];} 
+	tRhsTy≥
+;
+
+82 °ru˘ {
+SymbﬁTy≥
+ 
+	mLhs
+; 
+RhsTy≥
+ 
+	mRhs
+;} 
+	tRuÀTy≥
+;
+
+84 
+RuÀTy≥
+ 
+	gGømm¨
+[
+MaxRuÀs
+];
+
+85 
+	gNRuÀs
+;
+
+86 
+SymbﬁTy≥
+ 
+	gSèπSymbﬁ
+;
+
+88 
+	$St‹eSèπSymbﬁ
+(
+S
+) {
+
+89 
+SèπSymbﬁ
+ = 
+	`Ch¨2Symbﬁ
+(
+S
+);
+
+90 
+	}
+}
+
+92 
+	$St‹eRuÀ
+(
+lhs
+, c⁄° *
+rhs
+) {
+
+93 
+RuÀTy≥
+ *
+r
+ = &
+Gømm¨
+[
+NRuÀs
+++];
+
+94 
+n
+ = 0;
+
+96 
+r
+->
+Lhs
+ = 
+	`Ch¨2Symbﬁ
+(
+lhs
+);
+
+97 
+rhs
+[
+n
+] != '\0') {
+
+98 
+r
+->
+Rhs
+.
+Sym
+[
+n
+] = 
+	`Ch¨2Symbﬁ
+(
+rhs
+[n]);
+
+99 
+n
+++;
+
+101 
+r
+->
+Rhs
+.
+Sym
+[
+n
+] = 
+NoSymbﬁ
+;
+
+102 
+	}
+}
+
+104 
+	$PrötRuÀ
+(
+nmb
+) {
+
+105 
+RuÀTy≥
+ *
+r
+ = &
+Gømm¨
+[
+nmb
+];
+
+107 
+	`PrötSymbﬁ
+(
+r
+->
+Lhs
+);
+
+108 
+	`¥ötf
+(" -> \"");
+
+109 
+	`PrötSymbﬁs
+(
+r
+->
+Rhs
+.
+Sym
+);
+
+110 
+	`¥ötf
+("\"");
+
+111 
+	}
+}
+
+116 
+SymbﬁTy≥
+ 
+	mLhs
+; 
+	mPos
+; 
+	mLí
+;
+
+117 } 
+	tGﬂlTy≥
+;
+
+119 
+GﬂlTy≥
+ 
+	$NewGﬂl
+(
+SymbﬁTy≥
+ 
+lhs
+, 
+pos
+, 
+Àn
+) {
+
+120 
+GﬂlTy≥
+ 
+gl
+;
+
+122 
+gl
+.
+Lhs
+ = 
+lhs
+; gl.
+Pos
+ = 
+pos
+; gl.
+Lí
+ = 
+Àn
+;
+
+123  
+gl
+;
+
+124 
+	}
+}
+
+126 
+	$GﬂlsEquÆ
+(
+GﬂlTy≥
+ 
+gﬂl1
+, GﬂlTy≥ 
+gﬂl2
+) {
+
+127  (
+	`SymbﬁsEquÆ
+(
+gﬂl1
+.
+Lhs
+, 
+gﬂl2
+.Lhs))
+
+128 && (
+gﬂl1
+.
+Pos
+ =
+gﬂl2
+.PosË&& (gﬂl1.
+Lí
+ == goal2.Len);
+
+129 
+	}
+}
+
+131 
+	$PrötGﬂl
+(
+GﬂlTy≥
+ 
+gﬂl
+) {
+
+132 
+	`¥ötf
+("lhs = ");
+
+133 
+	`PrötSymbﬁ
+(
+gﬂl
+.
+Lhs
+);
+
+134 
+	`¥ötf
+(",Öo†%d,Üígth = %d", 
+gﬂl
+.
+Pos
+, gﬂl.
+Lí
+);
+
+135 
+	}
+}
+
+140 
+GﬂlTy≥
+ 
+	mGﬂl
+; 
+	mNmb
+;
+
+143 } 
+	tRuÀGﬂlTy≥
+;
+
+145 
+RuÀGﬂlTy≥
+ 
+	$NewRuÀGﬂl
+(
+GﬂlTy≥
+ 
+gﬂl
+, 
+nmb
+) {
+
+146 
+RuÀGﬂlTy≥
+ 
+rg
+;
+
+148 
+rg
+.
+Gﬂl
+ = 
+gﬂl
+;Ñg.
+Nmb
+ = 
+nmb
+;
+
+149  
+rg
+;
+
+150 
+	}
+}
+
+152 
+	$PrötRuÀGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+153 
+	`PrötGﬂl
+(
+rgﬂl
+.
+Gﬂl
+);
+
+154 
+	`¥ötf
+(",Ñule: ");
+
+155 
+	`PrötRuÀ
+(
+rgﬂl
+.
+Nmb
+);
+
+156 
+	}
+}
+
+158 
+	$RuÀGﬂlsEquÆ
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl1
+, RuÀGﬂlTy≥ 
+rgﬂl2
+) {
+
+159  
+	`GﬂlsEquÆ
+(
+rgﬂl1
+.
+Gﬂl
+, 
+rgﬂl2
+.Goal)
+
+160 && (
+rgﬂl1
+.
+Nmb
+ =
+rgﬂl2
+.Nmb);
+
+161 
+	}
+}
+
+166 
+RuÀGﬂlTy≥
+ 
+	mRuÀGﬂl
+; 
+	mRhsU£d
+; 
+	mI≈U£d
+;
+
+167 } 
+	tDŸãdGﬂlTy≥
+;
+
+169 
+DŸãdGﬂlTy≥
+ 
+	$NewDŸãdGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+, 
+rhs
+, 
+öp
+) {
+
+170 
+DŸãdGﬂlTy≥
+ 
+dg
+;
+
+172 
+dg
+.
+RuÀGﬂl
+ = 
+rgﬂl
+; dg.
+RhsU£d
+ = 
+rhs
+; dg.
+I≈U£d
+ = 
+öp
+;
+
+173  
+dg
+;
+
+174 
+	}
+}
+
+176 
+	$PrötDŸãdGﬂl
+(
+DŸãdGﬂlTy≥
+ 
+dgﬂl
+) {
+
+177 
+	`PrötRuÀGﬂl
+(
+dgﬂl
+.
+RuÀGﬂl
+);
+
+178 
+	`¥ötf
+(", RhsU£d = %d; I≈U£d = %d", 
+dgﬂl
+.
+RhsU£d
+, dgﬂl.
+I≈U£d
+);
+
+179 
+	}
+}
+
+183 
+DŸãdGﬂlTy≥
+ 
+	gSèck
+[
+AºaySize
+];
+
+184 
+	gNDŸãdGﬂls
+;
+
+186 
+	$RuÀGﬂlIsToBeAvoided
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+187 
+i
+;
+
+189 
+i
+ = 0; i < 
+NDŸãdGﬂls
+; i++) {
+
+190 
+DŸãdGﬂlTy≥
+ *
+dg
+ = &
+Sèck
+[
+i
+];
+
+192 i‡(
+	`RuÀGﬂlsEquÆ
+(
+dg
+->
+RuÀGﬂl
+, 
+rgﬂl
+))  1;
+
+195 
+	}
+}
+
+197 
+	$PrötSèck
+() {
+
+198 
+i
+;
+
+200 
+	`¥ötf
+("Sèck: (%d dŸãd gﬂls)\n", 
+NDŸãdGﬂls
+);
+
+201 
+i
+ = 0; i < 
+NDŸãdGﬂls
+; i++) {
+
+202 
+	`PrötDŸãdGﬂl
+(
+Sèck
+[
+i
+]);
+
+204 
+	}
+}
+
+206 
+	gRuÀSèck
+[
+AºaySize
+];
+
+207 
+	gNRuÀsSècked
+;
+
+208 
+	gNDîiv©i⁄s
+;
+
+210 
+	$PrötRuÀsSèck
+() {
+
+211 
+r
+;
+
+213 
+r
+ = 0;Ñ < 
+NRuÀsSècked
+;Ñ++) {
+
+214 
+	`PrötRuÀ
+(
+RuÀSèck
+[
+r
+]); 
+	`¥ötf
+("\n");
+
+216 
+	`¥ötf
+("\n");
+
+217 
+	}
+}
+
+220 #ifdef 
+WFST
+
+
+221 °ru˘ {
+	mSèπ
+; 
+	mEnd
+;} 
+	tKnownP¨sögTy≥
+;
+
+224 
+RuÀGﬂlTy≥
+ 
+	mRuÀGﬂl
+;
+
+225 
+KnownP¨sögTy≥
+ 
+	mKnownP¨sög
+[
+AºaySize
+];
+
+226 
+	mNKnownP¨sögs
+;
+
+227 
+	mSèπP¨sög
+;
+
+228 } 
+	tKnownRuÀGﬂlTy≥
+;
+
+230 
+KnownRuÀGﬂlTy≥
+ 
+	gKnownRuÀGﬂlLi°
+[
+AºaySize
+];
+
+231 
+	gNKnownRuÀGﬂls
+;
+
+232 
+	gKnownRuÀLi°
+[
+AºaySize
+];
+
+233 
+	gNKnownRuÀs
+;
+
+236 
+	$InôKnownRuÀGﬂls
+() {
+
+237 #ifdef 
+WFST
+
+
+238 
+NKnownRuÀGﬂls
+ = 0; 
+NKnownRuÀs
+ = 0;
+
+240 
+	}
+}
+
+242 #ifdef 
+WFST
+
+
+243 
+	$KnownRuÀGﬂlNumbî
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+244 
+n
+;
+
+246 
+n
+ = 0;Ç < 
+NKnownRuÀGﬂls
+;Ç++) {
+
+247 i‡(
+	`RuÀGﬂlsEquÆ
+(
+KnownRuÀGﬂlLi°
+[
+n
+].
+RuÀGﬂl
+, 
+rgﬂl
+))
+
+248  
+n
+;
+
+251 
+	}
+}
+
+254 
+	$SèπNewKnownRuÀGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+255 #ifdef 
+WFST
+
+
+256 
+KnownRuÀGﬂlTy≥
+ *
+kg
+ = &
+KnownRuÀGﬂlLi°
+[
+NKnownRuÀGﬂls
+++];
+
+258 
+kg
+->
+RuÀGﬂl
+ = 
+rgﬂl
+;
+
+259 
+kg
+->
+SèπP¨sög
+ = 
+NRuÀsSècked
+;
+
+260 
+kg
+->
+NKnownP¨sögs
+ = 0;
+
+262 
+	}
+}
+
+264 
+	$Rec‹dKnownP¨sög
+() {
+
+265 #ifdef 
+WFST
+
+
+266 
+tosRuÀNmb
+ = 
+	`KnownRuÀGﬂlNumbî
+(
+Sèck
+[
+NDŸãdGﬂls
+-1].
+RuÀGﬂl
+);
+
+267 
+KnownRuÀGﬂlTy≥
+ *
+kg
+ = &
+KnownRuÀGﬂlLi°
+[
+tosRuÀNmb
+];
+
+268 
+KnownP¨sögTy≥
+ *
+kp
+ =
+
+269 &
+kg
+->
+KnownP¨sög
+[kg->
+NKnownP¨sögs
+++];
+
+270 
+i
+;
+
+272 
+kp
+->
+Sèπ
+ = 
+NKnownRuÀs
+;
+
+273 
+i
+ = 
+kg
+->
+SèπP¨sög
+; i < 
+NRuÀsSècked
+; i++) {
+
+274 
+KnownRuÀLi°
+[
+NKnownRuÀs
+++] = 
+RuÀSèck
+[
+i
+];
+
+276 
+kp
+->
+End
+ = 
+NKnownRuÀs
+;
+
+278 
+	}
+}
+
+280 
+	$RuÀGﬂlIsKnown
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+281 #ifdef 
+WFST
+
+
+282  
+	`KnownRuÀGﬂlNumbî
+(
+rgﬂl
+) != -1;
+
+286 
+	}
+}
+
+288 
+DoT›OfSèckA·î
+(
+Àn
+);
+
+289 
+P¨sögFound
+();
+
+291 
+	$DoKnownRuÀGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+292 #ifdef 
+WFST
+
+
+293 
+KnownRuÀGﬂlTy≥
+ *
+kg
+ = &
+KnownRuÀGﬂlLi°
+[
+	`KnownRuÀGﬂlNumbî
+(
+rgﬂl
+)];
+
+294 
+i
+;
+
+296 
+i
+ = 0; i < 
+kg
+->
+NKnownP¨sögs
+; i++) {
+
+297 
+KnownP¨sögTy≥
+ *
+kp
+ = &
+kg
+->
+KnownP¨sög
+[
+i
+];
+
+298 
+ﬁdNRuÀsSècked
+ = 
+NRuÀsSècked
+;
+
+299 
+j
+;
+
+301 
+j
+ = 
+kp
+->
+Sèπ
+; j < kp->
+End
+; j++) {
+
+302 
+RuÀSèck
+[
+NRuÀsSècked
+++] = 
+KnownRuÀLi°
+[
+j
+];
+
+304 i‡(
+NDŸãdGﬂls
+ =0Ë
+	`P¨sögFound
+();
+
+305 
+	`DoT›OfSèckA·î
+(
+rgﬂl
+.
+Gﬂl
+.
+Lí
+);
+
+306 
+NRuÀsSècked
+ = 
+ﬁdNRuÀsSècked
+;
+
+309 
+	}
+}
+
+313 
+	$InôP¨£r
+() {
+
+314 
+NDŸãdGﬂls
+ = 0; 
+NRuÀsSècked
+ = 0; 
+NDîiv©i⁄s
+ = 0;
+
+315 
+	`InôKnownRuÀGﬂls
+();
+
+316 
+	}
+}
+
+318 
+	$P¨sögFound
+() {
+
+319 
+NDîiv©i⁄s
+++;
+
+320 
+	`¥ötf
+("Parsing found:\n");
+
+321 
+	`PrötRuÀsSèck
+();
+
+322 
+	}
+}
+
+324 
+DoT›OfSèck
+();
+
+326 
+	$DoT›OfSèckA·î
+(
+Àn
+) {
+
+328 
+DŸãdGﬂlTy≥
+ *
+dg
+ = &
+Sèck
+[
+NDŸãdGﬂls
+-1];
+
+331 
+dg
+->
+RhsU£d
+ +1; dg->
+I≈U£d
+ +
+Àn
+;
+
+332 
+	`DoT›OfSèck
+();
+
+334 
+dg
+->
+RhsU£d
+ -1; dg->
+I≈U£d
+ -
+Àn
+;
+
+335 
+	}
+}
+
+337 
+	$DoNextOnSèck
+() {
+
+339 
+DŸãdGﬂlTy≥
+ 
+ﬁdTOS
+;
+
+341 
+	`Rec‹dKnownP¨sög
+();
+
+342 
+ﬁdTOS
+ = 
+Sèck
+[--
+NDŸãdGﬂls
+];
+
+343 i‡(
+NDŸãdGﬂls
+ =0Ë
+	`P¨sögFound
+();
+
+344 
+	`DoT›OfSèckA·î
+(
+ﬁdTOS
+.
+RuÀGﬂl
+.
+Gﬂl
+.
+Lí
+);
+
+345 
+Sèck
+[
+NDŸãdGﬂls
+++] = 
+ﬁdTOS
+;
+
+346 
+	}
+}
+
+348 
+TryAŒRuÀsF‹
+(
+GﬂlTy≥
+ 
+gﬂl
+);
+
+350 
+	$TryAŒLígthsF‹
+(
+SymbﬁTy≥
+ 
+lhs
+, 
+pos
+, 
+maxÀn
+) {
+
+351 
+Àn
+;
+
+353 
+Àn
+ = 0;Üí <
+maxÀn
+;Üen++)
+
+354 
+	`TryAŒRuÀsF‹
+(
+	`NewGﬂl
+(
+lhs
+, 
+pos
+, 
+Àn
+));
+
+355 
+	}
+}
+
+357 
+	$DoT›OfSèck
+() {
+
+358 
+DŸãdGﬂlTy≥
+ *
+dg
+ = &
+Sèck
+[
+NDŸãdGﬂls
+-1];
+
+359 
+RuÀGﬂlTy≥
+ *
+rg
+ = &
+dg
+->
+RuÀGﬂl
+;
+
+360 
+GﬂlTy≥
+ *
+gl
+ = &
+rg
+->
+Gﬂl
+;
+
+361 
+SymbﬁTy≥
+ 
+tosSymbﬁ
+ =
+
+362 
+Gømm¨
+[
+rg
+->
+Nmb
+].
+Rhs
+.
+Sym
+[
+dg
+->
+RhsU£d
+];
+
+363 
+pos
+ = 
+gl
+->
+Pos
+ + 
+dg
+->
+I≈U£d
+;
+
+364 
+Àn_À·
+ = 
+gl
+->
+Lí
+ - 
+dg
+->
+I≈U£d
+;
+
+366 i‡(
+	`SymbﬁsEquÆ
+(
+tosSymbﬁ
+, 
+NoSymbﬁ
+))
+
+367 i‡(
+Àn_À·
+ =0Ë
+	`DoNextOnSèck
+(); ;
+
+369 i‡(
+Àn_À·
+ > 0 && 
+	`SymbﬁsEquÆ
+(
+tosSymbﬁ
+, 
+I≈utSåög
+[
+pos
+]))
+
+370 
+	`DoT›OfSèckA·î
+(1);
+
+371 
+	`TryAŒLígthsF‹
+(
+tosSymbﬁ
+, 
+pos
+, 
+Àn_À·
+);
+
+372 
+	}
+}
+
+374 
+	$DoUnknownRuÀGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+375 
+	`¥ötf
+("TryögÑuÀ gﬂ»"); 
+	`PrötRuÀGﬂl
+(
+rgﬂl
+);Örintf("\n");
+
+376 
+	`SèπNewKnownRuÀGﬂl
+(
+rgﬂl
+);
+
+377 
+Sèck
+[
+NDŸãdGﬂls
+++] = 
+	`NewDŸãdGﬂl
+(
+rgﬂl
+, 0, 0);
+
+378 
+RuÀSèck
+[
+NRuÀsSècked
+++] = 
+rgﬂl
+.
+Nmb
+;
+
+379 
+	`DoT›OfSèck
+();
+
+380 --
+NRuÀsSècked
+;
+
+381 --
+NDŸãdGﬂls
+;
+
+382 
+	}
+}
+
+384 
+	$DoRuÀGﬂl
+(
+RuÀGﬂlTy≥
+ 
+rgﬂl
+) {
+
+385 i‡(
+	`RuÀGﬂlIsToBeAvoided
+(
+rgﬂl
+)) ;
+
+386 i‡(
+	`RuÀGﬂlIsKnown
+(
+rgﬂl
+)Ë
+	`DoKnownRuÀGﬂl
+(rgoal);
+
+387 
+	`DoUnknownRuÀGﬂl
+(
+rgﬂl
+);
+
+388 
+	}
+}
+
+390 
+	$TryAŒRuÀsF‹
+(
+GﬂlTy≥
+ 
+gﬂl
+) {
+
+391 
+n
+;
+
+393 
+n
+ = 0;Ç < 
+NRuÀs
+;Ç++)
+
+394 i‡(
+	`SymbﬁsEquÆ
+(
+Gømm¨
+[
+n
+].
+Lhs
+, 
+gﬂl
+.Lhs))
+
+395 
+	`DoRuÀGﬂl
+(
+	`NewRuÀGﬂl
+(
+gﬂl
+, 
+n
+));
+
+396 
+	}
+}
+
+398 
+	$P¨£
+(c⁄° *
+öp
+) {
+
+399 
+	`InôI≈utSåög
+(
+öp
+);
+
+400 
+	`¥ötf
+("Parsing \"");
+
+401 
+	`PrötI≈utSåög
+();
+
+402 
+	`¥ötf
+("\" o‡Àngth %d\n", 
+I≈utLígth
+);
+
+403 
+	`InôP¨£r
+();
+
+404 
+	`TryAŒRuÀsF‹
+(
+	`NewGﬂl
+(
+SèπSymbﬁ
+, 0, 
+I≈utLígth
+));
+
+405 
+	`¥ötf
+("%d derivation%s found for string \"",
+
+406 
+NDîiv©i⁄s
+, (NDerivations == 1 ? "" : "s"));
+
+407 
+	`PrötI≈utSåög
+();
+
+408 
+	`¥ötf
+("\"\n\n");
+
+409 
+	}
+}
+
+412 
+	$maö
+() {
+
+413 
+NRuÀs
+ = 0;
+
+414 
+	`InôGømm¨
+();
+
+415 
+	`DoP¨£s
+();
+
+418 
+	}
+}
+
+	@TD_parser.h
+
+1 
+St‹eSèπSymbﬁ
+(
+S
+);
+
+2 
+St‹eRuÀ
+(
+lhs
+, c⁄° *
+rhs
+);
+
+3 
+P¨£
+(c⁄° *
+öp
+);
+
+	@gram1.c
+
+7 
+	~"TD_∑r£r.h
+"
+
+8 
+	~"gømm¨.h
+"
+
+10 
+	$InôGømm¨
+() {
+
+11 
+	`St‹eSèπSymbﬁ
+('S');
+
+12 
+	`St‹eRuÀ
+('S', "A");
+
+13 
+	`St‹eRuÀ
+('A', "(A]");
+
+14 
+	`St‹eRuÀ
+('A', "B");
+
+15 
+	`St‹eRuÀ
+('B', "(B)");
+
+16 
+	`St‹eRuÀ
+('B', "");
+
+17 
+	}
+}
+
+19 
+	$DoP¨£s
+() {
+
+20 
+	`P¨£
+("((()]]");
+
+21 
+	`P¨£
+("");
+
+22 
+	}
+}
+
+	@gram2.c
+
+6 
+	~"TD_∑r£r.h
+"
+
+7 
+	~"gømm¨.h
+"
+
+9 
+	$InôGømm¨
+() {
+
+10 
+	`St‹eSèπSymbﬁ
+('S');
+
+11 
+	`St‹eRuÀ
+('S', "A");
+
+12 
+	`St‹eRuÀ
+('A', "AA");
+
+13 
+	`St‹eRuÀ
+('A', "");
+
+14 
+	`St‹eRuÀ
+('A', "a");
+
+15 
+	}
+}
+
+17 
+	$DoP¨£s
+() {
+
+18 
+	`P¨£
+("aaaa");
+
+19 
+	`P¨£
+("");
+
+20 
+	}
+}
+
+	@gram3.c
+
+7 
+	~"TD_∑r£r.h
+"
+
+8 
+	~"gømm¨.h
+"
+
+10 
+	$InôGømm¨
+() {
+
+11 
+	`St‹eSèπSymbﬁ
+('S');
+
+12 
+	`St‹eRuÀ
+('S', "LSa");
+
+13 
+	`St‹eRuÀ
+('S', "");
+
+14 
+	`St‹eRuÀ
+('L', "");
+
+15 
+	}
+}
+
+17 
+	$DoP¨£s
+() {
+
+18 
+	`P¨£
+("");
+
+19 
+	`P¨£
+("aaaa");
+
+20 
+	}
+}
+
+	@gram4.c
+
+1 
+	~"TD_∑r£r.h
+"
+
+2 
+	~"gømm¨.h
+"
+
+4 
+	$InôGømm¨
+() {
+
+5 
+	`St‹eSèπSymbﬁ
+('S');
+
+6 
+	`St‹eRuÀ
+('S', "LSR");
+
+7 
+	`St‹eRuÀ
+('S', "");
+
+8 
+	`St‹eRuÀ
+('L', "(");
+
+9 
+	`St‹eRuÀ
+('L', "");
+
+10 
+	`St‹eRuÀ
+('R', ")");
+
+11 
+	}
+}
+
+13 
+	$DoP¨£s
+() {
+
+14 
+	`P¨£
+("())");
+
+15 
+	`P¨£
+("((()))))");
+
+16 
+	}
+}
+
+	@grammar.h
+
+1 
+InôGømm¨
+();
+
+2 
+DoP¨£s
+();
+
+	@
+1
+.
+0
+8
+79
+PrintStack.c
+TD_parser.c
+TD_parser.h
+gram1.c
+gram2.c
+gram3.c
+gram4.c
+grammar.h

@@ -1,0 +1,122 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ArraySize	TD_parser.c	13;"	d	file:
+CC	Makefile	/^CC =		gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS =	-ansi -Wstrict-prototypes -Wmissing-prototypes \\$/;"	m
+CHARTEST	TD_parser.c	8;"	d	file:
+Char2Symbol	TD_parser.c	/^static SymbolType Char2Symbol(char ch) {$/;"	f	file:
+DoKnownRuleGoal	TD_parser.c	/^static void DoKnownRuleGoal(RuleGoalType rgoal) {$/;"	f	file:
+DoNextOnStack	TD_parser.c	/^static void DoNextOnStack(void) {$/;"	f	file:
+DoParses	gram1.c	/^void DoParses(void) {$/;"	f
+DoParses	gram2.c	/^void DoParses(void) {$/;"	f
+DoParses	gram3.c	/^void DoParses(void) {$/;"	f
+DoParses	gram4.c	/^void DoParses(void) {$/;"	f
+DoRuleGoal	TD_parser.c	/^static void DoRuleGoal(RuleGoalType rgoal) {$/;"	f	file:
+DoTopOfStack	TD_parser.c	/^static void DoTopOfStack(void) {$/;"	f	file:
+DoTopOfStackAfter	TD_parser.c	/^static void DoTopOfStackAfter(int len) {$/;"	f	file:
+DoUnknownRuleGoal	TD_parser.c	/^static void DoUnknownRuleGoal(RuleGoalType rgoal) {$/;"	f	file:
+DottedGoalType	TD_parser.c	/^} DottedGoalType;$/;"	t	typeref:struct:__anon6	file:
+EXE	Makefile	/^EXE =		#$/;"	m
+EXE	Makefile	/^EXE =		.exe$/;"	m
+End	TD_parser.c	/^typedef struct {int Start; int End;} KnownParsingType;$/;"	m	struct:__anon7	file:
+GRAMMAR	Makefile	/^GRAMMAR =	gram$(N)$/;"	m
+Goal	TD_parser.c	/^	GoalType Goal; int Nmb;$/;"	m	struct:__anon5	file:
+GoalType	TD_parser.c	/^} GoalType;$/;"	t	typeref:struct:__anon4	file:
+GoalsEqual	TD_parser.c	/^static int GoalsEqual(GoalType goal1, GoalType goal2) {$/;"	f	file:
+Grammar	TD_parser.c	/^static RuleType Grammar[MaxRules];$/;"	v	file:
+InitGrammar	gram1.c	/^void InitGrammar(void) {$/;"	f
+InitGrammar	gram2.c	/^void InitGrammar(void) {$/;"	f
+InitGrammar	gram3.c	/^void InitGrammar(void) {$/;"	f
+InitGrammar	gram4.c	/^void InitGrammar(void) {$/;"	f
+InitInputString	TD_parser.c	/^static void InitInputString(const char *inp) {$/;"	f	file:
+InitKnownRuleGoals	TD_parser.c	/^static void InitKnownRuleGoals(void) {$/;"	f	file:
+InitParser	TD_parser.c	/^static void InitParser(void) {$/;"	f	file:
+InpUsed	TD_parser.c	/^	RuleGoalType RuleGoal; int RhsUsed; int InpUsed;$/;"	m	struct:__anon6	file:
+InputLength	TD_parser.c	/^static int InputLength;$/;"	v	file:
+InputString	TD_parser.c	/^static InputStringType InputString;$/;"	v	file:
+InputStringType	TD_parser.c	/^typedef SymbolType InputStringType[MaxInputLength];$/;"	t	file:
+KnownParsing	TD_parser.c	/^	KnownParsingType KnownParsing[ArraySize];$/;"	m	struct:__anon8	file:
+KnownParsingType	TD_parser.c	/^typedef struct {int Start; int End;} KnownParsingType;$/;"	t	typeref:struct:__anon7	file:
+KnownRuleGoalList	TD_parser.c	/^static KnownRuleGoalType KnownRuleGoalList[ArraySize];$/;"	v	file:
+KnownRuleGoalNumber	TD_parser.c	/^static int KnownRuleGoalNumber(RuleGoalType rgoal) {$/;"	f	file:
+KnownRuleGoalType	TD_parser.c	/^} KnownRuleGoalType;$/;"	t	typeref:struct:__anon8	file:
+KnownRuleList	TD_parser.c	/^static int KnownRuleList[ArraySize];$/;"	v	file:
+LEX	Makefile	/^LEX =		flex$/;"	m
+LEX	Makefile	/^LEX =		lex$/;"	m
+LINT	Makefile	/^LINT =		echo No lint under MSDOS$/;"	m
+LINT	Makefile	/^LINT =		lint -ansi -xh$/;"	m
+Len	TD_parser.c	/^	SymbolType Lhs; int Pos; int Len;$/;"	m	struct:__anon4	file:
+Lhs	TD_parser.c	/^	SymbolType Lhs; int Pos; int Len;$/;"	m	struct:__anon4	file:
+Lhs	TD_parser.c	/^typedef struct {SymbolType Lhs; RhsType Rhs;} RuleType;$/;"	m	struct:__anon3	file:
+MaxInputLength	TD_parser.c	12;"	d	file:
+MaxRhsLength	TD_parser.c	11;"	d	file:
+MaxRules	TD_parser.c	10;"	d	file:
+N	Makefile	/^N =		4$/;"	m
+NDerivations	TD_parser.c	/^static int NDerivations;$/;"	v	file:
+NDottedGoals	TD_parser.c	/^static int NDottedGoals;$/;"	v	file:
+NKnownParsings	TD_parser.c	/^	int NKnownParsings;$/;"	m	struct:__anon8	file:
+NKnownRuleGoals	TD_parser.c	/^static int NKnownRuleGoals;$/;"	v	file:
+NKnownRules	TD_parser.c	/^static int NKnownRules;$/;"	v	file:
+NRules	TD_parser.c	/^static int NRules;$/;"	v	file:
+NRulesStacked	TD_parser.c	/^static int NRulesStacked;$/;"	v	file:
+NewDottedGoal	TD_parser.c	/^static DottedGoalType NewDottedGoal(RuleGoalType rgoal, int rhs, int inp) {$/;"	f	file:
+NewGoal	TD_parser.c	/^static GoalType NewGoal(SymbolType lhs, int pos, int len) {$/;"	f	file:
+NewRuleGoal	TD_parser.c	/^static RuleGoalType NewRuleGoal(GoalType goal, int nmb) {$/;"	f	file:
+Nmb	TD_parser.c	/^	GoalType Goal; int Nmb;$/;"	m	struct:__anon5	file:
+NoSymbol	TD_parser.c	/^static SymbolType NoSymbol = {'\\0'};$/;"	v	file:
+OBJ	Makefile	/^OBJ =		TD_parser.o $(GRAMMAR).o$/;"	m
+Parse	TD_parser.c	/^void Parse(const char *inp) {$/;"	f
+ParsingFound	TD_parser.c	/^static void ParsingFound(void) {$/;"	f	file:
+Pos	TD_parser.c	/^	SymbolType Lhs; int Pos; int Len;$/;"	m	struct:__anon4	file:
+PrintDottedGoal	TD_parser.c	/^static void PrintDottedGoal(DottedGoalType dgoal) {$/;"	f	file:
+PrintGoal	TD_parser.c	/^static void PrintGoal(GoalType goal) {$/;"	f	file:
+PrintInputString	TD_parser.c	/^static void PrintInputString(void) {$/;"	f	file:
+PrintRule	TD_parser.c	/^static void PrintRule(int nmb) {$/;"	f	file:
+PrintRuleGoal	TD_parser.c	/^static void PrintRuleGoal(RuleGoalType rgoal) {$/;"	f	file:
+PrintRulesStack	TD_parser.c	/^static void PrintRulesStack(void) {$/;"	f	file:
+PrintStack	PrintStack.c	/^static void PrintStack(const char *msg) {$/;"	f	file:
+PrintStack	TD_parser.c	/^static void PrintStack(void) {$/;"	f	file:
+PrintSymbol	TD_parser.c	/^static void PrintSymbol(SymbolType s) {$/;"	f	file:
+PrintSymbols	TD_parser.c	/^static void PrintSymbols(SymbolType sym[]) {$/;"	f	file:
+RESULT	Makefile	/^RESULT =	res$(N)E$/;"	m
+RESULT	Makefile	/^RESULT =	res$(N)P$/;"	m
+RecordKnownParsing	TD_parser.c	/^static void RecordKnownParsing(void) {$/;"	f	file:
+Rhs	TD_parser.c	/^typedef struct {SymbolType Lhs; RhsType Rhs;} RuleType;$/;"	m	struct:__anon3	file:
+RhsType	TD_parser.c	/^typedef struct {SymbolType Sym[MaxRhsLength];} RhsType;$/;"	t	typeref:struct:__anon2	file:
+RhsUsed	TD_parser.c	/^	RuleGoalType RuleGoal; int RhsUsed; int InpUsed;$/;"	m	struct:__anon6	file:
+RuleGoal	TD_parser.c	/^	RuleGoalType RuleGoal; int RhsUsed; int InpUsed;$/;"	m	struct:__anon6	file:
+RuleGoal	TD_parser.c	/^	RuleGoalType RuleGoal;$/;"	m	struct:__anon8	file:
+RuleGoalIsKnown	TD_parser.c	/^static int RuleGoalIsKnown(RuleGoalType rgoal) {$/;"	f	file:
+RuleGoalIsToBeAvoided	TD_parser.c	/^static int RuleGoalIsToBeAvoided(RuleGoalType rgoal) {$/;"	f	file:
+RuleGoalType	TD_parser.c	/^} RuleGoalType;$/;"	t	typeref:struct:__anon5	file:
+RuleGoalsEqual	TD_parser.c	/^static int RuleGoalsEqual(RuleGoalType rgoal1, RuleGoalType rgoal2) {$/;"	f	file:
+RuleStack	TD_parser.c	/^static int RuleStack[ArraySize];$/;"	v	file:
+RuleType	TD_parser.c	/^typedef struct {SymbolType Lhs; RhsType Rhs;} RuleType;$/;"	t	typeref:struct:__anon3	file:
+SLEEP	Makefile	/^SLEEP =		rem$/;"	m
+SLEEP	Makefile	/^SLEEP =		sleep$/;"	m
+SRC	Makefile	/^SRC =		TD_parser.c $(GRAMMAR).c$/;"	m
+SUBSYSTEM	Makefile	/^SUBSYSTEM =	MSDOS$/;"	m
+SUBSYSTEM	Makefile	/^SUBSYSTEM =	UNIX$/;"	m
+SYSTEM	Makefile	/^SYSTEM =	MSDOS$/;"	m
+SYSTEM	Makefile	/^SYSTEM =	UNIX$/;"	m
+Stack	TD_parser.c	/^static DottedGoalType Stack[ArraySize];$/;"	v	file:
+Start	TD_parser.c	/^typedef struct {int Start; int End;} KnownParsingType;$/;"	m	struct:__anon7	file:
+StartNewKnownRuleGoal	TD_parser.c	/^static void StartNewKnownRuleGoal(RuleGoalType rgoal) {$/;"	f	file:
+StartParsing	TD_parser.c	/^	int StartParsing; \/* temporary variable ???? *\/$/;"	m	struct:__anon8	file:
+StartSymbol	TD_parser.c	/^static SymbolType StartSymbol;$/;"	v	file:
+StoreRule	TD_parser.c	/^void StoreRule(char lhs, const char *rhs) {$/;"	f
+StoreStartSymbol	TD_parser.c	/^void StoreStartSymbol(char S) {$/;"	f
+Sym	TD_parser.c	/^typedef struct {SymbolType Sym[MaxRhsLength];} RhsType;$/;"	m	struct:__anon2	file:
+SymbolType	TD_parser.c	/^typedef char SymbolType;$/;"	t	file:
+SymbolType	TD_parser.c	/^typedef struct{char ch;} SymbolType;$/;"	t	typeref:struct:__anon1	file:
+SymbolsEqual	TD_parser.c	/^static int SymbolsEqual(SymbolType s1, SymbolType s2) {$/;"	f	file:
+TIME	Makefile	/^TIME =		time$/;"	m
+TryAllLengthsFor	TD_parser.c	/^static void TryAllLengthsFor(SymbolType lhs, int pos, int maxlen) {$/;"	f	file:
+TryAllRulesFor	TD_parser.c	/^static void TryAllRulesFor(GoalType goal) {$/;"	f	file:
+WFST	TD_parser.c	7;"	d	file:
+ch	TD_parser.c	/^typedef struct{char ch;} SymbolType;$/;"	m	struct:__anon1	file:
+main	TD_parser.c	/^int main(void) {$/;"	f
