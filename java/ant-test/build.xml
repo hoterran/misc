@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<project name="ant-test" default="all">
+	<property name="src" location="src"/>
+	<property name="classes" location="classes"/>
+	<property name="doc" location="doc"/>
+	<property name="target" location="target"/>
+
+	<target name="init">
+		<echo message="src=${src}\n classes=${classes} \n target=${target} \n"/>
+		<echo message="${basedir} ${ant.file} ${ant.project.name} ${ant.core.lib} "/>
+		<mkdir dir="${target}" />
+		<mkdir dir="${classes}" />
+		<mkdir dir="${doc}" />
+	</target>
+
+	<target name="compile" depends="init" >
+		<javac srcdir="${src}" destdir="${classes}" />
+	</target>
+
+	<target name="doc" depends="init" >
+		<javadoc sourcepath="${src}" destdir="${doc}" />
+	</target>
+
+	<target name="clean">
+		<delete dir='${classes}'/>
+	</target>
+
+	<target name="jar" depends="compile,doc" >
+		<jar basedir="${classes}" destfile="${target}/ant-test.jar" /> 
+	</target>
+
+	<target name="all" depends="clean,jar">
+	</target>
+
+	<!-- below is test -->
+	<property name="lib.dir" location="lib"/>
+
+	<target name="test">
+		<copy todir="/tmp">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+				<exclude name="b.jar"/>
+			</fileset>
+		</copy>
+
+		<echo message="${bad_property}"/>
+		<echo message="${bad_property2}"/>
+	</target>
+
+	<target name="test2">
+		<copy todir="/tmp">
+			<fileset dir="${lib.dir}">
+				<patternset refid="classpath"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<property name="bad_property2" value="${bad_property}.name"/>
+	<property name="bad_property" value=" i am bad "/>
+
+	<patternset id = "classpath">
+		<include name="*.jar"/>
+		<exclude name="a.jar"/>
+	</patternset>
+
+	<!-- if unless test -->	
+
+	<property name="if-test" value ="test"/>
+	<property name="unless-test" value = "test"/>
+
+	<patternset id = "classpath2">
+		<include name="*.jar" if="if-test"/>
+	</patternset>
+	
+	<patternset id = "classpath3">
+		<include name="*.jar" unless="unless-test"/>
+	</patternset>
+
+	<!-- jar test-->
+
+	<target name="jartest" >
+		<jar basedir="${classes}" destfile="${target}/ant-test.jar" manifest="${classes}/test.mf">
+			<manifest>
+				<attribute name="Main-Class" value="Test"/>
+				<attribute name="Class-Path" value=""/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!--external properties -->	
+	<property file="para.properties"/>
+
+	<target name="prop-test" >
+		<echo message="${server.host}"/>
+		<echo message="${admin.user}"/>
+		<echo message="${admin.pass}"/>
+	</target>
+
+
+	
+</project>
