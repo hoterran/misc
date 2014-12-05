@@ -35,11 +35,11 @@ file_msg.add_header('Content-Disposition',
  'attachment', filename = basename)
 msg.attach(file_msg)
 
-me = "ruoyi.ruanry@alibaba-inc.com"
-you = "ruoyi.ruanry@alibaba-inc.com, hoterran@163.com"
+me = "x@alibaba-inc.com"
+you = "x@alibaba-inc.com, x@163.com"
 
 # Send the message via our own SMTP server, but don't include the
 # envelope header.
-s = smtplib.SMTP("smtp.ops.aliyun-inc.com")
+s = smtplib.SMTP("x.com")
 s.sendmail(me, you, msg.as_string())
 s.quit()
