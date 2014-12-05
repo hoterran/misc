@@ -13,8 +13,8 @@ fp = open("funk", 'rb')
 msg = MIMEText(fp.read())
 fp.close()
 
-me = "ruoyi.ruanry@alibaba-inc.com"
-you = "ruoyi.ruanry@alibaba-inc.com, hoterran@163.com"
+me = "x@x.com"
+you = "x@x.com, x@163.com"
 
 mon=time.localtime().tm_mon
 
@@ -24,6 +24,6 @@ msg['To'] = you
 
 # Send the message via our own SMTP server, but don't include the
 # envelope header.
-s = smtplib.SMTP("smtp.ops.aliyun-inc.com")
+s = smtplib.SMTP("x.com")
 s.sendmail(me, you, msg.as_string())
 s.quit()
