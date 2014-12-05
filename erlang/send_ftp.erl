@@ -1,7 +1,7 @@
 #!/usr/local/bin/escript
 
 %%%
-%%% AUTHOR:		ruoyi.ruanry@alibaba-inc.com
+%%% AUTHOR:		x@x.com
 %%% FEATURE:	send possible inject sql to ftp
 %%%
 
