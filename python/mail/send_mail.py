@@ -4,8 +4,8 @@
 import smtplib
 
 mailserver="x.com"
-from_addr="x@alibaba-inc.com"
-to_addr="x@alibaba-inc.com"
+from_addr="x@x.com"
+to_addr="x@x.com"
 
 msg="ABTN"
 
