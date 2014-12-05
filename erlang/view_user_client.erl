@@ -1,5 +1,5 @@
 #!/usr/local/bin/escript
-%%! -name rds_client@127.0.0.1 -setcookie rdstest@jq
+%%! -name rds_client@1.0.0.1 -setcookie xxxx
  
 %-module(view_user_client).
 %-compile(export_all).
@@ -8,7 +8,7 @@
 %%      ./view_user_client node cookie user
 %%    
 %% Use:
-%%      ./view_user_client rdstest@10.1.147.7 rdstest@jq jc200
+%%      ./view_user_client rdstest@1.1.1.1 xxxxxx bbbb
 %%
 %% Dont Execute Frequently
 %%
