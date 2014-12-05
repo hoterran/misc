@@ -5,13 +5,13 @@
 %%% FEATURE:	send possible inject sql to ftp
 %%%
 
-%-define(FTP_SERVER, "10.13.135.22").
--define(FTP_SERVER, "10.249.212.216").
+%-define(FTP_SERVER, "1.1.1.1").
+-define(FTP_SERVER, "0.0.0.0").
 -define(FTP_PORT, 21).
 %-define(FTP_USER, "tftpd").
--define(FTP_USER, "rds_kj").
+-define(FTP_USER, "xxx").
 %-define(FTP_PW, "tftpd").
--define(FTP_PW, "rds_kj222").
+-define(FTP_PW, "yyy").
 -define(FTP_FILE, "ftp").
 -define(FTP_LOCAL_DIR, "/tmp/").
 
