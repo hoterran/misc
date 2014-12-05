@@ -2,11 +2,11 @@ import smtplib
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 
-smtp_sever = smtplib.SMTP('smtp.ops.aliyun-inc.com')
+smtp_sever = smtplib.SMTP('x.com')
 
 msgRoot = MIMEMultipart('related')
-msg['From'] = "ruoyi.ruanry@alibaba-inc.com"
-msg['To'] = "ruoyi.ruanry@alibaba-inc.com"
+msg['From'] = "x@x.com"
+msg['To'] = "x@x.com"
 msg['Subject'] = 'Hello1111'
 
 msgAlernative = MIMEMultipart('alernative')
