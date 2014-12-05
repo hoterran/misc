@@ -3,9 +3,9 @@
 
 import smtplib
 
-mailserver="smtp.ops.aliyun-inc.com"
-from_addr="ruoyi.ruanry@alibaba-inc.com"
-to_addr="ruoyi.ruanry@alibaba-inc.com"
+mailserver="x.com"
+from_addr="x@alibaba-inc.com"
+to_addr="x@alibaba-inc.com"
 
 msg="ABTN"
 
